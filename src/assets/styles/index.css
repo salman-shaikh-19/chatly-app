@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+body{
+    height: 100vh !important;
+}
+
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE, edge */
+  scrollbar-width: none; /* forefox */
+}
+
+.custom-emoji-picker * {
+  color: #042f2e !important; /*teal colour for text*/
+}
+/* hide scrollbar */
+.custom-emoji-picker ::-webkit-scrollbar {
+  display: none; /* chrome, saafri, edge */
+}
+
+
+

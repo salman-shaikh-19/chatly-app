@@ -1,0 +1,36 @@
+import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
+import React from "react";
+
+const ChatMessage = ({ msg, isEditable, loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
+  const msgDate = dayjs(msg.timestamp);
+  return (
+    <div className="flex flex-col items-center">
+      <div className={`p-2 rounded max-w-xs break-words ${msg.senderId === loggedInUserId
+        ? "bg-teal-950 text-white self-end"
+        : "bg-gray-300 text-black self-start"
+      }`}>
+        <div>{msg.message}</div>
+        <div className="text-xs text-gray-400 mt-1">
+          {msgDate.format("hh:mm A")}
+          <FontAwesomeIcon
+            icon={faTrashAlt}
+            className="cursor-pointer ms-1"
+            onClick={() => handleDeleteMessage(msg)}
+          />
+          {isEditable && msg.senderId === loggedInUserId && !msg?.updatedAt && (
+            <FontAwesomeIcon 
+              icon={faEdit} 
+              className="cursor-pointer ms-1"
+              onClick={() => handleEditMsg(msg)}
+            />
+          )}
+          {msg?.updatedAt && "Edited"}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default React.memo(ChatMessage);
