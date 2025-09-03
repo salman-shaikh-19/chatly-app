@@ -6,7 +6,8 @@ import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getChatId } from "../../../common/utils/getChatId";
 import _ from "lodash";
-import UserItem from "./UserItem";
+import UserItem from "../../user/components/UserCard";
+import ProfileDropdown from "../../user/components/ProfileDropdown";
 
 const Sidebar = ({ users, userListLoading,logoutFunction,selectChat,onlineUsers,loggedInUserId,
   lastMessages, }) => {
@@ -21,7 +22,7 @@ const sortedUsers = useMemo(() => {
     return ts ? new Date(ts).getTime() : 0;
   }, ["desc"]);
 }, [users, loggedInUserId, Object.keys(lastMessages).length]);
-
+const loggedInUser = users.find(u => u.id === loggedInUserId);
 
   return (
     <div
@@ -32,13 +33,16 @@ const sortedUsers = useMemo(() => {
         <h2 className="text-white">
           <FontAwesomeIcon icon={faComments} size="2x" /> Chatly
         </h2>
-        <button onClick={logoutFunction}>
-          <FontAwesomeIcon icon={faSignOutAlt} size="2x" />
-        </button>
+           <ProfileDropdown
+           avatar={loggedInUser?.avatar}
+         username={loggedInUser?.name || "User"}
+         logoutFunction={logoutFunction}
+       />
+       
       </div>
 
       {userListLoading ? (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center text-gray-600 items-center h-full">
           <FontAwesomeIcon icon={faSpinner} spin size="2x" />
         </div>
       ) : (
@@ -50,6 +54,7 @@ const sortedUsers = useMemo(() => {
         >
           {(items) => (
             <div className="flex flex-col">
+              {/* <strong className="text-gray-800 ms-2">Chats</strong> */}
               {items
                 .filter((item) => item.id !== loggedInUserId)
                 .map((user) => {
