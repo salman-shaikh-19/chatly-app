@@ -62,8 +62,7 @@ const Regsiter = () => {
                                 .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$/,"Password must be at least 6 characters, with at least one uppercase, lowercase, and number"),
                                 avatarURL:Yup.string()
                                 .url("Must be a valid URL")
-                                .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Must be a valid image format like (jpg, png, etc.)")
-                               ,
+                                .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Must be a valid image format like (jpg, png, etc.)"),
                             })}
                             onSubmit={handleSubmit}
                         >
