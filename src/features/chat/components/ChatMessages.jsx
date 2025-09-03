@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
-import isEditable from "../../../common/utils/isEditable";
+import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 import isToday from "dayjs/plugin/isToday";
 import isYesterday from "dayjs/plugin/isYesterday";
-import ChatMessage from "./ChatMessage"; // import your memoized component
+import ChatMessage from "./ChatMessage";
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -17,7 +17,7 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId, typing, message
           const msgDate = dayjs(msg.timestamp);
           const prevMsg = index > 0 ? messages[index - 1] : null;
           const showDateBadge = !prevMsg || !dayjs(prevMsg.timestamp).isSame(msgDate, "day");
-          const isMsgEditable = isEditable(msg.timestamp);
+          const isMsgEditAndDeletable = isEditOrDeletable(msg.timestamp);
 
           return (
             <React.Fragment key={msg.messageId}> {/* same like <></>*/ }
@@ -31,7 +31,7 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId, typing, message
 
               <ChatMessage
                 msg={msg}
-                isEditable={isMsgEditable}
+                isEditableAndDeletable={isMsgEditAndDeletable}
                 loggedInUserId={loggedInUserId}
                 handleEditMsg={handleEditMsg}
                 handleDeleteMessage={handleDeleteMessage}
