@@ -145,12 +145,21 @@ const MainChat = () => {
     setIsChatOpen(true);
   };
   //latest message user first 
+  // const sortedUsers = useMemo(() => {
+  //   return _.orderBy(users, (u) => {
+  //     const chatId = getChatId(loggedInUserId, u.id);
+  //     return messages[chatId]?.slice(-1)[0]?.timestamp || 0;
+  //   }, ["desc"]);
+  // }, [users, messages, loggedInUserId]);
   const sortedUsers = useMemo(() => {
-    return _.orderBy(users, (u) => {
-      const chatId = getChatId(loggedInUserId, u.id);
-      return messages[chatId]?.slice(-1)[0]?.timestamp || 0;
-    }, ["desc"]);
-  }, [users, messages, loggedInUserId]);
+  return _.orderBy(users, (u) => {
+    const chatId = getChatId(loggedInUserId, u.id);
+    const msgs = messages[chatId] || [];
+    const lastMsg = _.maxBy(msgs, "timestamp"); // get the true latest
+    return lastMsg?.timestamp || 0;
+  }, ["desc"]);
+}, [users, messages, loggedInUserId]);
+
 
   //get last message for each chatId meand for each chat.
   const lastMessages = useMemo(() => {
