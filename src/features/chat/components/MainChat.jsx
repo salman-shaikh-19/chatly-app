@@ -151,25 +151,22 @@ const MainChat = () => {
   //     return messages[chatId]?.slice(-1)[0]?.timestamp || 0;
   //   }, ["desc"]);
   // }, [users, messages, loggedInUserId]);
-  const sortedUsers = useMemo(() => {
-  return _.orderBy(users, (u) => {
-    const chatId = getChatId(loggedInUserId, u.id);
-    const msgs = messages[chatId] || [];
-    const lastMsg = _.maxBy(msgs, "timestamp"); // get the true latest
-    return lastMsg?.timestamp || 0;
-  }, ["desc"]);
-}, [users, messages, loggedInUserId]);
+
 
 
   //get last message for each chatId meand for each chat.
-  const lastMessages = useMemo(() => {
-    const result = {};
-    Object.keys(messages).forEach(chatId => {
-      const msgArr = messages[chatId];
-      if (msgArr?.length) result[chatId] = msgArr[msgArr.length - 1];
-    });
-    return result;
-  }, [messages]);
+const lastMessages = useMemo(() => {
+  const result = {};
+  Object.keys(messages).forEach(chatId => {
+    const msgArr = messages[chatId];
+    if (msgArr?.length) {
+      // Pick the message with the highest timestamp
+      result[chatId] = _.maxBy(msgArr, "timestamp");
+    }
+  });
+  return result;
+}, [messages]);
+
 
   // console.log(lastMessages);
 
@@ -179,8 +176,8 @@ const MainChat = () => {
     <div className="h-screen flex">
       <div className={`${isChatOpen ? "hidden sm:flex" : "flex"
         } flex-col  bg-white border-r`}>
-        <Sidebar
-          users={sortedUsers}
+          <Sidebar
+          users={users}
           userListLoading={userListLoading}
           loggedInUserId={loggedInUserId}
           logoutFunction={userLogout}
