@@ -63,7 +63,7 @@ const Regsiter = () => {
                                 avatarURL:Yup.string()
                                 .url("Must be a valid URL")
                                 .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Must be a valid image format like (jpg, png, etc.)")
-                                .required("Profile picture URL is required"),
+                               ,
                             })}
                             onSubmit={handleSubmit}
                         >
