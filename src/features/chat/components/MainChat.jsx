@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { setSelectedChatUser, setTyping } from "../../../common/commonSlice";
 import { setOnlineUsers } from "../../user/userSlice";
-import { addMessage, clearMessages, updateMessage } from "../chatSlice";
+import { addMessage, clearMessages, softDeleteFromAll, updateMessage } from "../chatSlice";
+
 import _ from 'lodash';
 import ChatWindow from "./ChatWindow";
 import { getChatId } from "../../../common/utils/getChatId";
