@@ -37,7 +37,7 @@ const MainChat = () => {
 
   // useEffect(() => {
   //   // Initialize socket connection
-  //   const newSocket = io("http://localhost:5000", { autoConnect: true });
+  //   const newSocket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true });
   //   setSocket(newSocket);
 
   //   return () => {
@@ -52,7 +52,10 @@ const MainChat = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
     }
-    const socket = io("http://192.168.1.101:5000", { autoConnect: true });
+//     const socket = io("https://chatly-backend.onrender.com", {
+//   transports: ["websocket"],
+// });
+    const socket = io("https://chatly-backend.onrender.com", { autoConnect: true,  transports: ["websocket"], });
     socketRef.current = socket;
 
     // connet socket manually
