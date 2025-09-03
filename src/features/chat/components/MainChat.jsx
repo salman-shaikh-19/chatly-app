@@ -161,17 +161,24 @@ const MainChat = () => {
 
 
   //get last message for each chatId meand for each chat.
-const lastMessages = useMemo(() => {
-  const result = {};
-  Object.keys(messages).forEach(chatId => {
-    const msgArr = messages[chatId];
-    if (msgArr?.length) {
-      // Pick the message with the highest timestamp
-      result[chatId] = _.maxBy(msgArr, "timestamp");
-    }
-  });
-  return result;
-}, [messages]);
+
+
+  //get last message for each chatId meand for each chat.
+    const lastMessages = useMemo(() => {
+      const result = {};
+      Object.keys(messages).forEach(chatId => {
+        const msgArr = messages[chatId];
+        if (msgArr?.length) {
+          // Filter out deleted messages
+          const validMsgs = msgArr.filter(m => !m.isDeleted);
+          if (validMsgs.length) {
+            result[chatId] = _.maxBy(validMsgs, "timestamp");
+          }
+        }
+      });
+      return result;
+    }, [messages]);
+
 
 
   // console.log(lastMessages);
