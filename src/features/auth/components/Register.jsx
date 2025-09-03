@@ -60,7 +60,7 @@ const Regsiter = () => {
                                 userPassword: Yup.string().required("Password is required")
                                 .min(6, "Password must be at least 6 characters")
                                 .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$/,"Password must be at least 6 characters, with at least one uppercase, lowercase, and number"),
-                                avatarURL:Yup.string()
+                                avatarURL:Yup.string().nullable()
                                 .url("Must be a valid URL")
                                 .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Must be a valid image format like (jpg, png, etc.)"),
                             })}
