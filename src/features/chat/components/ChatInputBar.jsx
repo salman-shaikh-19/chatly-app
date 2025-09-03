@@ -7,6 +7,7 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [messageText, setMessageText] = useState("");
   const inputRef = useRef(null);
+  const pickerRef = useRef(null);
 
   useEffect(() => {
     if (editMsg) {
@@ -14,6 +15,17 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
       inputRef.current?.focus();
     }
   }, [editMsg]);
+  // close picker on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+        setShowPicker(false);
+      }
+    };
+    if (showPicker) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showPicker]);
+
 
   const handleSendClick = () => {
     if (!messageText.trim()) return;
@@ -48,7 +60,7 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
                 <FontAwesomeIcon icon={faClose} />
               </button>
             </div>
-            <div className="custom-emoji-picker">
+            <div ref={pickerRef} className="custom-emoji-picker">
               <EmojiPicker
                 onEmojiClick={onEmojiClick}
                 width={270}
@@ -61,17 +73,30 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
         )}
       </div>
 
-      <input
+      <textarea
         ref={inputRef}
-        type="text"
         value={messageText}
         onChange={(e) => {
           setMessageText(e.target.value);
           handleTyping();
         }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSendClick();
+          }
+        }}
         placeholder="Type a message..."
-        className="flex-1 border-0 border-b-2 border-teal-850 focus:border-teal-950 focus:ring-0 outline-none p-2"
+        rows={1}
+        className="flex-1 border-0 border-b-2 border-teal-850 focus:border-teal-950 focus:ring-0 outline-none p-2 resize-none"
+        style={{
+          overflowY: "scroll",
+          scrollbarWidth: "none", /* fire foxc */
+          msOverflowStyle: "none" /* Internet exploere 10+ */
+        }}
       />
+
+
 
       <button
         onClick={handleSendClick}
