@@ -17,7 +17,7 @@ const Regsiter = () => {
     const navigate=useNavigate();
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            const userData = { email: values.userEmail, password: values.userPassword,name:values.userName,avatar:values.avatarURL };
+            const userData = { email: values.userEmail, password: values.userPassword,name:values.userName,avatar:"https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D" };
             const result = await dispatch(registerUser(userData));
 
             if (registerUser.fulfilled.match(result)) {
@@ -25,6 +25,8 @@ const Regsiter = () => {
 
                 navigate("/login");
             } else if (registerUser.rejected.match(result)) {
+                console.log('something went wrong');
+                
                 toast.error(result.payload || 'Something went wrong');
             } else {
                 toast.warning(result.payload || 'Error');
@@ -53,22 +55,21 @@ const Regsiter = () => {
                     <div className="mx-auto flex  items-center justify-center ">
                    
                         <Formik
-                            initialValues={{ userEmail: '', userPassword: '',userName:'',avatarURL:'' }}
+                            initialValues={{ userEmail: '', userPassword: '',userName:'' }}
                             validationSchema={Yup.object({
                                 userEmail: Yup.string().email('Email address is invalid').required('Email is required'),
                                 userName:Yup.string().required('Username is required'),
-                                userPassword: Yup.string().required("Password is required")
+                             userPassword: Yup.string()
+                                .required("Password is required")
                                 .min(6, "Password must be at least 6 characters")
-                                .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,}$/,"Password must be at least 6 characters, with at least one uppercase, lowercase, and number"),
-                               avatarURL: Yup.string()
-                                          .nullable()
-                                          .notRequired()
-                                          .transform((value, originalValue) => {
-                                            return originalValue === "" ? null : value; // treat empty string as null
-                                          })
-                                          .url("Must be a valid URL")
-                                          .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Must be a valid image format like (jpg, png, etc.)"),
-
+                                .matches(
+                                    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,}$/,
+                                    "Password must include uppercase, lowercase, and number"
+                                ),
+                            //    avatarURL: Yup.string()
+                            //                 .url("Must be a valid URL")
+                            //                 .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Invalid image format")
+                            //                 .optional(),
                             })}
                             onSubmit={handleSubmit}
                         >
@@ -99,7 +100,7 @@ const Regsiter = () => {
                                     isLabelEnabled={true}
                                     inputClassName="mb-3 "
                                 />
-                                    <CustomInputWithError
+                                    {/* <CustomInputWithError
                                      inputId="avatarURL"
                                      inputName="avatarURL"
                                      inputLabelText="Profile Pic"
@@ -107,7 +108,7 @@ const Regsiter = () => {
                                      inputType="url"
                                      isLabelEnabled={true}
                                      inputClassName="mb-3 "
-                                 />
+                                 /> */}
                                 <CustomPasswordInputWithError
                                     inputId="userPassword"
                                     inputName="userPassword"
