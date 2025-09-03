@@ -19,7 +19,7 @@ const ChatMessage = ({ msg, isEditable, loggedInUserId, handleEditMsg, handleDel
             className="cursor-pointer ms-1"
             onClick={() => handleDeleteMessage(msg)}
           />
-          {isEditable && msg.senderId === loggedInUserId && !msg?.updatedAt && (
+          {isEditable && msg.senderId === loggedInUserId  && (
             <FontAwesomeIcon 
               icon={faEdit} 
               className="cursor-pointer ms-1"
