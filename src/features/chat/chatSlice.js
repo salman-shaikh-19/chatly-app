@@ -67,6 +67,14 @@ export const chatSlice = createSlice({
         chat[index] = { ...chat[index], message, updatedAt };
       }
     },
+      softDeleteFromAll: (state, action) => {
+      const { chatId, messageId, ...updates } = action.payload;
+      if (!state.messages[chatId]) return;
+
+      state.messages[chatId] = state.messages[chatId].map(msg =>
+        msg.messageId === messageId ? { ...msg, ...updates } : msg
+      );
+    },
 
 
 
@@ -78,6 +86,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addMessage, clearMessages, deleteMessage, deleteAllMessages, updateMessage } = chatSlice.actions;
+export const { addMessage, clearMessages, deleteMessage, deleteAllMessages, updateMessage,softDeleteFromAll } = chatSlice.actions;
 export default chatSlice.reducer;
 // export { getChatId };
