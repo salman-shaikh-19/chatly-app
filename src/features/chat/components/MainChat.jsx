@@ -55,7 +55,11 @@ const MainChat = () => {
 //     const socket = io("https://chatly-backend.onrender.com", {
 //   transports: ["websocket"],
 // });
-  const socket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true, transports: ["websocket"] });
+  const socket = io("https://chatly-backend-h9q3.onrender.com", {
+  transports: ["websocket"],
+  autoConnect: true
+});
+
 
     socketRef.current = socket;
 
