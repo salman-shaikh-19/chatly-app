@@ -102,6 +102,10 @@ const MainChat = () => {
       // console.log("inside typing listern"+typing);
       dispatch(setTyping({ userId, typing }));
     });
+        socket.on("deleteMessage", (deletedMsg) => {
+        const { chatId, messageId, isDeleted, deletedAt } = deletedMsg;
+        dispatch(softDeleteFromAll({ chatId, messageId, isDeleted, deletedAt }));
+      });
 
 
     // cleanup remove event listeners
@@ -109,6 +113,7 @@ const MainChat = () => {
       socket.off("onlineUsers");
       socket.off("privateMessage");
        socket.off("updateMessage");
+       socket.off("deleteMessage");
       socket.off("typing");
       socket.disconnect();
       socketRef.current = null;
