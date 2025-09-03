@@ -6,7 +6,7 @@ import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getChatId } from "../../../common/utils/getChatId";
 import _ from "lodash";
-import UserItem from "../../user/components/UserCard";
+import UserCard from "../../user/components/UserCard";
 import ProfileDropdown from "../../user/components/ProfileDropdown";
 
 const Sidebar = ({ users, userListLoading,logoutFunction,selectChat,onlineUsers,loggedInUserId,
@@ -61,7 +61,7 @@ const loggedInUser = users.find(u => u.id === loggedInUserId);
                   const chatId = getChatId(loggedInUserId, user.id);
                   return (
                
-                    <UserItem
+                    <UserCard
                     key={user.id}
                     userId={user.id}
                     name={user.name}
