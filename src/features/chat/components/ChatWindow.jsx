@@ -37,13 +37,13 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
 
     if (editMsg) {
       // console.log(editMsg);
-      
+
       if (!isEditOrDeletable(editMsg.timestamp)) {
-      toast.error("You can only edit messages within 2 minutes of sending");
-      setEditMsg(null); // clear edit
-      return;
-    }
-     socket.emit("updateMessage", {
+        toast.error("You can only edit messages within 2 minutes of sending");
+        setEditMsg(null); // clear edit
+        return;
+      }
+      socket.emit("updateMessage", {
         chatId,
         senderId: loggedInUserId,
         receiverId: selectedUserId,
@@ -56,7 +56,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         senderId: loggedInUserId,
         receiverId: selectedUserId,
         message: messageText,
-       messageId: uuidv4(),
+        messageId: uuidv4(),
         timestamp: new Date().toISOString(),
       };
       socket.emit("privateMessage", msgObj);
@@ -80,21 +80,32 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   //   dispatch(deleteMessage({ chatId, messageId: msg.messageId }));
   // }, [dispatch, loggedInUserId, selectedUserId]);
   const handleDeleteMessage = useCallback((msg) => {
-  if (!msg) return;
+    if (!msg) return;
     if (!isEditOrDeletable(msg.timestamp)) {
       toast.error("You can only delete messages within 2 minutes of sending");
       return;
     }
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert messages!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        socket.emit("deleteMessage", {
+          chatId,
+          messageId: msg.messageId,
+          senderId: loggedInUserId,
+          receiverId: selectedUserId,
+        });
+      }
+    });
 
-  socket.emit("deleteMessage", {
-    chatId,
-    messageId: msg.messageId,
-    senderId: loggedInUserId,
-    receiverId: selectedUserId,
-  });
-
-  // no local delete, server will broadcast soft delete
-}, [socket, chatId, loggedInUserId, selectedUserId]);
+    // no local delete, server will broadcast soft delete
+  }, [socket, chatId, loggedInUserId, selectedUserId]);
 
   const handleEditMessage = useCallback((msg) => {
     setEditMsg(msg);
@@ -116,7 +127,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
       }
     });
   };
-// console.log('called');
+  // console.log('called');
 
   return (
     <div className="flex flex-col h-full border rounded w-full">
