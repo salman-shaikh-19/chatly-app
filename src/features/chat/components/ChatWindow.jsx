@@ -10,7 +10,7 @@ import ChatInputBar from "./ChatInputBar";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import { v4 as uuidv4 } from "uuid";
-import isEditable from "../../../common/utils/isEditable";
+import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 const MySwal = withReactContent(Swal);
 
 const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
@@ -38,7 +38,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     if (editMsg) {
       // console.log(editMsg);
       
-      if (!isEditable(editMsg.timestamp)) {
+      if (!isEditOrDeletable(editMsg.timestamp)) {
       toast.error("You can only edit messages within 2 minutes of sending");
       setEditMsg(null); // clear edit
       return;
@@ -73,12 +73,28 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     }, 400);
   };
 
+  // const handleDeleteMessage = useCallback((msg) => {
+  //   if (!msg) return;
+  //   const chatId = getChatId(loggedInUserId, selectedUserId);
+  //   toast.success(`Message deleted from your side`);
+  //   dispatch(deleteMessage({ chatId, messageId: msg.messageId }));
+  // }, [dispatch, loggedInUserId, selectedUserId]);
   const handleDeleteMessage = useCallback((msg) => {
-    if (!msg) return;
-    const chatId = getChatId(loggedInUserId, selectedUserId);
-    toast.success(`Message deleted from your side`);
-    dispatch(deleteMessage({ chatId, messageId: msg.messageId }));
-  }, [dispatch, loggedInUserId, selectedUserId]);
+  if (!msg) return;
+    if (!isEditOrDeletable(msg.timestamp)) {
+      toast.error("You can only delete messages within 2 minutes of sending");
+      return;
+    }
+
+  socket.emit("deleteMessage", {
+    chatId,
+    messageId: msg.messageId,
+    senderId: loggedInUserId,
+    receiverId: selectedUserId,
+  });
+
+  // no local delete, server will broadcast soft delete
+}, [socket, chatId, loggedInUserId, selectedUserId]);
 
   const handleEditMessage = useCallback((msg) => {
     setEditMsg(msg);
