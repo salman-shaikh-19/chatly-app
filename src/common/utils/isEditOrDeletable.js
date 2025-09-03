@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-const isEditable = (timestamp) => {
+const isEditOrDeletable = (timestamp) => {
     // console.log('timestamp:'+timestamp);
 
     const now = dayjs();
@@ -10,4 +10,4 @@ const isEditable = (timestamp) => {
     return diffInMinutes < 2; //will return true/false
 }
 
-export default isEditable
+export default isEditOrDeletable
