@@ -17,12 +17,12 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   }, [editMsg]);
 
   //focus input on chat open
-  useEffect(()=>{
+
     setTimeout(() => {
       inputRef.current?.focus();
-    }, 50);
+    }, 1);
 
-  },[])
+  
   // close picker on outside click
   useEffect(() => {
     const handleClick = (e) => {
