@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { deleteAllMessages, deleteMessage } from "../chatSlice";
+import { deleteAllMessages, deleteMessage, deleteSelectedMessages } from "../chatSlice";
 import { toast } from "react-toastify";
 import { getChatId } from "../../../common/utils/getChatId";
 import Swal from "sweetalert2";
@@ -25,7 +25,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const chatId = getChatId(loggedInUserId, selectedUserId);
   const messages = useSelector(state => state.chat.messages[chatId] || []);
   const typing = useSelector(state => state.common.isTyping?.[selectedUserId] || false);
-
+      const [selectedMsgs,setSelectedMsgs]=useState([]);
   useEffect(() => {
     if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -111,6 +111,26 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     setEditMsg(msg);
   }, []);
 
+  //delete selected msgs
+   const handleSelectedDelete = () => {
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert messages!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete All!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteSelectedMessages({ chatId,messageIds: selectedMsgs }));
+        setSelectedMsgs([]);//reset
+        toast.success(`Your selected messages deleted from your side`);
+      }
+    });
+  };
+
+  //clear all msgs
   const handleDeleteAll = () => {
     MySwal.fire({
       title: 'Are you sure?',
@@ -123,6 +143,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(deleteAllMessages({ chatId }));
+        setSelectedMsgs([]);//reset
         toast.success(`All messages deleted from your side`);
       }
     });
@@ -138,6 +159,8 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         onlineUsers={onlineUsers}
         selectedChatUser={selectedChatUser}
         typing={typing}
+        handleSelectedDelete={handleSelectedDelete}
+        selectedMsgs={selectedMsgs}
       />
       <ChatMessages
         messages={messages}
@@ -146,6 +169,9 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         messagesEndRef={messagesEndRef}
         handleDeleteMessage={handleDeleteMessage}
         handleEditMsg={handleEditMessage}
+        selectedMsgs={selectedMsgs}
+        setSelectedMsgs={setSelectedMsgs}
+
       />
       <ChatInputBar
         loggedInUserId={loggedInUserId}
