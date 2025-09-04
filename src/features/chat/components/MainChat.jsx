@@ -171,9 +171,9 @@ const MainChat = () => {
 
 
   return (
-    <div className="h-screen flex">
-      <div className={`${isChatOpen ? "hidden sm:flex" : "flex"
-        } flex-col  bg-white border-r`}>
+     <div className="h-screen flex">
+      <div className={`${isChatOpen ? "hidden sm:flex " : "flex"
+        } flex flex-col  bg-white border-r w-full sm:w-72 lg:w-80`}>
         <Sidebar
           users={users}
           userListLoading={userListLoading}
@@ -185,7 +185,8 @@ const MainChat = () => {
           onlineUsers={onlineUsers}
         />
       </div>
-  <div className={`${isChatOpen ? "block lg:block md:block" : "hidden lg:block md:block"} flex-1 flex flex-col bg-cover bg-center bg-no-repeat bg-gray-200 m-1`}
+      <div className={` flex-1 flex flex-col
+      ${isChatOpen ? "flex w-full" : "hidden sm:flex"}  `}
 
       style={{
       backgroundImage: `url(${chatBgImg})`,
