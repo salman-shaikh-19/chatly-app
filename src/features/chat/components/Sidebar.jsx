@@ -45,7 +45,7 @@ const loggedInUser = users.find(u => u.id === loggedInUserId);
 
   return (
     <div
-      className="lg:w-80 md:w-90 sm:w-100 max-w-full h-screen hide-scrollbar bg-gray-100 text-white overflow-auto"
+      className="lg:w-80 md:w-70 sm:w-100 max-w-full h-screen hide-scrollbar bg-gray-100 text-white overflow-auto"
       id="user-scroll"
     >
       <div className="bg-teal-950 p-5 text-sm md:text-base lg:text-lg flex justify-between">
