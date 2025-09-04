@@ -186,7 +186,7 @@ const MainChat = () => {
         />
       </div>
       <div className={` flex-1 flex flex-col
-      ${isChatOpen ? "flex w-full" : "hidden sm:flex"}  `}
+      ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1 `}
 
       style={{
       backgroundImage: `url(${chatBgImg})`,
