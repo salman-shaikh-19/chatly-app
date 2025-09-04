@@ -22,15 +22,16 @@ const longPressForSelect = useLongPress(toggleSelect, {
   return (
     <div
       className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"} p-1 rounded ${
-          isSelected ? "bg-teal-700" : ""
+        isSelected ? "bg-[#DCF8C6]/50" : ""
+
         }`} 
          {...longPressForSelect()}
         >
       <div
         className={`relative p-2 pr-6 rounded max-w-xs
            break-words
-            ${isOwnMessage ? "bg-teal-950 text-white" :
-            "bg-gray-300 text-black"}`}>
+            ${isOwnMessage ? "bg-[#DCF8C6] text-black p-2 rounded-lg max-w-xs break-words ml-auto" :
+            "bg-white text-black p-2 rounded-lg max-w-xs break-words mr-auto"}`}>
               {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
                 <div className="absolute bottom-1  right-1">
                   <ChatActionDropdown>
