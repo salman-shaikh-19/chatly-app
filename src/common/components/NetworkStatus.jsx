@@ -1,3 +1,5 @@
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 export default function NetworkStatus() {
@@ -19,8 +21,8 @@ export default function NetworkStatus() {
   return (
     <>
       {!isOnline && (
-        <div className="fixed bottom-4 right-4 bg-red-600 text-white p-3 rounded-lg shadow-lg">
-          ⚠️ You are offline. Check your connection.
+        <div className="fixed bottom-5 right-4 bg-red-600 text-white p-3 rounded-lg shadow-lg">
+        <FontAwesomeIcon icon={faWarning} fade /> You are offline. Check your connection.
         </div>
       )}
     </>
