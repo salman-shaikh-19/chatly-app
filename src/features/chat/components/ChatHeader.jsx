@@ -1,4 +1,4 @@
-import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleLeft, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
@@ -26,12 +26,13 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsg
                     <span className="block ml-2 font-semibold text-white me-auto">
                         <b>{selectedChatUser.name}</b>
                     </span>
-                    {messages.length > 0 && (
+                    {messages.length > 0 && selectedMsgs.length===0 && (
                         <button
                             className="ms-auto p-1 block bg-teal-800 text-white rounded mx-1"
                             onClick={handleDeleteAll}
+                            title="Delete all messsage"
                         >
-                            Clear All
+                            <FontAwesomeIcon icon={faTrashAlt} />
                         </button>
                     )}
 
@@ -40,8 +41,9 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsg
                             <button
                             className=" p-1 block bg-teal-800 text-white rounded mx-1"
                             onClick={handleSelectedDelete}
+                            title="Delete selected messages"
                         >
-                            Delete Selected ({selectedMsgs.length})
+                            <FontAwesomeIcon icon={faTrashAlt} /> ({selectedMsgs.length})
                         </button>
                         ) 
                     }
