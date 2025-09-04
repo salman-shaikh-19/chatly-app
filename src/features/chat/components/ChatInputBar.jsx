@@ -18,9 +18,9 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
 
   //focus input on chat open
 
-    setTimeout(() => {
+
       inputRef.current?.focus();
-    }, 1);
+ 
 
   
   // close picker on outside click
