@@ -52,7 +52,7 @@ const MainChat = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
     }
-    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
+    const socket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true });
     socketRef.current = socket;
 
     // connet socket manually
