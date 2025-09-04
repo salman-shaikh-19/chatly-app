@@ -20,13 +20,13 @@ const longPressForSelect = useLongPress(toggleSelect, {
    // console.log( "isSelected:", isSelected);
   
   return (
-    <div
-      className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"} p-1 rounded ${
-        isSelected ? "bg-[#DCF8C6]/50" : ""
+      <div
+      className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"} p-1 rounded ${isSelected ? "bg-[#DCF8C6]/50" : ""
+        } select-none  md:select-auto `
 
-        }`} 
-         {...longPressForSelect()}
-        >
+      }
+      {...longPressForSelect()}
+    >
       <div
         className={`relative p-2 pr-6 rounded max-w-xs
            break-words
