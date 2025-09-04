@@ -2,7 +2,7 @@ import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
-const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, messages, goBack, typing }) => {
+const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsgs,handleSelectedDelete, messages, goBack, typing }) => {
     return (
         <div
 
@@ -34,6 +34,17 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, messages, 
                             Clear All
                         </button>
                     )}
+
+                    {
+                        selectedMsgs.length >0 && (
+                            <button
+                            className=" p-1 block bg-teal-800 text-white rounded mx-1"
+                            onClick={handleSelectedDelete}
+                        >
+                            Delete Selected ({selectedMsgs.length})
+                        </button>
+                        ) 
+                    }
 
 
                     <button
