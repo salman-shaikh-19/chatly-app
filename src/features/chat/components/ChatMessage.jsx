@@ -36,7 +36,7 @@ const ChatMessage = ({ msg, isEditableAndDeletable, loggedInUserId, handleEditMs
               )}
 
 
-        <div>
+        <div className="text-left">
           {msg.isDeleted ? (
             <span className="italic text-gray-400">
               <FontAwesomeIcon icon={faBan} /> Message has been deleted
