@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSmile, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faSmile, faClose, faPaperPlane, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -41,7 +41,7 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   };
 
   return (
-    <div className="p-2 border-t border-teal-950 flex items-center gap-2">
+    <div className="p-2 border-t border-teal-950 bg-white flex items-center gap-2">
       <div className="relative">
         <button
           type="button"
@@ -100,9 +100,9 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
 
       <button
         onClick={handleSendClick}
-        className="bg-teal-950 text-white px-4 py-2 rounded"
+        className={`bg-teal-950 text-white px-4 py-2  rounded`}
       >
-        {editMsg ? "Update" : "Send"}
+        {editMsg ? <FontAwesomeIcon icon={faCheck} /> :<FontAwesomeIcon icon={faPaperPlane} className="rotate-45" />}
       </button>
     </div>
   );
