@@ -2,43 +2,54 @@ import { faBan, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import React from "react";
+import ChatActionDropdown from "./ChatActionDropdown";
 
 const ChatMessage = ({ msg, isEditableAndDeletable, loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
   const msgDate = dayjs(msg.timestamp);
-  return (
-    <div className="flex flex-col items-center">
-     <div className={`p-2 rounded max-w-xs break-words ${
-  msg.senderId === loggedInUserId ? "bg-teal-950 text-white self-end" : "bg-gray-300 text-black self-start"
-}`}>
-  <div>
-    {msg.isDeleted ? (
-      <span className="italic text-gray-400"><FontAwesomeIcon icon={faBan} /> Message has been deleted</span>
-    ) : (
-      msg.message
-    )}
-  </div>
-  <div className="text-xs text-gray-400 mt-1">
-    {msgDate.format("hh:mm A")}
-    {!msg.isDeleted && msg.senderId === loggedInUserId && isEditableAndDeletable && (
-      <>
-        <FontAwesomeIcon
-          icon={faTrashAlt}
-          className="cursor-pointer ms-1"
-          onClick={() => handleDeleteMessage(msg)}
-        />
-        {isEditableAndDeletable && msg.senderId === loggedInUserId && (
-          <FontAwesomeIcon 
-            icon={faEdit} 
-            className="cursor-pointer ms-1"
-            onClick={() => handleEditMsg(msg)}
-          />
-        )}
-      </>
-    )}
-    {msg?.updatedAt && !msg.isDeleted && " Edited"}
-  </div>
-</div>
+  const isOwnMessage = msg.senderId === loggedInUserId;
 
+  return (
+    <div
+      className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"}`} >
+      <div
+        className={`relative p-2 pr-6 rounded max-w-xs
+           break-words
+            ${isOwnMessage ? "bg-teal-950 text-white" :
+            "bg-gray-300 text-black"}`}>
+              {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
+                <div className="absolute bottom-1  right-1">
+                  <ChatActionDropdown>
+                    <button className="block w-full text-center p-2  text-black  hover:bg-gray-200 hover:cursor-pointer"
+                      onClick={() => handleDeleteMessage(msg)}
+                      title="Delete from all"
+                      >
+                      <FontAwesomeIcon icon={faTrashAlt} className="" /> 
+                    </button>
+                    <button className="block w-full text-center p-2  text-black  hover:bg-gray-200 hover:cursor-pointer"
+                      onClick={() => handleEditMsg(msg)} 
+                      title="Edit"
+                      >
+                      <FontAwesomeIcon icon={faEdit} className="" /> 
+                    </button>
+                  </ChatActionDropdown>
+                </div>
+              )}
+
+
+        <div>
+          {msg.isDeleted ? (
+            <span className="italic text-gray-400">
+              <FontAwesomeIcon icon={faBan} /> Message has been deleted
+            </span>
+          ) : (msg.message)
+          }
+        </div>
+
+        <div className="text-xs text-gray-400 mt-1">
+          {msgDate.format("hh:mm A")}
+          {msg?.updatedAt && !msg.isDeleted && " Edited"}
+        </div>
+      </div>
     </div>
   );
 };
