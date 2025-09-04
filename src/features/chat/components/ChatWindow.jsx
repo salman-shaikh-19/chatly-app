@@ -112,23 +112,26 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   }, []);
 
   //delete selected msgs
-   const handleSelectedDelete = () => {
-    MySwal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert messages!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete All!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(deleteSelectedMessages({ chatId,messageIds: selectedMsgs }));
-        setSelectedMsgs([]);//reset
-        toast.success(`Your selected messages deleted from your side`);
-      }
-    });
-  };
+ const handleSelectedDelete = () => {
+  if (selectedMsgs.length === 0) return; 
+
+  MySwal.fire({
+    title: 'Are you sure?',
+    text: `You are about to delete ${selectedMsgs.length} selected message${selectedMsgs.length > 1 ? 's' : ''}. This action cannot be undone!`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: `Yes, delete ${selectedMsgs.length > 1 ? 'them' : 'it'}!`
+  }).then((result) => {
+    if (result.isConfirmed) {
+      dispatch(deleteSelectedMessages({ chatId, messageIds: selectedMsgs }));
+      setSelectedMsgs([]); //reset 
+      toast.success(`${selectedMsgs.length} message${selectedMsgs.length > 1 ? 's' : ''} deleted successfully`);
+    }
+  });
+};
+
 
   //clear all msgs
   const handleDeleteAll = () => {
