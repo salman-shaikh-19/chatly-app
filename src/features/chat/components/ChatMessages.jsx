@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
@@ -9,7 +9,16 @@ import ChatMessage from "./ChatMessage";
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
 
-const ChatMessages = ({ messages, handleEditMsg, loggedInUserId, typing, messagesEndRef, handleDeleteMessage }) => {
+const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,selectedMsgs, typing, messagesEndRef, handleDeleteMessage }) => {
+
+    const toggleSelect = useCallback((id) => {
+          setSelectedMsgs((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+          );
+        },
+        [setSelectedMsgs]
+      );
+
   return (
     <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar" id="chatWindow">
       {messages.length > 0 ? (
@@ -29,13 +38,16 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId, typing, message
                 </div>
               )}
 
-              <ChatMessage
-                msg={msg}
-                isEditableAndDeletable={isMsgEditAndDeletable}
-                loggedInUserId={loggedInUserId}
-                handleEditMsg={handleEditMsg}
-                handleDeleteMessage={handleDeleteMessage}
-              />
+             <ChatMessage
+            msg={msg}
+            isEditableAndDeletable={isMsgEditAndDeletable}
+            loggedInUserId={loggedInUserId}
+            handleEditMsg={handleEditMsg}
+            handleDeleteMessage={handleDeleteMessage}
+            // selectedMsgs={selectedMsgs}
+           isSelected={selectedMsgs.includes(msg.messageId)}
+            toggleSelect={() => toggleSelect(msg.messageId)}
+          />
             </React.Fragment>
           );
         })
