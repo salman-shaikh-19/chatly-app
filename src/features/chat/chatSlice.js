@@ -47,6 +47,17 @@ export const chatSlice = createSlice({
         state.messages[chatId] = [];
       }
     },
+    deleteSelectedMessages(state, action) {
+      const { chatId, messageIds } = action.payload; 
+      // console.log(messageIds);
+      
+      if (state.messages[chatId]) {
+        state.messages[chatId] = state.messages[chatId].filter(
+          (msg) => !messageIds.includes(msg.messageId)
+        );
+      }
+    },
+
     updateMessage: (state, action) => {
       const { chatId, messageId, message, updatedAt, senderId, receiverId } = action.payload;
       if (!state.messages[chatId]) {
@@ -86,6 +97,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { addMessage, clearMessages, deleteMessage, deleteAllMessages, updateMessage,softDeleteFromAll } = chatSlice.actions;
+export const { addMessage, clearMessages,deleteSelectedMessages, deleteMessage, deleteAllMessages, updateMessage,softDeleteFromAll } = chatSlice.actions;
 export default chatSlice.reducer;
 // export { getChatId };
