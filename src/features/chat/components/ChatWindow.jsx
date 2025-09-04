@@ -27,10 +27,11 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const typing = useSelector(state => state.common.isTyping?.[selectedUserId] || false);
       const [selectedMsgs,setSelectedMsgs]=useState([]);
   useEffect(() => {
-    if (messages.length > 0) {
+    // if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, typing]);
+    // }
+  }, [messages, typing,selectedChatUser]);
+
 
   const handleSend = (messageText) => {
     if (!selectedUserId) return;
