@@ -11,7 +11,7 @@ import ProfileDropdown from "../../user/components/ProfileDropdown";
 
 const Sidebar = ({ users, userListLoading,logoutFunction,selectChat,onlineUsers,loggedInUserId,
   lastMessages, }) => {
-  const pageSize = 10;
+  const pageSize = 11;
   const isTyping = useSelector((state) => state.common.isTyping || {});
   const [searchText,setSearchText]=useState("");
   
