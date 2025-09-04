@@ -1,30 +1,39 @@
-import { faWarning } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 export default function NetworkStatus() {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
+    const showOffline = () => {
+      Swal.fire({
+        icon: "error",
+        title: "Offline",
+        text: "⚠️ You are offline. Check your connection.",
+        toast: true,
+        position: "bottom",
+        showConfirmButton: false,
+        timer: 3000
+      });
+    };
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
+    const showOnline = () => {
+      Swal.fire({
+        icon: "success",
+        title: "Back Online",
+        toast: true,
+        position: "bottom",
+        showConfirmButton: false,
+        timer: 2000
+      });
+    };
+
+    window.addEventListener("offline", showOffline);
+    window.addEventListener("online", showOnline);
 
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("offline", showOffline);
+      window.removeEventListener("online", showOnline);
     };
   }, []);
 
-  return (
-    <>
-      {!isOnline && (
-        <div className="fixed bottom-5 right-4 bg-red-600 text-white p-3 rounded-lg shadow-lg">
-        <FontAwesomeIcon icon={faWarning} fade /> You are offline. Check your connection.
-        </div>
-      )}
-    </>
-  );
+  return null; // no UI needed
 }
