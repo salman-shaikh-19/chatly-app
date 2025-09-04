@@ -18,13 +18,15 @@ export default function NetworkStatus() {
     };
   }, []);
 
+  if (isOnline) return null; // nothing when online ✅
+
   return (
-    <>
-      {!isOnline && (
-        <div className="fixed bottom-5 text-center  right-4 bg-red-600 text-white p-3 rounded-lg shadow-lg">
-        <span className="text-center"> <FontAwesomeIcon icon={faWarning} fade /> You are offline. Check your connection.</span>
-        </div>
-      )}
-    </>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+      <div className="bg-red-600 text-white px-6 py-4 rounded-lg shadow-lg text-center max-w-md">
+        <FontAwesomeIcon icon={faWarning} fade className="text-3xl mb-2" />
+        <h2 className="text-xl font-bold mb-2">You are offline</h2>
+        <p className="text-sm"><FontAwesomeIcon icon={faWarning} fade /> Check your internet connection to continue using the app.</p>
+      </div>
+    </div>
   );
 }
