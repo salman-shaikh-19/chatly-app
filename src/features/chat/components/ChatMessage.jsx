@@ -1,16 +1,31 @@
 import { faBan, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
-import React from "react";
+import React, { useState } from "react";
 import ChatActionDropdown from "./ChatActionDropdown";
+import { useLongPress } from "use-long-press";
 
-const ChatMessage = ({ msg, isEditableAndDeletable, loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
+const ChatMessage = ({ msg, isEditableAndDeletable,isSelected, toggleSelect,
+   loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
   const msgDate = dayjs(msg.timestamp);
   const isOwnMessage = msg.senderId === loggedInUserId;
 
+const longPressForSelect = useLongPress(toggleSelect, {
+    threshold: isSelected ? 0 : 500,
+    captureEvent: true,
+    cancelOnMovement: true,
+  });
+
+
+   console.log( "isSelected:", isSelected);
+  
   return (
     <div
-      className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"}`} >
+      className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"} p-1 rounded ${
+          isSelected ? "bg-teal-700" : ""
+        }`} 
+         {...longPressForSelect()}
+        >
       <div
         className={`relative p-2 pr-6 rounded max-w-xs
            break-words
@@ -36,7 +51,10 @@ const ChatMessage = ({ msg, isEditableAndDeletable, loggedInUserId, handleEditMs
               )}
 
 
-        <div className="text-left">
+        <div className={`text-left `}
+       
+      >
+
           {msg.isDeleted ? (
             <span className="italic text-gray-400">
               <FontAwesomeIcon icon={faBan} /> Message has been deleted
@@ -54,4 +72,14 @@ const ChatMessage = ({ msg, isEditableAndDeletable, loggedInUserId, handleEditMs
   );
 };
 
-export default React.memo(ChatMessage);
+// export default React.memo(ChatMessage);
+export default React.memo(ChatMessage, (prev, next) => {
+  return (
+    prev.msg == next.msg &&
+    prev.isEditableAndDeletable === next.isEditableAndDeletable &&
+    prev.loggedInUserId === next.loggedInUserId &&
+    prev.isSelected === next.isSelected
+    //  && // message changed only if id changes
+    // prev.lastMsgTime === next.lastMsgTime
+  );
+});
