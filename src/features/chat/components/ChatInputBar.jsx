@@ -16,10 +16,7 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
     }
   }, [editMsg]);
 
-  //focus input on chat open
-
-
-      inputRef.current?.focus();
+ 
  
 
   
