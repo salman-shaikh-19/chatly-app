@@ -30,7 +30,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     // if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // }
-  }, [messages, typing,selectedChatUser]);
+  }, [messages,selectedChatUser]);
 
 
   const handleSend = (messageText) => {
