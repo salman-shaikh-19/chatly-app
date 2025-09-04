@@ -88,7 +88,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
     }
     MySwal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert messages!",
+      text: "Deleting this message will remove it from both sides of the chat. This action cannot be undone!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
