@@ -1,7 +1,7 @@
 import { faArrowCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import userFallback from '../../../assets/images/fallback/userFallback.png'
+import CommonAvatar from "../../user/components/CommonAvatar";
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, messages, goBack, typing }) => {
     return (
         <div
@@ -10,14 +10,10 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, messages, 
 
         >
             <div className="relative w-12 h-12">
-                <img
-                    src={selectedChatUser.avatar ?? userFallback}
-                    className="object-cover w-12 h-12 rounded-full"
-                    onError={(e) => {
-                        e.currentTarget.onerror = null; // prevents infinite loop
-                        e.currentTarget.src = userFallback;
-                    }}
-                />
+               <CommonAvatar
+                    avatar={selectedChatUser.avatar}
+                    avatarClassName="h-12 w-12"
+                    />
                 <span
                     className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2
                  border-white ${onlineUsers.includes(selectedChatUser.id)
