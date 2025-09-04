@@ -31,11 +31,18 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,
           return (
             <React.Fragment key={msg.messageId}> {/* same like <></>*/ }
               {showDateBadge && (
-                <div className="text-xs text-gray-500 text-center my-2 bg-gray-200 px-3 py-1 rounded-full">
-                  {msgDate.isToday() ? "Today" :
-                   msgDate.isYesterday() ? "Yesterday" :
-                   msgDate.format("MMM D, YYYY")}
-                </div>
+              <div className="text-xs   flex items-center justify-center">
+              <span
+              className="text-gray-500  my-2 px-3 py-1 rounded-md  bg-white"
+              >
+                {msgDate.isToday()
+                  ? "Today"
+                  : msgDate.isYesterday()
+                  ? "Yesterday"
+                  : msgDate.format("MMM D, YYYY")}
+              </span>
+            </div>
+
               )}
 
              <ChatMessage
