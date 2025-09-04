@@ -185,7 +185,7 @@ const MainChat = () => {
           onlineUsers={onlineUsers}
         />
       </div>
-      <div className={`${isChatOpen ? "block lg:block md:block" : "hidden lg:block md:block"} flex-1 flex flex-col bg-gray-200 m-1`}
+  <div className={`${isChatOpen ? "block lg:block md:block" : "hidden lg:block md:block"} flex-1 flex flex-col bg-cover bg-center bg-no-repeat bg-gray-200 m-1`}
 
       style={{
       backgroundImage: `url(${chatBgImg})`,
