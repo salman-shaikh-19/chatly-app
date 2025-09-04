@@ -17,7 +17,7 @@ const longPressForSelect = useLongPress(toggleSelect, {
   });
 
 
-   console.log( "isSelected:", isSelected);
+   // console.log( "isSelected:", isSelected);
   
   return (
     <div
