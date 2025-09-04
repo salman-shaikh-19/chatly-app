@@ -11,10 +11,9 @@ import io from "socket.io-client";
 import { setSelectedChatUser, setTyping } from "../../../common/commonSlice";
 import { setOnlineUsers } from "../../user/userSlice";
 import { addMessage, clearMessages, softDeleteFromAll, updateMessage } from "../chatSlice";
-
 import _ from 'lodash';
 import ChatWindow from "./ChatWindow";
-import { getChatId } from "../../../common/utils/getChatId";
+import chatBgImg from '../../../assets/images/chat/chatBgImg.png';
 const MainChat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +37,7 @@ const MainChat = () => {
 
   // useEffect(() => {
   //   // Initialize socket connection
-  //   const newSocket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true });
+  //   const newSocket = io("http://localhost:5000", { autoConnect: true });
   //   setSocket(newSocket);
 
   //   return () => {
@@ -53,15 +52,7 @@ const MainChat = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
     }
-//     const socket = io("https://chatly-backend.onrender.com", {
-//   transports: ["websocket"],
-// });
-  const socket = io("https://chatly-backend-h9q3.onrender.com", {
-  transports: ["websocket"],
-  autoConnect: true
-});
-
-
+    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
     socketRef.current = socket;
 
     // connet socket manually
@@ -103,19 +94,18 @@ const MainChat = () => {
       // console.log("inside typing listern"+typing);
       dispatch(setTyping({ userId, typing }));
     });
-        socket.on("deleteMessage", (deletedMsg) => {
-        const { chatId, messageId, isDeleted, deletedAt } = deletedMsg;
-        dispatch(softDeleteFromAll({ chatId, messageId, isDeleted, deletedAt }));
-      });
-
+    socket.on("deleteMessage", (deletedMsg) => {
+  const { chatId, messageId, isDeleted, deletedAt } = deletedMsg;
+  dispatch(softDeleteFromAll({ chatId, messageId, isDeleted, deletedAt }));
+});
 
     // cleanup remove event listeners
     return () => {
       socket.off("onlineUsers");
       socket.off("privateMessage");
        socket.off("updateMessage");
-       socket.off("deleteMessage");
       socket.off("typing");
+      socket.off("deleteMessage");
       socket.disconnect();
       socketRef.current = null;
     };
@@ -159,10 +149,6 @@ const MainChat = () => {
   // }, [users, messages, loggedInUserId]);
 
 
-
-  //get last message for each chatId meand for each chat.
-
-
   //get last message for each chatId meand for each chat.
     const lastMessages = useMemo(() => {
       const result = {};
@@ -180,7 +166,6 @@ const MainChat = () => {
     }, [messages]);
 
 
-
   // console.log(lastMessages);
 
 
@@ -189,7 +174,7 @@ const MainChat = () => {
     <div className="h-screen flex">
       <div className={`${isChatOpen ? "hidden sm:flex" : "flex"
         } flex-col  bg-white border-r`}>
-          <Sidebar
+        <Sidebar
           users={users}
           userListLoading={userListLoading}
           loggedInUserId={loggedInUserId}
@@ -200,7 +185,14 @@ const MainChat = () => {
           onlineUsers={onlineUsers}
         />
       </div>
-      <div className={`${isChatOpen ? "block lg:block md:block" : "hidden lg:block md:block"} flex-1 flex flex-col bg-gray-200 m-1`}>
+      <div className={`${isChatOpen ? "block lg:block md:block" : "hidden lg:block md:block"} flex-1 flex flex-col bg-gray-200 m-1`}
+
+      style={{
+      backgroundImage: `url(${chatBgImg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center"
+    }}
+      >
         {selectedChatUser ? (
           <ChatWindow
             loggedInUserId={loggedInUserId}
