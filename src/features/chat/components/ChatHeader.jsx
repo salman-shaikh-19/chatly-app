@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsgs,handleSelectedDelete, messages, goBack, typing }) => {
+    const userId = selectedChatUser?.id;
     return (
         <div
 
@@ -16,7 +17,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsg
                     />
                 <span
                     className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2
-                 border-white ${onlineUsers.includes(selectedChatUser.id)
+                 border-white ${onlineUsers.includes(selectedChatUser?.id)
                             ? "bg-green-500" : "bg-gray-400"
                         }`}
                 ></span>
@@ -35,7 +36,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsg
                             <FontAwesomeIcon icon={faTrashAlt} />
                         </button>
                     )}
-
+                   
                     {
                         selectedMsgs.length >0 && (
                             <button
