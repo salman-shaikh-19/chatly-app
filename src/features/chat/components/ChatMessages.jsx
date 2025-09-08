@@ -63,7 +63,7 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,
       )}
 
       {typing && (
-        <div className="flex space-x-1 mt-auto mb-1 text-gray-500 italic text-sm">
+        <div className="flex space-x-1 mt-auto  text-gray-500 italic text-sm">
           {[0, 1, 2].map((i) => (
             <motion.span
               key={i}
