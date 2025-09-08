@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { deleteAllMessages, deleteMessage, deleteSelectedMessages } from "../chatSlice";
 import { toast } from "react-toastify";
@@ -19,18 +19,19 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const typingTimeoutRef = useRef(null);
 
   const [editMsg, setEditMsg] = useState(null);
-
   const { selectedChatUser } = useSelector(state => state.common);
   const { onlineUsers } = useSelector(state => state.user);
   const chatId = getChatId(loggedInUserId, selectedUserId);
   const messages = useSelector(state => state.chat.messages[chatId] || []);
   const typing = useSelector(state => state.common.isTyping?.[selectedUserId] || false);
-      const [selectedMsgs,setSelectedMsgs]=useState([]);
+  const [selectedMsgs,setSelectedMsgs]=useState([]);
   useEffect(() => {
     // if (messages.length > 0) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // }
   }, [messages,selectedChatUser]);
+
+
 
 
   const handleSend = (messageText) => {
@@ -96,6 +97,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
+        setEditMsg(null);
         socket.emit("deleteMessage", {
           chatId,
           messageId: msg.messageId,
@@ -156,6 +158,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
 
   return (
     <div className="flex flex-col h-full border rounded w-full">
+      
       <ChatHeader
         goBack={goBack}
         handleDeleteAll={handleDeleteAll}
