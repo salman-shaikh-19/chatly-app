@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { setSelectedChatUser, setTyping } from "../../../common/commonSlice";
 import { setOnlineUsers } from "../../user/userSlice";
-import { addMessage, clearMessages, softDeleteFromAll, updateMessage } from "../chatSlice";
+import { addGroup, addGroupMessage, addMessage, clearMessages, softDeleteFromAll, updateGroupMessage, updateMessage, softDeleteGroupMessage, deleteAllGroupMessages } from "../chatSlice";
 import _ from 'lodash';
 import ChatWindow from "./ChatWindow";
+import GroupChatWindow from "../group_chat/GroupChatWindow";
 import chatBgImg from '../../../assets/images/chat/chatBgImg.png';
 const MainChat = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const MainChat = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
     }
-    const socket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true });
+    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
     socketRef.current = socket;
 
     // connet socket manually
@@ -99,13 +100,49 @@ const MainChat = () => {
   dispatch(softDeleteFromAll({ chatId, messageId, isDeleted, deletedAt }));
 });
 
+//group methods of socket
+ socket.on("createGroup", (groupDetails) => {
+      const groupId = groupDetails.groupId;
+      dispatch(addGroup({ groupId, groupDetails }));
+    });
+
+    socket.on("groupMessage", ({ groupId, senderId, message, messageId, timestamp }) => {
+      const msgObj = { 
+        senderId, 
+        message, 
+        messageId, 
+        timestamp: timestamp || new Date().toISOString()
+      };
+      dispatch(addGroupMessage({ groupId, message: msgObj }));
+    });
+
+    socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
+      dispatch(updateGroupMessage({ groupId, messageId, message, updatedAt, senderId }));
+    });
+
+    // Group message deletion
+    socket.on("deleteGroupMessage", ({ groupId, messageId, isDeleted, deletedAt }) => {
+      dispatch(softDeleteGroupMessage({ groupId, messageId, isDeleted, deletedAt }));
+    });
+
+    // Delete all group messages
+    socket.on("deleteAllGroupMessages", ({ groupId }) => {
+      dispatch(deleteAllGroupMessages({ groupId }));
+    });
+
     // cleanup remove event listeners
     return () => {
       socket.off("onlineUsers");
       socket.off("privateMessage");
-       socket.off("updateMessage");
+      socket.off("updateMessage");
       socket.off("typing");
       socket.off("deleteMessage");
+      socket.off("createGroup");
+      socket.off("groupMessage");
+      socket.off("updateGroupMessage");
+      socket.off("deleteGroupMessage");
+      socket.off("deleteAllGroupMessages");
+      socket.off("groupTyping");
       socket.disconnect();
       socketRef.current = null;
     };
@@ -171,7 +208,7 @@ const MainChat = () => {
 
 
   return (
-     <div className="h-screen flex">
+    <div className="h-screen flex">
       <div className={`${isChatOpen ? "hidden sm:flex " : "flex"
         } flex flex-col  bg-white border-r w-full sm:w-72 lg:w-80`}>
         <Sidebar
@@ -183,10 +220,11 @@ const MainChat = () => {
           lastMessages={lastMessages}
           // messages={messages}
           onlineUsers={onlineUsers}
+          socketRef={socketRef}
         />
       </div>
       <div className={` flex-1 flex flex-col
-      ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1 `}
+      ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1  `}
 
       style={{
       backgroundImage: `url(${chatBgImg})`,
@@ -195,13 +233,22 @@ const MainChat = () => {
     }}
       >
         {selectedChatUser ? (
-          <ChatWindow
-            loggedInUserId={loggedInUserId}
-            selectedUserId={selectedUserId}
-            messages={messages}
-            socket={socketRef.current}
-            goBack={goBackToSidebar}
-          />
+          selectedChatUser.isGroup ? (
+            <GroupChatWindow
+              loggedInUserId={loggedInUserId}
+              selectedGroupId={selectedUserId}
+              socket={socketRef.current}
+              goBack={goBackToSidebar}
+            />
+          ) : (
+            <ChatWindow
+              loggedInUserId={loggedInUserId}
+              selectedUserId={selectedUserId}
+              messages={messages}
+              socket={socketRef.current}
+              goBack={goBackToSidebar}
+            />
+          )
         ) : (
           <div className="hidden md:flex lg:flex w-full h-screen justify-center items-center text-2xl font-bold space-x-2">
             <FontAwesomeIcon icon={faComment} />
