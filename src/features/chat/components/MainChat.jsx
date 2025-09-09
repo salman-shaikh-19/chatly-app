@@ -644,19 +644,19 @@ const MainChat = () => {
       Notification.requestPermission();
     }
   }, []);
-useEffect(() => {
-    // Request permission and test notification
-    if ("Notification" in window) {
-      Notification.requestPermission().then(permission => {
-        console.log("Notification permission:", permission);
+// useEffect(() => {
+//     // request permission and test notification - commented because no longer needed, just for testing purpose onjy
+//     if ("Notification" in window) {
+//       Notification.requestPermission().then(permission => {
+//         console.log("Notification permission:", permission);
 
-        // Only show test notification if granted
-        if (permission === "granted") {
-          new Notification("Test", { body: "Hello mobile!" });
-        }
-      });
-    }
-  }, []);
+//         // Only show test notification if granted
+//         if (permission === "granted") {
+//           new Notification("Test", { body: "Hello mobile!" });
+//         }
+//       });
+//     }
+//   }, []);
 
   useEffect(() => {
     if (!loggedInUserId) return;
