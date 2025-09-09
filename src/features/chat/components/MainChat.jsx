@@ -66,7 +66,10 @@ const MainChat = () => {
     if (!loggedInUserId) return;
     if (socketRef.current) socketRef.current.disconnect();
 
-    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
+      const socket = io("https://chatly-backend-h9q3.onrender.com", {
+      transports: ["websocket", "polling"], // try websocket first, then fallback
+      autoConnect: true,                    // connect immediately (default is true)
+    });
     socketRef.current = socket;
 
     socket.on("connect", () => {
