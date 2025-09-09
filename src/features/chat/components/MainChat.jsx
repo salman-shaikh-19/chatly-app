@@ -671,12 +671,14 @@ const MainChat = () => {
 
       dispatch(addMessage({ loggedInUserId, userId, message: msgObj }));
 
-      const isActiveChat = selectedChatUserRef.current?.id === senderId;
+        if (senderId !== loggedInUserId) {
+        const isActiveChat = selectedChatUserRef.current?.id === senderId;
 
-      if (!isTabVisible || !isActiveChat) {
-        const sender = users.find(u => u.id === senderId);
-        showBrowserNotification(sender?.name || "New Message", message);
-      }
+    if (!isTabVisible || !isActiveChat) {
+      const sender = users.find(u => u.id === senderId);
+      showBrowserNotification(sender?.name || "New Message", message);
+    }
+  }
     });
 
     socket.on("updateMessage", ({ chatId, messageId, message, updatedAt }) => {
@@ -706,12 +708,14 @@ const MainChat = () => {
       };
       dispatch(addGroupMessage({ groupId, message: msgObj }));
 
-      const isActiveChat = selectedChatUserRef.current?.id === groupId;
+     if (senderId !== loggedInUserId) {
+    const isActiveChat = selectedChatUserRef.current?.id === groupId;
 
-      if (!isTabVisible || !isActiveChat) {
-        const sender = users.find(u => u.id === senderId);
-        showBrowserNotification(sender?.name || "New Group Message", message);
-      }
+    if (!isTabVisible || !isActiveChat) {
+      const sender = users.find(u => u.id === senderId);
+      showBrowserNotification(sender?.name || "New Group Message", message);
+    }
+  }
     });
 
     socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
@@ -819,6 +823,5 @@ const MainChat = () => {
 };
 
 export default MainChat;
-
 
 
