@@ -83,7 +83,7 @@ const groupList = useMemo(() => {
     const aTime = aLastMsg ? new Date(aLastMsg.timestamp).getTime() : new Date(a.createdAt).getTime();
     const bTime = bLastMsg ? new Date(bLastMsg.timestamp).getTime() : new Date(b.createdAt).getTime();
 
-    return bTime - aTime; // sort descingd
+    return bTime - aTime; // sort desending
   });
 }, [groups, groupLastMessages]);
 
@@ -257,7 +257,7 @@ const groupList = useMemo(() => {
                         // console.log('group typing :',isGroupTyping);
                         const groupTyping = groupTypingUsers[groupId];
                         const isGroupTyping = groupTyping && Object.values(groupTyping).some(t => t);
-
+                        
                         return (
                           <ChatCard
                             key={`group-${groupId}`}
