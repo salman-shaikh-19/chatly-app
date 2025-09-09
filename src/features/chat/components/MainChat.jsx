@@ -51,6 +51,7 @@ const MainChat = () => {
   }, [selectedChatUser]);
 
   const goBackToSidebar = () => {
+    dispatch(setSelectedChatUser(null));
     setIsChatOpen(false); // back to user list on mobile screen
   };
 
