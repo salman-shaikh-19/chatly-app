@@ -117,7 +117,9 @@ const MainChat = () => {
     socket.on("createGroup", (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
-toast.info(`🎉 You’ve been added to a new group: "${groupDetails.groupName}"! Welcome aboard and enjoy connecting with everyone!`);
+      if (Number(groupDetails?.createdBy) !== Number(loggedInUserId)) {
+        toast.info(`🎉 You’ve been added to a new group: "${groupDetails.groupName}"! Welcome aboard and enjoy connecting with everyone!`);
+      }
 
 
     });
