@@ -625,7 +625,7 @@ const MainChat = () => {
 
   const socketRef = useRef(null);
   const selectedChatUserRef = useRef(selectedChatUser);
-const lastNotifiedRef = useRef({}); // { [chatId]: lastMessageId }
+
   // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
 
@@ -700,31 +700,30 @@ const lastNotifiedRef = useRef({}); // { [chatId]: lastMessageId }
     });
 
 
-socket.on("groupMessage", ({ groupId, senderId, message, messageId, timestamp }) => {
-  const msgObj = {
-    senderId,
-    message,
-    messageId,
-    timestamp: timestamp || new Date().toISOString(),
-  };
-  dispatch(addGroupMessage({ groupId, message: msgObj }));
+    socket.on("groupMessage", ({ groupId, senderId, message, messageId, timestamp }) => {
+      const msgObj = {
+        senderId,
+        message,
+        messageId,
+        timestamp: timestamp || new Date().toISOString()
+      };
+      dispatch(addGroupMessage({ groupId, message: msgObj }));
 
-  if (senderId !== loggedInUserId) {
+     if (senderId !== loggedInUserId) {
     const isActiveChat = selectedChatUserRef.current?.id === groupId;
 
     if (!isTabVisible || !isActiveChat) {
-      // Check if we already notified this message
-      if (lastNotifiedRef.current[groupId] === messageId) return;
-      lastNotifiedRef.current[groupId] = messageId;
-
       const sender = users.find(u => u.id === senderId);
-      const group = Object.values(groups).find((g) => g.groupId === groupId);
+       const group = Object.values(groups).find(g => g.groupId === groupId);
+
+      // console.log(group);
+      
       const title = group ? `${group.groupName} - ${sender?.name}` : sender?.name || "New Group Message";
 
       showBrowserNotification(title, message);
     }
   }
-});
+    });
 
     socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
       dispatch(updateGroupMessage({ groupId, messageId, message, updatedAt, senderId }));
