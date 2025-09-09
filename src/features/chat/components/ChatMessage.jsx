@@ -4,17 +4,21 @@ import dayjs from "dayjs";
 import React, { useState } from "react";
 import ChatActionDropdown from "./ChatActionDropdown";
 import { useLongPress } from "use-long-press";
-
+// import { useSelector } from "react-redux";
+// import resolveName from '../../../common/utils/resolveName'
 const ChatMessage = ({ msg, isEditableAndDeletable,isSelected, toggleSelect,
    loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
   const msgDate = dayjs(msg.timestamp);
   const isOwnMessage = msg.senderId === loggedInUserId;
-
+// const {users}=useSelector(state=>state.user);
 const longPressForSelect = useLongPress(toggleSelect, {
     threshold: isSelected ? 0 : 500,
     captureEvent: true,
     cancelOnMovement: true,
   });
+  // console.log(msg);
+  
+//  const displayName = isOwnMessage ? "You" : msg.senderName || resolveName(msg.senderId,users);
 
 
   //  console.log( "isSelected:", isSelected);
@@ -34,36 +38,36 @@ const longPressForSelect = useLongPress(toggleSelect, {
               {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
                 <div className="absolute top-1  right-1">
                   <ChatActionDropdown>
-                    <button className="block w-full text-center p-2  text-black  hover:bg-gray-200 hover:cursor-pointer"
+                    <button className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-gray-100"
                       onClick={() => handleDeleteMessage(msg)}
                       title="Delete from all"
                       >
-                      <FontAwesomeIcon icon={faTrashAlt} className="" /> 
+                      <FontAwesomeIcon icon={faTrashAlt} className="mr-2" /> 
                     </button>
-                    <button className="block w-full text-center p-2  text-black  hover:bg-gray-200 hover:cursor-pointer"
+                    <button className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-gray-100"
                       onClick={() => handleEditMsg(msg)} 
                       title="Edit"
                       >
-                      <FontAwesomeIcon icon={faEdit} className="" /> 
+                      <FontAwesomeIcon icon={faEdit} className="mr-2" /> 
                     </button>
                   </ChatActionDropdown>
                 </div>
               )}
 
 
+
         <div className={`text-left `}
-       
       >
 
           {msg.isDeleted ? (
-            <span className="italic text-gray-400">
-              <FontAwesomeIcon icon={faBan} /> Message has been deleted
-            </span>
+              <span className="italic text-gray-400">
+                     <FontAwesomeIcon icon={faBan} className="mr-1" /> Message has been deleted
+                   </span>
           ) : (msg.message)
           }
         </div>
 
-       <div className="text-xs text-right text-gray-400 mt-1">
+        <div className="text-xs text-right text-gray-400 mt-1">
           {msgDate.format("hh:mm A")}
           {msg?.updatedAt && !msg.isDeleted && " (Edited) "}
         </div>
