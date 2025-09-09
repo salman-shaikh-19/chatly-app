@@ -16,6 +16,8 @@ export const showBrowserNotification = (title, body) => {
     Notification.requestPermission().then(permission => {
       if (permission === "granted") {
         new Notification(title, { body, icon: iconUrl });
+      }else {
+        toast.info("You denied browser notifications.");
       }
     });
   }
