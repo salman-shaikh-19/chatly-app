@@ -6,6 +6,7 @@ import { useLongPress } from "use-long-press";
 import ChatActionDropdown from "../components/ChatActionDropdown";
 import resolveName from "../../../common/utils/resolveName";
 import { useSelector } from "react-redux";
+import getUserColor from "../../../common/utils/getUserColor";
 
 const GroupChatMessage = ({
   msg,
@@ -54,9 +55,13 @@ const GroupChatMessage = ({
         ? "bg-[#DCF8C6] text-black ml-auto" 
         : "bg-white text-black mr-auto"}`}
   >
-    {!isOwnMessage && (
-      <div className="text-xs font-semibold text-gray-600 mb-1">
+    {!isOwnMessage ? (
+    <div className={`text-xs font-semibold mb-1 ${getUserColor(msg.senderId)}`}>
         {resolveName(msg.senderId,users)}
+      </div>
+    ):(
+      <div className="text-xs font-semibold text-gray-700 mb-1">
+        You
       </div>
     )}
 
