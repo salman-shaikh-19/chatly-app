@@ -34,21 +34,20 @@ export const showBrowserNotification = async (title, body) => {
 
   try {
     if (Notification.permission === "granted") {
-      // Prefer Service Worker notifications (works on Android)
-      if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+      // Prefer Service Worker notifications (works better on Android)
+      if (navigator.serviceWorker?.controller) {
         navigator.serviceWorker.controller.postMessage({
           type: "SHOW_NOTIFICATION",
           title,
           body,
         });
       } else {
-        // Fallback: direct Notification (desktop works fine)
-        new Notification(title, { body, icon: iconUrl });
+        new Notification(title, { body, icon: iconUrl }); // Desktop fallback
       }
-    } else if (Notification.permission !== "denied") {
+    } else {
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+        if (navigator.serviceWorker?.controller) {
           navigator.serviceWorker.controller.postMessage({
             type: "SHOW_NOTIFICATION",
             title,
@@ -60,11 +59,9 @@ export const showBrowserNotification = async (title, body) => {
       } else {
         toast.info("You denied browser notifications.");
       }
-    } else {
-      toast.info("You have previously denied browser notifications.");
     }
   } catch (err) {
     console.error("Notification error:", err);
-    toast.error(`${title}: ${body}`); // fallback toast
+    toast.error("Unable to show notification.");
   }
 };
