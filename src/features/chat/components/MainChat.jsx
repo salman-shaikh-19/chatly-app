@@ -53,7 +53,7 @@ const MainChat = () => {
     if (socketRef.current) {
       socketRef.current.disconnect();
     }
-    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
+    const socket = io("http://192.168.1.101:5000, { autoConnect: true });
     socketRef.current = socket;
 
     // connet socket manually
