@@ -12,7 +12,7 @@ import ProfileDropdown from "../../user/components/ProfileDropdown";
 import CreateGroupModal from "../group_chat/CreateGroupModal";
 import { addGroup } from "../chatSlice";
 import { getChatId } from "../../../common/utils/getChatId";
-import groupDefaultAvatar from "../../../assets/images/chat/groupDefaultAvatar.png";
+import groupDefaultAvatar from '../../../assets/images/chat/groupDefaultAvatar.png';
 
 import ChatCard from "./ChatCard";
 import { toast } from "react-toastify";
@@ -75,25 +75,22 @@ const Sidebar = ({
     return result;
   }, [groupMessages]);
 
-  // Convert groups object to array and sort by last message
-  const groupList = useMemo(() => {
-    return Object.values(groups).sort((a, b) => {
-      const aLastMsg = groupLastMessages[a.groupId];
-      const bLastMsg = groupLastMessages[b.groupId];
+const groupList = useMemo(() => {
+  return Object.values(groups).sort((a, b) => {
+    const aLastMsg = groupLastMessages[a.groupId];
+    const bLastMsg = groupLastMessages[b.groupId];
 
-      if (aLastMsg && bLastMsg) {
-        return new Date(bLastMsg.timestamp) - new Date(aLastMsg.timestamp);
-      }
-      if (aLastMsg) return 1;
-      if (bLastMsg) return -1;
+    const aTime = aLastMsg ? new Date(aLastMsg.timestamp).getTime() : new Date(a.createdAt).getTime();
+    const bTime = bLastMsg ? new Date(bLastMsg.timestamp).getTime() : new Date(b.createdAt).getTime();
 
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-  }, [groups, groupLastMessages]);
+    return bTime - aTime; // sort descingd
+  });
+}, [groups, groupLastMessages]);
+
 
   // Create new group
   const createNewGroup = ({ groupName, users }) => {
-      if(users.length===0)
+    if(users.length===0)
       {
         toast.error("At least select 1 user to create a group "); 
         return;
@@ -115,11 +112,11 @@ const Sidebar = ({
     // Dispatch safely
     dispatch(addGroup({ groupId, groupDetails }));
 
-    // Emit via socket if exists
+    // send( emit) via socket if exists
     if (socketRef.current) {
       socketRef.current.emit("createGroup", groupDetails);
     }
-
+      toast.success(`${groupDetails?.groupName} group created successfully`);
     return groupId;
   };
 
@@ -132,7 +129,7 @@ const Sidebar = ({
     const handleGroupCreated = (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
-      toast.success(`${groupDetails.groupName} group created successfully`);
+    
     };
 
     const handleGroupTyping = ({ groupId, senderId, typing }) => {
