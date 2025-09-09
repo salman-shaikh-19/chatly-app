@@ -616,7 +616,7 @@ const MainChat = () => {
   const navigate = useNavigate();
   const { users, userListLoading, onlineUsers } = useSelector((state) => state.user);
   const { loggedInUserData, selectedChatUser } = useSelector((state) => state.common);
-  const { messages } = useSelector((state) => state.chat);
+  const { messages,groups } = useSelector(state => state.chat);
 
   const loggedInUserId = loggedInUserData?.id;
   const selectedUserId = selectedChatUser?.id || null;
@@ -626,31 +626,31 @@ const MainChat = () => {
   const socketRef = useRef(null);
   const selectedChatUserRef = useRef(selectedChatUser);
 
-  // Hook for tab visibility
+  // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
 
-  // Keep ref updated for latest selected chat
+  // keep ref updated for latest selected chat
   useEffect(() => {
     selectedChatUserRef.current = selectedChatUser;
   }, [selectedChatUser]);
 
   const goBackToSidebar = () => {
-    setIsChatOpen(false); // back to user list
+    setIsChatOpen(false); // back to user list on mobile screen
   };
 
-  // Request browser notification permission once
+  // request browser notification permission once
   useEffect(() => {
     if ("Notification" in window && Notification.permission !== "granted") {
       Notification.requestPermission();
     }
   }, []);
 
-  // Socket connection
+
   useEffect(() => {
     if (!loggedInUserId) return;
     if (socketRef.current) socketRef.current.disconnect();
 
-    const socket = io("https://chatly-backend-h9q3.onrender.com", { autoConnect: true });
+    const socket = io(import.meta.env.VITE_BACKEND_URL, { autoConnect: true });
     socketRef.current = socket;
 
     socket.on("connect", () => {
@@ -659,12 +659,12 @@ const MainChat = () => {
 
     socket.emit("userOnline", loggedInUserId);
 
-    // Online users
+
     socket.on("onlineUsers", (list) => {
       dispatch(setOnlineUsers(list));
     });
 
-    // PRIVATE MESSAGES
+ 
     socket.on("privateMessage", ({ senderId, receiverId, message, messageId, timestamp }) => {
       const msgObj = { senderId, receiverId, message, messageId, timestamp };
       const userId = senderId === loggedInUserId ? receiverId : senderId;
@@ -693,7 +693,7 @@ const MainChat = () => {
       dispatch(softDeleteFromAll({ chatId, messageId, isDeleted, deletedAt }));
     });
 
-    // GROUP MESSAGES
+
     socket.on("createGroup", (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
@@ -713,7 +713,12 @@ const MainChat = () => {
 
     if (!isTabVisible || !isActiveChat) {
       const sender = users.find(u => u.id === senderId);
-      showBrowserNotification(sender?.name || "New Group Message", message);
+       const group = Object.values(groups).find(g => g.groupId === groupId);
+
+    
+      const title = group ? `${group.groupName} - ${sender?.name}` : sender?.name || "New Group Message";
+
+      showBrowserNotification(title, message);
     }
   }
     });
@@ -823,5 +828,6 @@ const MainChat = () => {
 };
 
 export default MainChat;
+
 
 
