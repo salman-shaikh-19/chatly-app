@@ -63,9 +63,9 @@ const longPressForSelect = useLongPress(toggleSelect, {
           }
         </div>
 
-        <div className="text-xs text-gray-400 mt-1">
+       <div className="text-xs text-right text-gray-400 mt-1">
           {msgDate.format("hh:mm A")}
-          {msg?.updatedAt && !msg.isDeleted && " Edited"}
+          {msg?.updatedAt && !msg.isDeleted && " (Edited) "}
         </div>
       </div>
     </div>
