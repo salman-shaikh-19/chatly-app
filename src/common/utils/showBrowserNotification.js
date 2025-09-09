@@ -1,5 +1,11 @@
+import { toast } from "react-toastify";
+
 export const showBrowserNotification = (title, body) => {
-  if (!("Notification" in window)) return;
+  if (!("Notification" in window)) 
+    {
+      toast.warning("Notification is not supported in your browser").
+      return;}
+
 
   const iconUrl = '/notifyIcon.png'; // relative to public
 
