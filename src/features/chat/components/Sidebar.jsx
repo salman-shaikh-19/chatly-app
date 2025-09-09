@@ -12,7 +12,7 @@ import ProfileDropdown from "../../user/components/ProfileDropdown";
 import CreateGroupModal from "../group_chat/CreateGroupModal";
 import { addGroup } from "../chatSlice";
 import { getChatId } from "../../../common/utils/getChatId";
-import groupDefaultAvatar from '../../../assets/images/chat/groupDefaultAvatar.png';
+import groupDefaultAvatar from "../../../assets/images/chat/groupDefaultAvatar.png";
 
 import ChatCard from "./ChatCard";
 
