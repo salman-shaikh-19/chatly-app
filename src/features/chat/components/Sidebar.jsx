@@ -15,6 +15,7 @@ import { getChatId } from "../../../common/utils/getChatId";
 import groupDefaultAvatar from "../../../assets/images/chat/groupDefaultAvatar.png";
 
 import ChatCard from "./ChatCard";
+import { toast } from "react-toastify";
 
 const Sidebar = ({
   users,
@@ -92,6 +93,11 @@ const Sidebar = ({
 
   // Create new group
   const createNewGroup = ({ groupName, users }) => {
+      if(users.length===0)
+      {
+        toast.error("At least select 1 user to create a group "); 
+        return;
+       } 
     const groupId = uuidv4();
     const groupDetails = {
       groupId,
@@ -126,6 +132,7 @@ const Sidebar = ({
     const handleGroupCreated = (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
+      toast.success(`${groupDetails.groupName} group created successfully`);
     };
 
     const handleGroupTyping = ({ groupId, senderId, typing }) => {
