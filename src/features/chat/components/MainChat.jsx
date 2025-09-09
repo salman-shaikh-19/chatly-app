@@ -625,7 +625,7 @@ const MainChat = () => {
 
   const socketRef = useRef(null);
   const selectedChatUserRef = useRef(selectedChatUser);
-
+const lastNotifiedRef = useRef({}); // { [chatId]: lastMessageId }
   // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
 
@@ -698,7 +698,7 @@ const MainChat = () => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
     });
-const lastNotifiedRef = useRef({}); // { [chatId]: lastMessageId }
+
 
 socket.on("groupMessage", ({ groupId, senderId, message, messageId, timestamp }) => {
   const msgObj = {
