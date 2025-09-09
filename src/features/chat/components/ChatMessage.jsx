@@ -32,7 +32,7 @@ const longPressForSelect = useLongPress(toggleSelect, {
             ${isOwnMessage ? "bg-[#DCF8C6] text-black p-2 rounded-lg max-w-xs break-words ml-auto" :
             "bg-white text-black p-2 rounded-lg max-w-xs break-words mr-auto"}`}>
               {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
-                <div className="absolute bottom-1  right-1">
+                <div className="absolute top-1  right-1">
                   <ChatActionDropdown>
                     <button className="block w-full text-center p-2  text-black  hover:bg-gray-200 hover:cursor-pointer"
                       onClick={() => handleDeleteMessage(msg)}
