@@ -21,10 +21,11 @@ body{
   display: none; /* chrome, saafri, edge */
 }
 
+
+
 textarea::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
 /* whatsapp like fonts globally applied */
 body {
   font-family: 
@@ -44,5 +45,4 @@ body {
   -webkit-font-smoothing: antialiased; 
   -moz-osx-font-smoothing: grayscale;
 }
-
 
