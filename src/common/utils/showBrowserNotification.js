@@ -3,7 +3,8 @@ import { toast } from "react-toastify";
 export const showBrowserNotification = (title, body) => {
   if (!("Notification" in window)) 
     {
-      toast.warning("Notification is not supported in your browser").
+      // toast.warning("Notification is not supported in your browser").
+      alert("Notification is not supported in your browser")
       return;}
 
 
