@@ -22,7 +22,6 @@
 //     });
 //   }
 // };
-
 import { toast } from "react-toastify";
 
 export const showBrowserNotification = (title, body) => {
@@ -41,10 +40,14 @@ export const showBrowserNotification = (title, body) => {
         if (permission === "granted") {
           new Notification(title, { body, icon: iconUrl });
         } else {
+          // console.log("in");
+          
           toast.info("You denied browser notifications.");
         }
       });
     } else {
+          // console.log("in 2");
+
       toast.info("You have previously denied browser notifications.");
     }
   } catch (err) {
@@ -52,4 +55,3 @@ export const showBrowserNotification = (title, body) => {
     toast.error("Unable to show notification.");
   }
 };
-
