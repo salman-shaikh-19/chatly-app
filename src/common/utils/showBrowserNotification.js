@@ -29,7 +29,7 @@ export const showBrowserNotification = async (title, body) => {
     toast.warning("Browser notifications are not supported on this device.");
     return;
   }
-
+console.log("title",title,"body:",body);
   const iconUrl = "/notifyIcon.png";
 
   try {
