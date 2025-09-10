@@ -17,7 +17,8 @@ const GroupChatMessage = ({
   handleEditMsg,
   loggedInUserId,
   isEditableAndDeletable,
-  selectionMode
+  selectionMode,
+  currentGroup
 }) => {
   const {  users } = useSelector(state => state.user);
 
@@ -28,12 +29,13 @@ const GroupChatMessage = ({
     cancelOnMovement: true,
   });
 
-  const handleMessageClick = (e) => {
-    if (selectionMode) {
-      e.stopPropagation();
-      toggleSelect();
-    }
-  };
+  // const handleMessageClick = (e) => {
+  //   if (selectionMode) {
+  //     e.stopPropagation();
+  //     toggleSelect();
+  //   }
+  // };
+// console.log(msg);
 
   const handleEdit = () => {
     handleEditMsg(msg);
@@ -55,15 +57,26 @@ const GroupChatMessage = ({
         ? "bg-[#DCF8C6] text-black ml-auto" 
         : "bg-white text-black mr-auto"}`}
   >
-    {!isOwnMessage ? (
-    <div className={`text-xs font-semibold mb-1 ${getUserColor(msg.senderId)}`}>
-        {resolveName(msg.senderId,users)}
-      </div>
-    ):(
-      <div className="text-xs font-semibold text-gray-700 mb-1">
-        You
-      </div>
+ {isOwnMessage ? (
+  <div className="text-xs font-semibold text-gray-700 mb-1">
+    You 
+    {currentGroup?.createdBy === loggedInUserId && (
+      <span className="text-xs text-white bg-teal-950 px-1 rounded ml-1">
+        Admin
+      </span>
     )}
+  </div>
+) : (
+  <div className={`text-xs font-semibold mb-1 ${getUserColor(msg.senderId)}`}>
+    {resolveName(msg.senderId, users)}
+    {currentGroup?.createdBy === msg.senderId && (
+      <span className="text-xs text-white bg-teal-950 px-1 rounded ml-1">
+        Admin
+      </span>
+    )}
+  </div>
+)}
+
 
     {isOwnMessage && !msg.isDeleted && isEditableAndDeletable && (
       <div className="absolute top-1 right-1">
