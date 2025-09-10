@@ -259,8 +259,9 @@ const groupList = useMemo(() => {
         </CustomInfiniteScroll>
       )}
        {groupList.length > 0 && (
-                    <div className="p-2 flex flex-col mt-4">
-                      <strong className="text-gray-700 mb-1 ">Groups</strong>
+                    // <div className="p-2 flex flex-col mt-4">
+                    <>
+                      <strong className="text-gray-700 mb-1 ml-1">Groups</strong>
                       {groupList.map(group => {
                         const groupId = group.groupId;
                         const groupName = group.groupName;
@@ -292,8 +293,11 @@ const groupList = useMemo(() => {
                           />
 
                         );
-                      })}
-                    </div>
+                      })
+                      
+                      }
+                      </>
+                    // </div>
                   )}
                    {createGroupModal && (
                     <CreateGroupModal
