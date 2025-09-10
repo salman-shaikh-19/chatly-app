@@ -18,7 +18,7 @@ const GroupChatMessages = ({
   typingUserNames,
   handleDeleteMessage,
   handleEditMsg,
-
+  currentGroup
 }) => {
   
   const toggleSelect = useCallback((id) => {
@@ -57,7 +57,7 @@ const GroupChatMessages = ({
                 handleEditMsg={handleEditMsg}
                 loggedInUserId={loggedInUserId}
                 selectionMode={selectedMsgs.length > 0}
-                
+                currentGroup={currentGroup}
               />
             </React.Fragment>
           );
