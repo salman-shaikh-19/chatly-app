@@ -6,7 +6,7 @@ const ChatCommonLabel = ({ children }) => {
   // console.log(id);
    
   return (
-    <span id={id} className="text-gray-500 my-2 px-3 py-1 rounded-md bg-white">
+    <span id={id} className="text-gray-500 select-none my-2 px-3 py-1 rounded-md bg-white">
       {children}
     </span>
   );
