@@ -198,7 +198,7 @@ const groupList = useMemo(() => {
             <div className="flex flex-col">
               <div className="flex">
                 <div className="relative m-2 w-full">
-                  <span className="absolute inset-y-0 left-2 flex items-center text-gray-500">
+                  <span className="absolute inset-y-0 cursor-text  left-2 flex items-center text-gray-500">
                     <FontAwesomeIcon icon={faSearch} />
                   </span>
                   <input
