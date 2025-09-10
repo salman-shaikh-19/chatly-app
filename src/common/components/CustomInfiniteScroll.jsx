@@ -61,7 +61,7 @@ const CustomInfiniteScroll=({ data, pageSize, children, scrollTargetId,endMsg=''
                 dataLength={dataToScroll.length}
                 next={loadMoreData}
                 hasMore={hasMore}
-                loader={<div className="d-flex justify-content-center align-item-center " style={{height:"100vh"}}><center><p><FontAwesomeIcon icon={faSpinner} spin size="2x" /></p></center></div>}
+                loader={<div className="d-flex justify-content-center align-item-center text-gray-600" style={{height:"100vh"}}><center><p><FontAwesomeIcon icon={faSpinner} spin size="2x" /></p></center></div>}
                 endMessage={<><div className="text-center text-gray-600"><span className=" fw-bold">{endMsg}</span></div></>}
                 scrollableTarget={scrollTargetId}
             >
