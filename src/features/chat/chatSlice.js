@@ -101,7 +101,6 @@
 // export default chatSlice.reducer;
 // // export { getChatId };
 
-
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { getChatId } from "../../common/utils/getChatId";
@@ -112,8 +111,9 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState: {
     messages: {}, // structure will be { userId: [{ senderId, message, timestamp }] }
-    groups:{},
-    groupMessages:{},
+    groups: {},
+    groupMessages: {},
+    unreadMessages: {}
   },
   reducers: {
     addMessage(state, action) {
@@ -153,9 +153,9 @@ export const chatSlice = createSlice({
       }
     },
     deleteSelectedMessages(state, action) {
-      const { chatId, messageIds } = action.payload; 
+      const { chatId, messageIds } = action.payload;
       // console.log(messageIds);
-      
+
       if (state.messages[chatId]) {
         state.messages[chatId] = state.messages[chatId].filter(
           (msg) => !messageIds.includes(msg.messageId)
@@ -183,7 +183,7 @@ export const chatSlice = createSlice({
         chat[index] = { ...chat[index], message, updatedAt };
       }
     },
-      softDeleteFromAll: (state, action) => {
+    softDeleteFromAll: (state, action) => {
       const { chatId, messageId, ...updates } = action.payload;
       if (!state.messages[chatId]) return;
 
@@ -199,7 +199,7 @@ export const chatSlice = createSlice({
     addGroup(state, action) {
       const { groupId, groupDetails } = action.payload;
 
-      if (!groupId || !groupDetails) return; 
+      if (!groupId || !groupDetails) return;
       if (!state.groups) state.groups = {};
       if (!state.groupMessages) state.groupMessages = {};
 
@@ -210,6 +210,7 @@ export const chatSlice = createSlice({
         groupAvatar: groupDetails.groupAvatar,
         createdBy: groupDetails.createdBy,
         createdAt: groupDetails.createdAt,
+        type:groupDetails.type,
         updatedAt: groupDetails.updatedAt,
         groupUsers: groupDetails.groupUsers
       };
@@ -289,6 +290,6 @@ export const chatSlice = createSlice({
 });
 
 
-export const { addMessage, clearMessages,deleteSelectedMessages, deleteMessage,addGroup,addGroupMessage,updateGroupMessage,softDeleteGroupMessage,deleteGroupMessage,deleteAllGroupMessages,deleteGroup, deleteAllMessages, updateMessage,softDeleteFromAll } = chatSlice.actions;
+export const { addMessage, clearMessages, deleteSelectedMessages, deleteMessage, addGroup, addGroupMessage, updateGroupMessage, softDeleteGroupMessage, deleteGroupMessage, deleteAllGroupMessages, deleteGroup, deleteAllMessages, updateMessage, softDeleteFromAll } = chatSlice.actions;
 export default chatSlice.reducer;
 // export { getChatId };
