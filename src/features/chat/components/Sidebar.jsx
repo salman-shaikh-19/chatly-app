@@ -227,6 +227,7 @@ const groupList = useMemo(() => {
                 <div className="text-center text-gray-500">No user found</div>
               ) : (
                 <>
+                <strong className="text-gray-700 mb-1 ml-1">Chats</strong>
                   {items.filter(u => u.id !== loggedInUserId).map(user => {
                     const chatId = getChatId(loggedInUserId, user.id);
                     return (
@@ -244,13 +245,22 @@ const groupList = useMemo(() => {
                         loggedInUserId={loggedInUserId}
                         selectChat={selectChat}
                       />
-
+                      
                     );
                   })}
 
-                  {groupList.length > 0 && (
+                 
+
+                 
+                </>
+              )}
+            </div>
+          )}
+        </CustomInfiniteScroll>
+      )}
+       {groupList.length > 0 && (
                     <div className="p-2 flex flex-col mt-4">
-                      <strong className="text-gray-800 mb-1">Groups</strong>
+                      <strong className="text-gray-700 mb-1 ">Groups</strong>
                       {groupList.map(group => {
                         const groupId = group.groupId;
                         const groupName = group.groupName;
@@ -285,8 +295,7 @@ const groupList = useMemo(() => {
                       })}
                     </div>
                   )}
-
-                  {createGroupModal && (
+                   {createGroupModal && (
                     <CreateGroupModal
                       users={users}
                       createGroupRef={createGroupRef}
@@ -295,12 +304,6 @@ const groupList = useMemo(() => {
                       handleCreateGroup={createNewGroup}
                     />
                   )}
-                </>
-              )}
-            </div>
-          )}
-        </CustomInfiniteScroll>
-      )}
     </div>
   );
 };
