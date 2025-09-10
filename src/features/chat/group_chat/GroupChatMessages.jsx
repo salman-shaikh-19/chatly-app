@@ -7,6 +7,7 @@ import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 import { useSelector } from "react-redux";
 import ChatCommonLabel from "../../../common/components/ChatCommonLabel";
 import ChatCommonDateLabel from "../../../common/components/ChatCommonDateLabel";
+import NoMsgYet from "../../../common/components/NoMsgYet";
 
 
 const GroupChatMessages = ({
@@ -107,7 +108,8 @@ const usersMap = useMemo(() => {
           );
         })
       ) : (
-        <div className="text-gray-400 text-center">No messages yet</div>
+          <NoMsgYet />
+
       )}
 
       {typing && typingUserNames?.length > 0 && (
