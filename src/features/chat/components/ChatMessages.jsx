@@ -5,6 +5,8 @@ import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 import isToday from "dayjs/plugin/isToday";
 import isYesterday from "dayjs/plugin/isYesterday";
 import ChatMessage from "./ChatMessage";
+import ChatCommonLabel from "../../../common/components/ChatCommonLabel";
+import ChatCommonDateLabel from "../../../common/components/ChatCommonDateLabel";
 
 dayjs.extend(isToday);
 dayjs.extend(isYesterday);
@@ -32,15 +34,11 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,
             <React.Fragment key={msg.messageId}> {/* same like <></>*/ }
               {showDateBadge && (
               <div className="text-xs   flex items-center justify-center">
-              <span
-              className="text-gray-500  my-2 px-3 py-1 rounded-md  bg-white"
-              >
-                {msgDate.isToday()
-                  ? "Today"
-                  : msgDate.isYesterday()
-                  ? "Yesterday"
-                  : msgDate.format("MMM D, YYYY")}
-              </span>
+                  <ChatCommonLabel>
+
+                    <ChatCommonDateLabel timestamp={msgDate} />
+
+                  </ChatCommonLabel>
             </div>
 
               )}
@@ -54,6 +52,7 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,
             // selectedMsgs={selectedMsgs}
            isSelected={selectedMsgs.includes(msg.messageId)}
             toggleSelect={() => toggleSelect(msg.messageId)}
+            
           />
             </React.Fragment>
           );
