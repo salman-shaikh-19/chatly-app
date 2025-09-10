@@ -46,7 +46,7 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   };
 
   return (
-    <div className="p-2 border-t border-teal-950 bg-white flex items-center gap-2">
+    <div className="p-2 border-t border-teal-950 bg-white/70 flex items-center gap-2">
       <div className="relative">
         <button
           type="button"
