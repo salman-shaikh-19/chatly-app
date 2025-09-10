@@ -36,7 +36,7 @@ const ChatActionDropdown = ({ children }) => {
         title="More actions"
         aria-haspopup="true"
         aria-expanded={openAction}
-        className="flex items-center justify-center p-1  focus:outline-none hover:cursor-pointer"
+        className="flex items-center select-none justify-center p-1  focus:outline-none hover:cursor-pointer"
       >
         <FontAwesomeIcon icon={faEllipsisV} className="text-gray-700  text-lg" />
       </button>
