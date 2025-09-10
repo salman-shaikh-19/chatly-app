@@ -2,14 +2,12 @@ import React, { useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import dayjs from "dayjs";
 import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
-import isToday from "dayjs/plugin/isToday";
-import isYesterday from "dayjs/plugin/isYesterday";
+
 import ChatMessage from "./ChatMessage";
 import ChatCommonLabel from "../../../common/components/ChatCommonLabel";
 import ChatCommonDateLabel from "../../../common/components/ChatCommonDateLabel";
 
-dayjs.extend(isToday);
-dayjs.extend(isYesterday);
+
 
 const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,selectedMsgs, typing, messagesEndRef, handleDeleteMessage }) => {
 
