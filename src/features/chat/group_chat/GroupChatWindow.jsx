@@ -277,7 +277,7 @@ const canChat = currentGroup?.type === "public" || (currentGroup?.type === "priv
         onClearEdit={() => setEditMsg(null)}
       />
     ):(
-     <div className="w-full flex justify-center my-4 ">
+     <div className="w-full flex justify-center my-2 ">
         <div className="mx-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-center text-sm shadow-sm border border-yellow-300 max-w-md">
           <FontAwesomeIcon icon={faWarning} /> Only admins can send messages in this group
         </div>
