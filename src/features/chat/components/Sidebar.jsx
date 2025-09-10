@@ -89,7 +89,7 @@ const groupList = useMemo(() => {
 
 
   // Create new group
-  const createNewGroup = ({ groupName, users }) => {
+  const createNewGroup = ({ groupName, users,type="public", }) => {
     if(users.length===0)
       {
         toast.error("At least select 1 user to create a group "); 
@@ -101,13 +101,20 @@ const groupList = useMemo(() => {
       groupName,
       groupAvatar: groupDefaultAvatar,
       createdBy: loggedInUserId,
+      type,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       groupUsers: [
         { userId: loggedInUserId, role: "admin", joinedAt: new Date().toISOString() },
-        ...users.map(id => ({ userId: id, role: "member", joinedAt: new Date().toISOString() })),
+        ...users.map((user) => ({
+        userId: user.id,
+        role: user.role || "member", 
+        joinedAt: new Date().toISOString(),
+      })), 
       ],
     };
+    // console.log(groupDetails);
+    
 
     // Dispatch safely
     dispatch(addGroup({ groupId, groupDetails }));
