@@ -21,7 +21,7 @@ import {
   deleteAllGroupMessages
 } from "../chatSlice";
 import _ from "lodash";
-import ChatWindow from "./ChatWindow";
+import ChatWindow from "../private_chat/ChatWindow"
 import GroupChatWindow from "../group_chat/GroupChatWindow";
 import chatBgImg from '../../../assets/images/chat/chatBgImg.png';
 import { showBrowserNotification } from '../../../common/utils/showBrowserNotification';
