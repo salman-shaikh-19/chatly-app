@@ -57,7 +57,7 @@ const GroupChatMessage = ({
         ? "bg-[#DCF8C6] text-black ml-auto" 
         : "bg-white text-black mr-auto"}`}
   >
- {isOwnMessage ? (
+{/*  {isOwnMessage ? (
   <div className="text-xs font-semibold text-gray-700 mb-1">
     You 
     {currentGroup?.createdBy === loggedInUserId && (
@@ -75,7 +75,34 @@ const GroupChatMessage = ({
       </span>
     )}
   </div>
+)} */}
+    {isOwnMessage ? (
+  <div className="text-xs font-semibold text-gray-700 mb-1">
+    You
+    {currentGroup?.createdBy === loggedInUserId && (
+      <span className="text-xs text-white bg-teal-950 px-1 rounded ml-1">
+        Admin
+      </span>
+    )}
+  </div>
+) : (
+  <div className={`text-xs font-semibold mb-1 ${getUserColor(msg.senderId)}`}>
+    {resolveName(msg.senderId, users)}
+    {(() => {
+      // find the sender in groupUsers
+      const sender = currentGroup?.groupUsers.find(u => u.userId === msg.senderId);
+      if (sender?.role === "admin" || currentGroup?.createdBy === msg.senderId) {
+        return (
+          <span className="text-xs text-white bg-teal-950 px-1 rounded ml-1">
+            Admin
+          </span>
+        );
+      }
+      return null;
+    })()}
+  </div>
 )}
+
 
 
     {isOwnMessage && !msg.isDeleted && isEditableAndDeletable && (
