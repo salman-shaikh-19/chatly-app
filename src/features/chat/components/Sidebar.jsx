@@ -16,6 +16,7 @@ import groupDefaultAvatar from '../../../assets/images/chat/groupDefaultAvatar.p
 
 import ChatCard from "./ChatCard";
 import { toast } from "react-toastify";
+import SidebarContentTitle from "../../../common/components/SidebarContentTitle";
 
 const Sidebar = ({
   users,
@@ -58,6 +59,7 @@ const Sidebar = ({
     );
   }, [users, loggedInUserId, Object.keys(lastMessages).length, searchText]);
 
+
   const loggedInUser = users.find(u => u.id === loggedInUserId);
 
   // Get last messages for groups
@@ -87,7 +89,11 @@ const groupList = useMemo(() => {
   });
 }, [groups, groupLastMessages]);
 
-
+  const filteredGroupList = useMemo(() => {
+  return groupList.filter(group =>
+    group.groupName.toLowerCase().includes(searchText.toLowerCase())
+  );
+}, [groupList, searchText]);
   // Create new group
   const createNewGroup = ({ groupName, users,type="public", }) => {
     if(users.length===0)
@@ -189,6 +195,28 @@ const groupList = useMemo(() => {
           logoutFunction={logoutFunction}
         />
       </div>
+            <div className="flex flex-col">
+              <div className="flex">
+                <div className="relative m-2 w-full">
+                  <span className="absolute inset-y-0 left-2 flex items-center text-gray-500">
+                    <FontAwesomeIcon icon={faSearch} />
+                  </span>
+                  <input
+                    type="search"
+                    placeholder="Search..."
+                    className="pl-8 pr-2 py-1 w-full text-gray-900 
+                    placeholder:text-gray-500 bg-gray-300 border 
+                    border-gray-300 outline-none transition duration-150 rounded-full"
+                    onChange={(e) => handleSearch(e.target.value)}
+                  />
+                </div>
+                <button
+                  className="bg-teal-950 mx-1 my-2 p-1 rounded-full ms-auto hover:cursor-pointer"
+                  onClick={() => setCreateGroupModal(true)}
+                >
+                  +Group
+                </button>
+              </div>
 
       {userListLoading ? (
         <div className="flex justify-center text-gray-600 items-center h-full">
@@ -201,33 +229,23 @@ const groupList = useMemo(() => {
           scrollTargetId="user-scroll"
           endMsg=""
         >
+     
           {(items) => (
-            <div className="flex flex-col">
-              <div className="flex">
-                <div className="relative m-2 w-full">
-                  <span className="absolute inset-y-0 left-2 flex items-center text-gray-500">
-                    <FontAwesomeIcon icon={faSearch} />
-                  </span>
-                  <input
-                    type="search"
-                    placeholder="Search..."
-                    className="pl-8 pr-2 py-1 w-full text-gray-900 placeholder:text-gray-500 bg-gray-300 border border-gray-300 outline-none transition duration-150 rounded-full"
-                    onChange={(e) => handleSearch(e.target.value)}
-                  />
-                </div>
-                <button
-                  className="bg-teal-950 mx-1 my-2 p-1 rounded-full ms-auto hover:cursor-pointer"
-                  onClick={() => setCreateGroupModal(true)}
-                >
-                  +Group
-                </button>
-              </div>
 
-              {items.length === 0 ? (
-                <div className="text-center text-gray-500">No user found</div>
+              items.length === 0 && filteredGroupList.length===0 ? (
+                <div className="text-center text-gray-500">No chats or groups found</div>
+                // <></>
               ) : (
                 <>
-                <strong className="text-gray-700 mb-1 ml-1">Chats</strong>
+              {/* {items.length > 0 && (
+                <strong className="text-gray-700 mb-1 ml-1">
+                  Chat{items.length > 1 ? "s" : ""}
+                </strong>
+              )} */}
+                <SidebarContentTitle contentTitle={"Chat"}
+           length={items.length}
+           />
+
                   {items.filter(u => u.id !== loggedInUserId).map(user => {
                     const chatId = getChatId(loggedInUserId, user.id);
                     return (
@@ -252,21 +270,27 @@ const groupList = useMemo(() => {
                  
 
                  
-                </>
-              )}
-            </div>
-          )}
-        </CustomInfiniteScroll>
-      )}
-       {groupList.length > 0 && (
-                    // <div className="p-2 flex flex-col mt-4">
-                    <>
-                      <strong className="text-gray-700 mb-1 ml-1">Groups</strong>
-                      {groupList.map(group => {
-                        const groupId = group.groupId;
-                        const groupName = group.groupName;
-                        const groupAvatar = group.groupAvatar;
-                        const lastMsg = groupLastMessages[groupId];
+                  </>
+                )
+              )
+            
+            }
+          
+              </CustomInfiniteScroll>
+            )}
+            {filteredGroupList.length > 0 && (
+              // <div className="p-2 flex flex-col mt-4">
+              <>
+     
+            {/* <strong className="text-gray-700 mb-1 ml-1 ">Groups</strong> */}
+           <SidebarContentTitle contentTitle={"Group"}
+           length={filteredGroupList.length}
+           />
+            {filteredGroupList.map(group => {
+              const groupId = group.groupId;
+              const groupName = group.groupName;
+              const groupAvatar = group.groupAvatar;
+              const lastMsg = groupLastMessages[groupId];
                         // const groupTyping = groupTypingUsers[groupId];
                         // console.log(groupTypingUsers);
 
@@ -290,24 +314,25 @@ const groupList = useMemo(() => {
                             lastMsgTime={lastMsg?.timestamp}
                             loggedInUserId={loggedInUserId}
                             selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
-                          />
-
-                        );
-                      })
-                      
+                            />
+                            
+                          );
+                        })
+                        
                       }
                       </>
-                    // </div>
-                  )}
+                      // </div>
+                    )}
                    {createGroupModal && (
-                    <CreateGroupModal
-                      users={users}
-                      createGroupRef={createGroupRef}
-                      loggedInUserId={loggedInUserId}
-                      onClose={() => setCreateGroupModal(false)}
+                     <CreateGroupModal
+                     users={users}
+                     createGroupRef={createGroupRef}
+                     loggedInUserId={loggedInUserId}
+                     onClose={() => setCreateGroupModal(false)}
                       handleCreateGroup={createNewGroup}
                     />
                   )}
+                     </div>
     </div>
   );
 };
