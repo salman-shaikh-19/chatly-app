@@ -47,9 +47,9 @@ function onNewMessage() {
 }
 useEffect(() => {
   if ('setAppBadge' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
-    console.log('Badging API supported and app installed');
+   alert('Badging API supported and app installed');
   } else {
-    console.log('Badging API NOT supported or app not installed');
+    alert('Badging API NOT supported or app not installed');
   }
 }, []);
 
