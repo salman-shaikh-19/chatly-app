@@ -34,42 +34,6 @@ const MainChat = () => {
   const { users, userListLoading, onlineUsers } = useSelector((state) => state.user);
   const { loggedInUserData, selectedChatUser, messageCounts } = useSelector((state) => state.common);
   const { messages, groups } = useSelector(state => state.chat);
-const [badgeCount, setBadgeCount] = useState(0);
-
-  useEffect(() => {
-  if ('setAppBadge' in navigator) {
-    if (badgeCount > 0) {
-      navigator.setAppBadge(badgeCount).catch(console.error);
-    } else {
-      navigator.clearAppBadge().catch(console.error);
-    }
-  }
-}, [badgeCount]);
-
-function onNewMessage() {
-  setBadgeCount(prev => prev + 1);
-}
-
-useEffect(() => {
-  if ('setAppBadge' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
-try {
-  navigator.setAppBadge(5);
-} catch (err) {
-  alert("setAppBadge error: " + err);
-}
-
-
-   alert('Badging API supported and app installed');
-  } else {
-    alert('Badging API NOT supported or app not installed');
-  }
-}, []);
-
-
-function clearBadge() {
-  setBadgeCount(0);
-}
-}
 
   const loggedInUserId = loggedInUserData?.id;
   const selectedUserId = selectedChatUser?.id || null;
@@ -164,8 +128,6 @@ function clearBadge() {
         if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId, count: 1 }));
-          
-       onNewMessage();
         }
         if (!isTabVisible || !isActiveChat) {
           // dispatch(setMessageCounts({chatId , count: 1 }));
@@ -216,7 +178,6 @@ function clearBadge() {
        if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId: groupId, count: 1 }));
-          onNewMessage();
         }
 
         if (!isTabVisible || !isActiveChat) {
@@ -277,7 +238,6 @@ function clearBadge() {
   const selectChatToOpen = (user) => {
     dispatch(setSelectedChatUser(user));
     setIsChatOpen(true);
-    clearBadge();
 
   };
 
