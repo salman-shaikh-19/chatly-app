@@ -59,7 +59,7 @@ const notificationSoundRef = useRef(null);
   if (notificationSoundRef.current) {
     notificationSoundRef.current.currentTime = 0;
     notificationSoundRef.current.play().catch(err => {
-      console.warn("Sound play blocked:", err);
+      console.warn("sound play blocked:", err);
     });
   }
 }
@@ -287,12 +287,13 @@ const notificationSoundRef = useRef(null);
         />
       </div>
       <div
-        className={`flex-1 flex flex-col ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1`}
+        className={`flex-1 flex flex-col ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1  object-contain`}
         style={{
           backgroundImage: `url(${chatBgImg})`,
-          backgroundSize: "cover",
+          // backgroundSize: "cover",
           backgroundPosition: "center"
         }}
+        
       >
         {selectedChatUser ? (
           selectedChatUser.isGroup ? (
@@ -314,7 +315,7 @@ const notificationSoundRef = useRef(null);
         ) : (
           <div className="hidden md:flex lg:flex w-full h-screen justify-center items-center text-2xl font-bold space-x-2">
             <FontAwesomeIcon icon={faComment} />
-            <span>No Chat Selected</span>
+            <span className="select-none">No Chat Selected</span>
           </div>
         )}
       </div>
