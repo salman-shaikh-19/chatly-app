@@ -45,6 +45,11 @@ function onNewMessage() {
     return newCount;
   });
 }
+if ('setAppBadge' in navigator) {
+ alert('Badging API supported');
+} else {
+ alert('Badging API NOT supported');
+}
 
 function clearBadge() {
   setBadgeCount(0);
