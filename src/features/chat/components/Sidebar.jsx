@@ -1,4 +1,4 @@
-import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -17,6 +17,7 @@ import groupDefaultAvatar from '../../../assets/images/chat/groupDefaultAvatar.p
 import ChatCard from "./ChatCard";
 import { toast } from "react-toastify";
 import SidebarContentTitle from "../../../common/components/SidebarContentTitle";
+import { faDropbox } from "@fortawesome/free-brands-svg-icons";
 
 const Sidebar = ({
   users,
@@ -32,6 +33,8 @@ const Sidebar = ({
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [createGroupModal, setCreateGroupModal] = useState(false);
+  const [expandChats, setExpandChats] = useState(true);
+  const [expandGroups, setExpandGroups] = useState(true);
   const createGroupRef = useRef();
 
   const isTyping = useSelector((state) => state.common.isTyping || {});
@@ -48,6 +51,7 @@ const Sidebar = ({
 
   // Sorted users by last message timestamp
   const sortedUsers = useMemo(() => {
+     !expandChats && setExpandChats(true);
     return _.orderBy(
       users.filter(u => u.name.toLowerCase().includes(searchText.toLowerCase())),
       (u) => {
@@ -77,30 +81,30 @@ const Sidebar = ({
     return result;
   }, [groupMessages]);
 
-const groupList = useMemo(() => {
-  return Object.values(groups).sort((a, b) => {
-    const aLastMsg = groupLastMessages[a.groupId];
-    const bLastMsg = groupLastMessages[b.groupId];
+  const groupList = useMemo(() => {
+    return Object.values(groups).sort((a, b) => {
+      const aLastMsg = groupLastMessages[a.groupId];
+      const bLastMsg = groupLastMessages[b.groupId];
 
-    const aTime = aLastMsg ? new Date(aLastMsg.timestamp).getTime() : new Date(a.createdAt).getTime();
-    const bTime = bLastMsg ? new Date(bLastMsg.timestamp).getTime() : new Date(b.createdAt).getTime();
+      const aTime = aLastMsg ? new Date(aLastMsg.timestamp).getTime() : new Date(a.createdAt).getTime();
+      const bTime = bLastMsg ? new Date(bLastMsg.timestamp).getTime() : new Date(b.createdAt).getTime();
 
-    return bTime - aTime; // sort desending
-  });
-}, [groups, groupLastMessages]);
+      return bTime - aTime; // sort desending
+    });
+  }, [groups, groupLastMessages]);
 
   const filteredGroupList = useMemo(() => {
-  return groupList.filter(group =>
-    group.groupName.toLowerCase().includes(searchText.toLowerCase())
-  );
-}, [groupList, searchText]);
+    !expandGroups && setExpandGroups(true);
+    return groupList.filter(group =>
+      group.groupName.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [groupList, searchText]);
   // Create new group
-  const createNewGroup = ({ groupName, users,type="public", }) => {
-    if(users.length===0)
-      {
-        toast.error("At least select 1 user to create a group "); 
-        return;
-       } 
+  const createNewGroup = ({ groupName, users, type = "public", }) => {
+    if (users.length === 0) {
+      toast.error("At least select 1 user to create a group ");
+      return;
+    }
     const groupId = uuidv4();
     const groupDetails = {
       groupId,
@@ -113,14 +117,14 @@ const groupList = useMemo(() => {
       groupUsers: [
         { userId: loggedInUserId, role: "admin", joinedAt: new Date().toISOString() },
         ...users.map((user) => ({
-        userId: user.id,
-        role: user.role || "member", 
-        joinedAt: new Date().toISOString(),
-      })), 
+          userId: user.id,
+          role: user.role || "member",
+          joinedAt: new Date().toISOString(),
+        })),
       ],
     };
     // console.log(groupDetails);
-    
+
 
     // Dispatch safely
     dispatch(addGroup({ groupId, groupDetails }));
@@ -129,7 +133,7 @@ const groupList = useMemo(() => {
     if (socketRef.current) {
       socketRef.current.emit("createGroup", groupDetails);
     }
-      toast.success(`${groupDetails?.groupName} group created successfully`);
+    toast.success(`${groupDetails?.groupName} group created successfully`);
     return groupId;
   };
 
@@ -142,7 +146,7 @@ const groupList = useMemo(() => {
     const handleGroupCreated = (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
-    
+
     };
 
     const handleGroupTyping = ({ groupId, senderId, typing }) => {
@@ -185,7 +189,7 @@ const groupList = useMemo(() => {
   return (
     <div className="w-full md:w-72 lg:w-80 h-screen hide-scrollbar bg-gray-100 text-white overflow-auto" id="user-scroll">
       <div className="bg-teal-950 p-5 text-sm md:text-base lg:text-lg flex justify-between">
-        <h2 className="text-white  cursor-default select-none">
+        <h2 className="text-white cursor-default select-none ">
           <FontAwesomeIcon icon={faComments} size="2x" /> Chatly
         </h2>
 
@@ -195,60 +199,67 @@ const groupList = useMemo(() => {
           logoutFunction={logoutFunction}
         />
       </div>
-            <div className="flex flex-col">
-              <div className="flex">
-                <div className="relative m-2 w-full">
-                  <span className="absolute inset-y-0 cursor-text  left-2 flex items-center text-gray-500">
-                    <FontAwesomeIcon icon={faSearch} />
-                  </span>
-                  <input
-                    type="search"
-                    placeholder="Search..."
-                    className="pl-8 pr-2 py-1 w-full text-gray-900 
+      <div className="flex flex-col">
+        <div className="flex">
+          <div className="relative m-2 w-full">
+            <span className="absolute inset-y-0 cursor-text left-2 flex items-center text-gray-500">
+              <FontAwesomeIcon icon={faSearch} />
+            </span>
+            <input
+              type="search"
+              placeholder="Search..."
+              className="pl-8 pr-2 py-1 w-full text-gray-900 
                     placeholder:text-gray-500 bg-gray-300 border 
                     border-gray-300 outline-none transition duration-150 rounded-full"
-                    onChange={(e) => handleSearch(e.target.value)}
-                  />
-                </div>
-                <button
-                  className="bg-teal-950 mx-1 my-2 p-1 rounded-full ms-auto hover:cursor-pointer"
-                  onClick={() => setCreateGroupModal(true)}
-                >
-                  +Group
-                </button>
-              </div>
-
-      {userListLoading ? (
-        <div className="flex justify-center text-gray-600 items-center h-full">
-          <FontAwesomeIcon icon={faSpinner} spin size="2x" />
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div>
+          <button
+            className="bg-teal-950 mx-1 my-2 p-1 rounded-full ms-auto hover:cursor-pointer"
+            onClick={() => setCreateGroupModal(true)}
+          >
+            +Group
+          </button>
         </div>
-      ) : (
-        <CustomInfiniteScroll
-          data={sortedUsers}
-          pageSize={pageSize}
-          scrollTargetId="user-scroll"
-          endMsg=""
-        >
-     
-          {(items) => (
 
-              items.length === 0 && filteredGroupList.length===0 ? (
+        <SidebarContentTitle
+        onclick={()=>setExpandChats(!expandChats)}
+        isExpand={expandChats}
+        contentTitle={"Chat"}
+        length={sortedUsers.length}
+        />
+        {userListLoading ? (
+          <div className="flex justify-center text-gray-600 items-center h-full">
+            <FontAwesomeIcon icon={faSpinner} spin size="2x" />
+          </div>
+        ) : (
+
+        expandChats &&  <CustomInfiniteScroll
+            data={sortedUsers}
+            pageSize={pageSize}
+            scrollTargetId="user-scroll"
+            endMsg=""
+          >
+
+            {(items) => (
+
+              items.length === 0 && filteredGroupList.length === 0 ? (
                 <div className="text-center text-gray-500">No chats or groups found</div>
                 // <></>
               ) : (
                 <>
-              {/* {items.length > 0 && (
+                  {/* {items.length > 0 && (
                 <strong className="text-gray-700 mb-1 ml-1">
                   Chat{items.length > 1 ? "s" : ""}
                 </strong>
               )} */}
-                <SidebarContentTitle contentTitle={"Chat"}
-           length={items.length}
-           />
-
+  
                   {items.filter(u => u.id !== loggedInUserId).map(user => {
+                      
                     const chatId = getChatId(loggedInUserId, user.id);
+
                     return (
+                     
                       <ChatCard
                         key={`user-${user.id}`}
                         id={user.id}
@@ -263,76 +274,80 @@ const groupList = useMemo(() => {
                         loggedInUserId={loggedInUserId}
                         selectChat={selectChat}
                       />
-                      
+
                     );
                   })}
 
-                 
 
-                 
-                  </>
-                )
+
+
+                </>
               )
-            
+            )
+
             }
-          
-              </CustomInfiniteScroll>
-            )}
-            {filteredGroupList.length > 0 && (
-              // <div className="p-2 flex flex-col mt-4">
-              <>
-     
+
+          </CustomInfiniteScroll>
+        )}
+        <SidebarContentTitle
+          onclick={() => setExpandGroups(!expandGroups)}
+          isExpand={expandGroups}
+
+          contentTitle={"Group"}
+          length={filteredGroupList.length}
+        />
+        {expandGroups && filteredGroupList.length > 0 && (
+          // <div className="p-2 flex flex-col mt-4">
+          <>
+
             {/* <strong className="text-gray-700 mb-1 ml-1 ">Groups</strong> */}
-           <SidebarContentTitle contentTitle={"Group"}
-           length={filteredGroupList.length}
-           />
             {filteredGroupList.map(group => {
               const groupId = group.groupId;
               const groupName = group.groupName;
               const groupAvatar = group.groupAvatar;
               const lastMsg = groupLastMessages[groupId];
-                        // const groupTyping = groupTypingUsers[groupId];
-                        // console.log(groupTypingUsers);
+              // const groupTyping = groupTypingUsers[groupId];
+              // console.log(groupTypingUsers);
 
-                        // const isGroupTyping = groupTyping && Object.values(groupTyping).some(typing => typing);
-                        // console.log('GroupCard render:', {  groupTyping, isGroupTyping });
-                        // console.log('group typing :',isGroupTyping);
-                        const groupTyping = groupTypingUsers[groupId];
-                        const isGroupTyping = groupTyping && Object.values(groupTyping).some(t => t);
-                        
-                        return (
-                          <ChatCard
-                            key={`group-${groupId}`}
-                            id={groupId}
-                            name={groupName}
-                            avatar={groupAvatar}
-                            isGroup={true}
-                            isTyping={isGroupTyping}
-                            lastMsgId={lastMsg?.messageId}
-                            lastMsgText={lastMsg?.message}
-                            lastMsgSender={lastMsg?.senderId}
-                            lastMsgTime={lastMsg?.timestamp}
-                            loggedInUserId={loggedInUserId}
-                            selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
-                            />
-                            
-                          );
-                        })
-                        
-                      }
-                      </>
-                      // </div>
-                    )}
-                   {createGroupModal && (
-                     <CreateGroupModal
-                     users={users}
-                     createGroupRef={createGroupRef}
-                     loggedInUserId={loggedInUserId}
-                     onClose={() => setCreateGroupModal(false)}
-                      handleCreateGroup={createNewGroup}
-                    />
-                  )}
-                     </div>
+              // const isGroupTyping = groupTyping && Object.values(groupTyping).some(typing => typing);
+              // console.log('GroupCard render:', {  groupTyping, isGroupTyping });
+              // console.log('group typing :',isGroupTyping);
+              const groupTyping = groupTypingUsers[groupId];
+              const isGroupTyping = groupTyping && Object.values(groupTyping).some(t => t);
+
+              return (
+                <ChatCard
+                  key={`group-${groupId}`}
+                  id={groupId}
+                  name={groupName}
+                  avatar={groupAvatar}
+                  isGroup={true}
+                  isTyping={isGroupTyping}
+                  lastMsgId={lastMsg?.messageId}
+                  lastMsgText={lastMsg?.message}
+                  lastMsgSender={lastMsg?.senderId}
+                  lastMsgTime={lastMsg?.timestamp}
+                  loggedInUserId={loggedInUserId}
+                  selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
+                />
+
+              );
+            })
+
+            }
+          </>
+          // </div>
+        )}
+        {createGroupModal && (
+          <CreateGroupModal
+            users={users}
+            createGroupRef={createGroupRef}
+            loggedInUserId={loggedInUserId}
+            onClose={() => setCreateGroupModal(false)}
+            handleCreateGroup={createNewGroup}
+          />
+        )}
+      </div>
     </div>
   );
 };
