@@ -34,6 +34,24 @@ const MainChat = () => {
   const { users, userListLoading, onlineUsers } = useSelector((state) => state.user);
   const { loggedInUserData, selectedChatUser, messageCounts } = useSelector((state) => state.common);
   const { messages, groups } = useSelector(state => state.chat);
+const [badgeCount, setBadgeCount] = useState(0);
+
+function onNewMessage() {
+  setBadgeCount(prev => {
+    const newCount = prev + 1;
+    if ('setAppBadge' in navigator) {
+      navigator.setAppBadge(newCount).catch(console.error);
+    }
+    return newCount;
+  });
+}
+
+function onChatOpen() {
+  setBadgeCount(0);
+  if ('clearAppBadge' in navigator) {
+    navigator.clearAppBadge().catch(console.error);
+  }
+}
 
   const loggedInUserId = loggedInUserData?.id;
   const selectedUserId = selectedChatUser?.id || null;
@@ -128,16 +146,8 @@ const MainChat = () => {
         if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId, count: 1 }));
-            const totalUnread = Object.values({ ...messageCounts, [chatId]: 1 }).reduce(
-              (sum, c) => sum + c,
-              0
-            );
-
-            // Update PWA badge with new total
-            if ('setAppBadge' in navigator) {
-              navigator.setAppBadge(totalUnread).catch(console.error);
-            }
-        
+          
+       onNewMessage();
         }
         if (!isTabVisible || !isActiveChat) {
           // dispatch(setMessageCounts({chatId , count: 1 }));
@@ -188,6 +198,7 @@ const MainChat = () => {
        if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId: groupId, count: 1 }));
+          onNewMessage();
         }
 
         if (!isTabVisible || !isActiveChat) {
@@ -248,6 +259,7 @@ const MainChat = () => {
   const selectChatToOpen = (user) => {
     dispatch(setSelectedChatUser(user));
     setIsChatOpen(true);
+    clearBadge();
 
   };
 
