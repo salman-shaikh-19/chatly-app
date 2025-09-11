@@ -185,6 +185,7 @@ const Sidebar = ({
     };
   }, [dispatch, loggedInUserId, socketRef.current]);
 
+// console.log(groupLastMessages);
 
   return (
     <div className="w-full md:w-72 lg:w-80 h-screen hide-scrollbar bg-gray-100 text-white overflow-auto" id="user-scroll">
@@ -328,7 +329,8 @@ const Sidebar = ({
                   lastMsgSender={lastMsg?.senderId}
                   lastMsgTime={lastMsg?.timestamp}
                   loggedInUserId={loggedInUserId}
-                  selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
+                  selectChat={selectChat}
+                  // selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
                 />
 
               );
