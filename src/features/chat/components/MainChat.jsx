@@ -36,15 +36,20 @@ const MainChat = () => {
   const { messages, groups } = useSelector(state => state.chat);
 const [badgeCount, setBadgeCount] = useState(0);
 
-function onNewMessage() {
-  setBadgeCount(prev => {
-    const newCount = prev + 1;
-    if ('setAppBadge' in navigator) {
-      navigator.setAppBadge(newCount).catch(console.error);
+  useEffect(() => {
+  if ('setAppBadge' in navigator) {
+    if (badgeCount > 0) {
+      navigator.setAppBadge(badgeCount).catch(console.error);
+    } else {
+      navigator.clearAppBadge().catch(console.error);
     }
-    return newCount;
-  });
+  }
+}, [badgeCount]);
+
+function onNewMessage() {
+  setBadgeCount(prev => prev + 1);
 }
+
 useEffect(() => {
   if ('setAppBadge' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
 try {
@@ -63,9 +68,7 @@ try {
 
 function clearBadge() {
   setBadgeCount(0);
-  if ('clearAppBadge' in navigator) {
-    navigator.clearAppBadge().catch(console.error);
-  }
+}
 }
 
   const loggedInUserId = loggedInUserData?.id;
