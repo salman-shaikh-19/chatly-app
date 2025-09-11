@@ -37,16 +37,17 @@ const ChatCard = ({
       className="flex items-center select-none px-3 py-2 border-b cursor-pointer hover:bg-gray-200"
       onClick={() => selectChat({ id, name, avatar, isGroup })}
     >
-      <div className="relative w-12 h-12">
-        <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
-        {!isGroup && (
-          <span
-            className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-              online ? "bg-green-500" : "bg-gray-400"
-            }`}
-          />
-        )}
-      </div>
+   <div className="relative w-16 h-12 flex items-center justify-center">
+  <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12 " />
+
+  {!isGroup && (
+    <span
+      className={`absolute bottom-1 right-0 w-3 h-3 rounded-full border-2 border-white shadow-sm
+        ${online ? "bg-green-500" : "bg-gray-400"}`}
+    />
+  )}
+</div>
+
 
       <div className="w-full ml-2">
         <div className="flex justify-between">
