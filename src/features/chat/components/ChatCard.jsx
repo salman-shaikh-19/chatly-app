@@ -71,16 +71,17 @@ const ChatCard = ({
             {lastMsgTime ? dayjs(lastMsgTime).format("hh:mm A") : ""}
           </span>
         </div>
-        <div className="flex ">
+        <div className="flex justify-between">
         <span className="block text-sm text-gray-600 truncate max-w-[220px]">
           {lastMessageText}
         </span>
 
         {messageCounts?.[chatKey] > 0 && (
-          <span className="ml-2 min-w-[20px] h-5 flex items-center justify-center text-xs font-medium text-white bg-teal-950 rounded-full px-2">
+         <span
+          className="ml-2 flex items-center justify-center text-xs font-medium text-white bg-teal-950 rounded-full h-5 w-5 min-w-[20px]">
           {messageCounts[chatKey]}
+        </span>
 
-          </span>
         )}
       </div>
 
