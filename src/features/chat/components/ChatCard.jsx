@@ -64,7 +64,7 @@ const ChatCard = ({
 </div>
 
 
-      <div className="w-full ml-2">
+      <div className="w-full ml-2 overflow-hidden">
         <div className="flex justify-between">
           <span className="font-semibold text-gray-600">{name}</span>
           <span className="text-sm text-gray-500">
@@ -72,7 +72,7 @@ const ChatCard = ({
           </span>
         </div>
         <div className="flex ">
-        <span className="block text-sm text-gray-600 truncate max-w-[200px]">
+        <span className="block text-sm text-gray-600 truncate max-w-[220px]">
           {lastMessageText}
         </span>
 
