@@ -58,6 +58,7 @@ export const commonSlice = createSlice({
     isTyping: {},
     loading: false,
     error: null,
+    messageCounts:{},
   },
   reducers: {
     setTheme(state, action) {
@@ -89,7 +90,21 @@ export const commonSlice = createSlice({
     },
     setLoggedInUserDataToNull(state){
         state.loggedInUserData=null
+    },
+    setMessageCounts(state, action) {
+      const { chatId, count } = action.payload;
+
+        if (!state.messageCounts) {
+          state.messageCounts = {}; // ensure it is always  object
+        }
+      if (count === 0) {
+          state.messageCounts[chatId] = 0;
+        } else {
+          
+          state.messageCounts[chatId] = (state.messageCounts[chatId] || 0) + count;
+        }
     }
+
   },
   extraReducers: (builder) => {
     builder
@@ -111,5 +126,5 @@ export const commonSlice = createSlice({
   },
 });
 
-export const { setTheme,  setIsUserLoggedIn,setSelectedChatUser,setTyping,setLoggedInUserDataToNull} = commonSlice.actions;
+export const { setTheme,  setIsUserLoggedIn,setSelectedChatUser,setTyping,setLoggedInUserDataToNull,setMessageCounts} = commonSlice.actions;
 export default commonSlice.reducer;
