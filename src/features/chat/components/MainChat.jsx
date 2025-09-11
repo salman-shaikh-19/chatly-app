@@ -128,7 +128,7 @@ const MainChat = () => {
         if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId, count: 1 }));
-            const totalUnread = Object.values({ ...messageCounts, [chatId]: newCount }).reduce(
+            const totalUnread = Object.values({ ...messageCounts, [chatId]: 1 }).reduce(
               (sum, c) => sum + c,
               0
             );
