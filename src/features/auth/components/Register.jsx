@@ -14,10 +14,10 @@ import { faUserEdit, faUserLock } from "@fortawesome/free-solid-svg-icons";
 const Regsiter = () => {
     const dispatch = useDispatch(); //use to dispatch action
     const { userLoading } = useSelector(state => state.auth);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            const userData = { email: values.userEmail, password: values.userPassword,name:values.userName,avatar:"https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D" };
+            const userData = { email: values.userEmail, password: values.userPassword, name: values.userName, avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D" };
             const result = await dispatch(registerUser(userData));
 
             if (registerUser.fulfilled.match(result)) {
@@ -26,13 +26,13 @@ const Regsiter = () => {
                 navigate("/login");
             } else if (registerUser.rejected.match(result)) {
                 console.log('something went wrong');
-                
+
                 toast.error(result.payload || 'Something went wrong');
             } else {
                 toast.warning(result.payload || 'Error');
 
             }
-            
+
 
         } catch (err) {
             // toast.error("Unexpected error occurred");
@@ -45,44 +45,47 @@ const Regsiter = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div class="flex items-center  justify-center  p-6 sm:p-8 rounded-2xl bg-white-500 border border-gray-300 shadow-lg">
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50">
+                <div className="flex w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
 
-                  
-                   
-                    <div className="mx-auto flex  items-center justify-center ">
-                   
+
+                    <div className="w-full lg:w-1/2 flex items-center justify-center p-10">
+
                         <Formik
-                            initialValues={{ userEmail: '', userPassword: '',userName:'' }}
+                            initialValues={{ userEmail: '', userPassword: '', userName: '' }}
                             validationSchema={Yup.object({
                                 userEmail: Yup.string().email('Email address is invalid').required('Email is required'),
-                                userName:Yup.string().required('Username is required'),
-                             userPassword: Yup.string()
-                                .required("Password is required")
-                                .min(6, "Password must be at least 6 characters")
-                                .matches(
-                                    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,}$/,
-                                    "Password must include uppercase, lowercase, and number"
-                                ),
-                            //    avatarURL: Yup.string()
-                            //                 .url("Must be a valid URL")
-                            //                 .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Invalid image format")
-                            //                 .optional(),
+                                userName: Yup.string().required('Username is required'),
+                                userPassword: Yup.string()
+                                    .required("Password is required")
+                                    .min(6, "Password must be at least 6 characters")
+                                    .matches(
+                                        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{6,}$/,
+                                        "Password must include uppercase, lowercase, and number"
+                                    ),
+                                //    avatarURL: Yup.string()
+                                //                 .url("Must be a valid URL")
+                                //                 .matches(/\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i, "Invalid image format")
+                                //                 .optional(),
                             })}
                             onSubmit={handleSubmit}
                         >
                             <Form>
-                               
-                                <h1 className="text-teal-800 text-center mb-10 text-lg">
+
+                                <h1 className="text-center text-3xl font-bold text-teal-800 mb-6 flex flex-col items-center gap-2">
                                     <FontAwesomeIcon
-                                        icon={faUserEdit}
-                                        className="text-4xl sm:text-5xl lg:text-7xl"
+                                        icon={faUserLock}
+                                        className="text-5xl text-teal-600 drop-shadow-sm"
                                     />
-                                    Login
+                                    <span>Create your account</span>
+                                    <p className="text-sm text-gray-500 font-normal">
+                                        Join us and get started
+                                    </p>
                                 </h1>
-                                  <CustomInputWithError
+
+                                <CustomInputWithError
                                     inputId="userName"
                                     inputName="userName"
                                     inputLabelText="Username"
@@ -100,7 +103,7 @@ const Regsiter = () => {
                                     isLabelEnabled={true}
                                     inputClassName="mb-3 "
                                 />
-                                    {/* <CustomInputWithError
+                                {/* <CustomInputWithError
                                      inputId="avatarURL"
                                      inputName="avatarURL"
                                      inputLabelText="Profile Pic"
@@ -114,24 +117,33 @@ const Regsiter = () => {
                                     inputName="userPassword"
                                     inputLabelText="Password"
                                     inputPlaceHolder="Enter password"
-                                    // inputClassName="mb-3"
+                                // inputClassName="mb-3"
                                 />
                                 <div className="mb-3">
                                     <CustomButtonAuth
                                         btnText="Register"
                                         isDisable={userLoading}
-                                        btnClassName="mt-4"
+                                        btnClassName="w-full py-3 rounded-xl shadow-md mt-4"
                                     />
                                 </div>
-                            <div className="text-center">
-                                <Link to="/login" className="text-teal-600 hover:text-teal-900">Already have an account?</Link>
-                            </div>
+                                <div className="text-center mt-4">
+                                    <p className="text-gray-600 text-sm">
+                                        Already have an account?{" "}
+                                        <Link
+                                            to="/login"
+                                            className="text-teal-600 font-semibold hover:underline"
+                                        >
+                                           Login
+                                        </Link>
+                                    </p>
+                                </div>
                             </Form>
                         </Formik>
-                     </div> 
+                    </div>
 
-                    <div className=" w-1/2 flex hidden lg:block  items-center justify-center bg-gray-100 ">
-                        <img src={registerUI} className="max-h-screen" />
+
+                    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-6">
+                        <img src={registerUI} alt="Login Illustration" className="rounded-xl" />
                     </div>
                 </div>
             </div>
