@@ -128,6 +128,16 @@ const MainChat = () => {
         if(!isActiveChat)
         {
           dispatch(setMessageCounts({ chatId, count: 1 }));
+            const totalUnread = Object.values({ ...state.chat.messageCounts, [chatId]: newCount }).reduce(
+              (sum, c) => sum + c,
+              0
+            );
+
+            // Update PWA badge with new total
+            if ('setAppBadge' in navigator) {
+              navigator.setAppBadge(totalUnread).catch(console.error);
+            }
+        
         }
         if (!isTabVisible || !isActiveChat) {
           // dispatch(setMessageCounts({chatId , count: 1 }));
