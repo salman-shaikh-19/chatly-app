@@ -45,11 +45,14 @@ function onNewMessage() {
     return newCount;
   });
 }
-if ('setAppBadge' in navigator) {
- alert('Badging API supported');
-} else {
- alert('Badging API NOT supported');
-}
+useEffect(() => {
+  if ('setAppBadge' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
+    console.log('Badging API supported and app installed');
+  } else {
+    console.log('Badging API NOT supported or app not installed');
+  }
+}, []);
+
 
 function clearBadge() {
   setBadgeCount(0);
