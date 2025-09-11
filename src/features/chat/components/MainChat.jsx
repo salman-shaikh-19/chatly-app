@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
-import { setSelectedChatUser, setTyping } from "../../../common/commonSlice";
+import { setMessageCounts, setSelectedChatUser, setTyping } from "../../../common/commonSlice";
 import { setOnlineUsers } from "../../user/userSlice";
 import {
   addGroup,
@@ -26,12 +26,13 @@ import GroupChatWindow from "../group_chat/GroupChatWindow";
 import chatBgImg from '../../../assets/images/chat/chatBgImg.png';
 import { showBrowserNotification } from '../../../common/utils/showBrowserNotification';
 import { useTabVisibility } from '../../../common/hooks/useTabVisibility';
+import { getChatId } from "../../../common/utils/getChatId";
 
 const MainChat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { users, userListLoading, onlineUsers } = useSelector((state) => state.user);
-  const { loggedInUserData, selectedChatUser } = useSelector((state) => state.common);
+  const { loggedInUserData, selectedChatUser, messageCounts } = useSelector((state) => state.common);
   const { messages, groups } = useSelector(state => state.chat);
 
   const loggedInUserId = loggedInUserData?.id;
@@ -44,6 +45,7 @@ const MainChat = () => {
 
   // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
+  // console.log("message counts",messageCounts);
 
   // keep ref updated for latest selected chat
   useEffect(() => {
@@ -66,8 +68,7 @@ const MainChat = () => {
   useEffect(() => {
     if (!loggedInUserId) return;
     if (socketRef.current) socketRef.current.disconnect();
-
-      const socket = io("https://chatly-backend-h9q3.onrender.com", {
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
       transports: ["websocket", "polling"], // try websocket first, then fallback
       autoConnect: true,                    // connect immediately (default is true)
     });
@@ -85,21 +86,57 @@ const MainChat = () => {
     });
 
 
+    // socket.on("privateMessage", ({ senderId, receiverId, message, messageId, timestamp }) => {
+    //   const msgObj = { senderId, receiverId, message, messageId, timestamp };
+    //   const userId = senderId === loggedInUserId ? receiverId : senderId;
+
+    //   dispatch(addMessage({ loggedInUserId, userId, message: msgObj }));
+    //   if (loggedInUserId !== receiverId) { console.log("i m not reciver by i m returning");
+    //     return;}else{
+
+    //     }
+    //       if (senderId !== loggedInUserId && receiverId === loggedInUserId) {
+    //     console.log("senderid",senderId);
+    //       console.log("reciver id:",receiverId);
+    //      console.log("logged in user",loggedInUserId);
+
+    //     const isActiveChat = selectedChatUserRef.current?.id === senderId;
+
+    //     if (!isTabVisible || !isActiveChat) {
+    //       const sender = users.find(u => u.id === senderId);
+    //       console.log("sender:",sender);
+
+    //       showBrowserNotification(sender?.name || "New Message", message);
+    //     }
+    //   }
+    // });
+    // Private messages
     socket.on("privateMessage", ({ senderId, receiverId, message, messageId, timestamp }) => {
       const msgObj = { senderId, receiverId, message, messageId, timestamp };
-      const userId = senderId === loggedInUserId ? receiverId : senderId;
+      const chatUserId = senderId === loggedInUserId ? receiverId : senderId;
 
-      dispatch(addMessage({ loggedInUserId, userId, message: msgObj }));
+      // Add message to state
+      dispatch(addMessage({ loggedInUserId, userId: chatUserId, message: msgObj }));
 
-      if (senderId !== loggedInUserId) {
+      // Show notification and msg count only for receiver
+      if (loggedInUserId === receiverId) {
+        // const chatId = [senderId, receiverId].sort().join("_");
+        const chatId = getChatId(senderId, receiverId);
+        const sender = users.find(u => u.id === senderId);
+        const senderName = sender?.name || "New Message";
         const isActiveChat = selectedChatUserRef.current?.id === senderId;
-
+        if(!isActiveChat)
+        {
+          dispatch(setMessageCounts({ chatId, count: 1 }));
+        }
         if (!isTabVisible || !isActiveChat) {
-          const sender = users.find(u => u.id === senderId);
-          showBrowserNotification(sender?.name || "New Message", message);
+          // dispatch(setMessageCounts({chatId , count: 1 }));
+          showBrowserNotification(senderName, message);
         }
       }
     });
+
+
 
     socket.on("updateMessage", ({ chatId, messageId, message, updatedAt }) => {
       dispatch(updateMessage({ chatId, messageId, message, updatedAt }));
@@ -117,7 +154,9 @@ const MainChat = () => {
     socket.on("createGroup", (groupDetails) => {
       const groupId = groupDetails.groupId;
       dispatch(addGroup({ groupId, groupDetails }));
+
       if (Number(groupDetails?.createdBy) !== Number(loggedInUserId)) {
+        // console.log("reciver: gheree",groupDetails);
         toast.info(`🎉 You’ve been added to a new group: "${groupDetails.groupName}"! Welcome aboard and enjoy connecting with everyone!`);
       }
 
@@ -133,12 +172,19 @@ const MainChat = () => {
       };
       dispatch(addGroupMessage({ groupId, message: msgObj }));
 
+      // console.log("group id",groupId);//here id got
       if (senderId !== loggedInUserId) {
-        const isActiveChat = selectedChatUserRef.current?.id === groupId;
+        const isActiveChat = selectedChatUserRef.current?.id == groupId;
+       if(!isActiveChat)
+        {
+          dispatch(setMessageCounts({ chatId: groupId, count: 1 }));
+        }
 
         if (!isTabVisible || !isActiveChat) {
-          const sender = users.find(u => u.id === senderId);
-          const group = Object.values(groups).find(g => g.groupId === groupId);
+          // console.log("group id in side",groupId);//here id got
+          //  const chatId=getChatId(senderId,receiverId);
+          const sender = users.find(u => u.id == senderId);
+          const group = Object.values(groups).find(g => g.groupId == groupId);
 
           // console.log(group);
 
@@ -146,6 +192,9 @@ const MainChat = () => {
 
           showBrowserNotification(title, message);
         }
+        // else{
+        //    dispatch(setMessageCounts({chatId: groupId , count: 0 }));
+        // }
       }
     });
 
@@ -189,7 +238,9 @@ const MainChat = () => {
   const selectChatToOpen = (user) => {
     dispatch(setSelectedChatUser(user));
     setIsChatOpen(true);
+
   };
+
 
   const lastMessages = useMemo(() => {
     const result = {};
@@ -202,6 +253,8 @@ const MainChat = () => {
     });
     return result;
   }, [messages]);
+
+  // console.log(selectChat);
 
   return (
     <div className="h-screen flex">
