@@ -6,7 +6,7 @@ const SidebarContentTitle = ({ contentTitle, length, onclick, isExpand }) => {
     return (
         <>
             {length > 0 && (
-                <strong onClick={onclick} className="text-gray-700 select-none mb-1 ml-1">
+                <strong onClick={onclick} title={isExpand ? `Collapse ${contentTitle}` : `Expand ${contentTitle}`} className="text-gray-700 select-none mb-1 ml-1">
 
                     <div className="flex items-center gap-1 cursor-pointer">
                         <FontAwesomeIcon
