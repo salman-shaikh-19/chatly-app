@@ -42,17 +42,15 @@ const Login = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="flex items-center  justify-center  p-6 sm:p-8 rounded-2xl bg-white-500 border border-gray-300 shadow-lg">
+            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50">
+      <div className="flex w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
+        
+        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-6">
+          <img src={loginUI} alt="Login Illustration" className="rounded-xl" />
+        </div>
 
 
-                    <div className=" w-1/2  flex hidden lg:block  items-center justify-center bg-gray-100 ">
-                        <img src={loginUI} className="max-h-screen" />
-                    </div>
-
-                  
-                   
-                    <div className="mx-auto flex  items-center justify-center ">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-10">
                    
                         <Formik
                             initialValues={{ userEmail: '', userPassword: '' }}
@@ -64,12 +62,15 @@ const Login = () => {
                         >
                             <Form>
                                
-                                <h1 className="text-teal-800 text-center mb-10 text-lg">
+                                <h1 className="text-center text-3xl font-bold text-teal-800 mb-6 flex flex-col items-center gap-2">
                                     <FontAwesomeIcon
                                         icon={faUserLock}
-                                        className="text-4xl sm:text-5xl lg:text-7xl"
+                                        className="text-5xl text-teal-600 drop-shadow-sm"
                                     />
-                                    Login
+                                    <span>Sign in to your account</span>
+                                    <p className="text-sm text-gray-500 font-normal">
+                                        Login to continue
+                                    </p>
                                 </h1>
                                 <CustomInputWithError
                                     inputId="userEmail"
@@ -91,13 +92,21 @@ const Login = () => {
                                     <CustomButtonAuth
                                         btnText="Login"
                                         isDisable={userLoading}
-                                        btnClassName="mt-6"
+                                        btnClassName="w-full py-3 rounded-xl shadow-md mt-4"
                                         isLogin={true}
                                     />
                                 </div>
-                            <div className="text-center">
-                                <Link to="/register" className="text-teal-600 hover:text-teal-900">Create new account</Link>
-                            </div>
+                           <div className="text-center mt-4">
+                                    <p className="text-gray-600 text-sm">
+                                        Don’t have an account?{" "}
+                                        <Link
+                                            to="/register"
+                                            className="text-teal-600 font-semibold hover:underline"
+                                        >
+                                            Create one
+                                        </Link>
+                                    </p>
+                                </div>
                             </Form>
                         </Formik>
                      </div> 
