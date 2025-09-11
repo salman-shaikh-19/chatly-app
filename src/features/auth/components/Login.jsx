@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserLock } from "@fortawesome/free-solid-svg-icons";
 const Login = () => {
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const dispatch = useDispatch(); //use to dispatch action
     const { userLoading } = useSelector(state => state.auth);
     const handleSubmit = async (values, { setSubmitting }) => {
@@ -42,16 +42,20 @@ const Login = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50">
-      <div className="flex w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
-        
-        <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-6">
-          <img src={loginUI} alt="Login Illustration" className="rounded-xl" />
-        </div>
+            <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
+                <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
+                rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-10">
-                   
+                    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-8">
+                        <img src={loginUI} alt="Login Illustration"
+
+                            className="rounded-xl" />
+                    </div>
+
+
+                    <div className="w-full lg:w-1/2 flex items-center justify-center p-10 ">
+
                         <Formik
                             initialValues={{ userEmail: '', userPassword: '' }}
                             validationSchema={Yup.object({
@@ -60,8 +64,8 @@ const Login = () => {
                             })}
                             onSubmit={handleSubmit}
                         >
-                            <Form>
-                               
+                            <Form className="space-y-5">
+
                                 <h1 className="text-center text-3xl font-bold text-teal-800 mb-6 flex flex-col items-center gap-2">
                                     <FontAwesomeIcon
                                         icon={faUserLock}
@@ -86,7 +90,7 @@ const Login = () => {
                                     inputName="userPassword"
                                     inputLabelText="Password"
                                     inputPlaceHolder="Enter your password"
-                                    // inputClassName="mb-3"
+                                // inputClassName="mb-3"
                                 />
                                 <div className="mb-3">
                                     <CustomButtonAuth
@@ -96,9 +100,9 @@ const Login = () => {
                                         isLogin={true}
                                     />
                                 </div>
-                           <div className="text-center mt-4">
+                                <div className="text-center mt-4">
                                     <p className="text-gray-600 text-sm">
-                                        Don’t have an account?{" "}
+                                        Don't have an account?{" "}
                                         <Link
                                             to="/register"
                                             className="text-teal-600 font-semibold hover:underline"
@@ -109,7 +113,7 @@ const Login = () => {
                                 </div>
                             </Form>
                         </Formik>
-                     </div> 
+                    </div>
                 </div>
             </div>
         </>
