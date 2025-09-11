@@ -45,9 +45,9 @@ const Regsiter = () => {
 
     return (
         <>
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-100 via-white to-teal-50">
-                <div className="flex w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
-
+            <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
+                <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
+                rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
 
@@ -133,7 +133,7 @@ const Regsiter = () => {
                                             to="/login"
                                             className="text-teal-600 font-semibold hover:underline"
                                         >
-                                           Login
+                                            Login
                                         </Link>
                                     </p>
                                 </div>
