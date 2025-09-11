@@ -46,7 +46,7 @@ function onNewMessage() {
   });
 }
 
-function onChatOpen() {
+function clearBadge() {
   setBadgeCount(0);
   if ('clearAppBadge' in navigator) {
     navigator.clearAppBadge().catch(console.error);
