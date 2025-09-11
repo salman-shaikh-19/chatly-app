@@ -42,6 +42,7 @@ const MainChat = () => {
 
   const socketRef = useRef(null);
   const selectedChatUserRef = useRef(selectedChatUser);
+const notificationSoundRef = useRef(null);
 
   // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
@@ -51,6 +52,20 @@ const MainChat = () => {
   useEffect(() => {
     selectedChatUserRef.current = selectedChatUser;
   }, [selectedChatUser]);
+
+
+  //play notification tone
+  function playNotificationSound() {
+  if (notificationSoundRef.current) {
+    notificationSoundRef.current.currentTime = 0;
+    notificationSoundRef.current.play().catch(err => {
+      console.warn("Sound play blocked:", err);
+    });
+  }
+}
+
+
+
 
   const goBackToSidebar = () => {
     dispatch(setSelectedChatUser(null));
@@ -131,6 +146,7 @@ const MainChat = () => {
         }
         if (!isTabVisible || !isActiveChat) {
           // dispatch(setMessageCounts({chatId , count: 1 }));
+          playNotificationSound();
           showBrowserNotification(senderName, message);
         }
       }
@@ -189,7 +205,7 @@ const MainChat = () => {
           // console.log(group);
 
           const title = group ? `${group.groupName} - ${sender?.name}` : sender?.name || "New Group Message";
-
+          playNotificationSound();
           showBrowserNotification(title, message);
         }
         // else{
@@ -302,6 +318,8 @@ const MainChat = () => {
           </div>
         )}
       </div>
+      <audio ref={notificationSoundRef} src="/sounds/notification.mp3" preload="auto" />
+
     </div>
   );
 };
