@@ -14,7 +14,9 @@ const SidebarContentTitle = ({ contentTitle, length, onclick, isExpand }) => {
                             className="text-gray-600"
                         />
                         <span> {contentTitle}
-                            {length > 1 ? "s" : ""}</span>
+                            {length > 1 ? "s" : ""}
+                             <span className="ml-1 text-xs text-gray-500">({length})</span>
+                            </span>
                     </div>
                 </strong>
             )
