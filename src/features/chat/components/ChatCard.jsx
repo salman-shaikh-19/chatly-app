@@ -52,12 +52,12 @@ const ChatCard = ({
     dispatch(setMessageCounts({ chatId: chatKey, count: 0 }));
   }}
     >
-   <div className="relative w-16 h-12 flex items-center justify-center">
+   <div className="relative flex-shrink-0 w-16 h-16 flex items-center justify-center">
   <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12 " />
 
   {!isGroup && (
     <span
-      className={`absolute bottom-0 right-0  w-3.5 h-3.5  rounded-full border-2 border-white shadow-sm
+      className={`absolute bottom-2 right-1  w-3.5 h-3.5  rounded-full border-2 border-white shadow-sm
         ${online ? "bg-green-500" : "bg-gray-400"}`}
     />
   )}
@@ -72,12 +72,12 @@ const ChatCard = ({
           </span>
         </div>
         <div className="flex ">
-        <span className="block text-sm text-gray-600 truncate max-w-[220px]">
+        <span className="block text-sm text-gray-600 truncate max-w-[200px]">
           {lastMessageText}
         </span>
 
         {messageCounts?.[chatKey] > 0 && (
-          <span className="ml-2 min-w-[20px] h-5 flex items-center justify-center text-xs font-medium text-white bg-teal-600 rounded-full px-2">
+          <span className="ml-2 min-w-[20px] h-5 flex items-center justify-center text-xs font-medium text-white bg-teal-950 rounded-full px-2">
           {messageCounts[chatKey]}
 
           </span>
