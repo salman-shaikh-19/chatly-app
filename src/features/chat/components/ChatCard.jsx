@@ -2,7 +2,9 @@ import React from "react";
 import dayjs from "dayjs";
 import CommonAvatar from "../../user/components/CommonAvatar";
 import resolveName from "../../../common/utils/resolveName";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getChatId } from "../../../common/utils/getChatId";
+import { setMessageCounts } from "../../../common/commonSlice";
 
 const ChatCard = ({
   id,
@@ -19,6 +21,14 @@ const ChatCard = ({
   selectChat,
 }) => {
   const { users } = useSelector((state) => state.user);
+  const { messageCounts } = useSelector((state) => state.common);
+  const dispatch=useDispatch();
+  // console.log(id);
+  const chatKey = isGroup 
+  ? id                   
+  : getChatId(loggedInUserId, id);  // 1 to 1 chats use combined key like 1_2, 23_40
+
+// console.log(" chatKey:", chatKey, "count:", messageCounts?.[chatKey]);
 
   // Determine display text for last message
   const lastMessageText = isTyping
@@ -35,7 +45,12 @@ const ChatCard = ({
   return (
     <div
       className={`flex items-center select-none px-3  py-3 border-b cursor-pointer hover:bg-gray-200`}
-      onClick={() => selectChat({ id, name, avatar, isGroup })}
+      // onClick={() => selectChat({ id, name, avatar, isGroup })}
+       onClick={() => {
+    selectChat({ id, name, avatar, isGroup });
+    
+    dispatch(setMessageCounts({ chatId: chatKey, count: 0 }));
+  }}
     >
    <div className="relative w-16 h-12 flex items-center justify-center">
   <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12 " />
@@ -56,9 +71,20 @@ const ChatCard = ({
             {lastMsgTime ? dayjs(lastMsgTime).format("hh:mm A") : ""}
           </span>
         </div>
-        <span className="block text-sm text-gray-600 truncate w-50">
+        <div className="flex ">
+        <span className="block text-sm text-gray-600 truncate max-w-[220px]">
           {lastMessageText}
         </span>
+
+        {messageCounts?.[chatKey] > 0 && (
+          <span className="ml-2 min-w-[20px] h-5 flex items-center justify-center text-xs font-medium text-white bg-teal-600 rounded-full px-2">
+          {messageCounts[chatKey]}
+
+          </span>
+        )}
+      </div>
+
+
       </div>
     </div>
   );
