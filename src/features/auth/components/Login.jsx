@@ -50,7 +50,7 @@ const Login = () => {
                     <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-8">
                         <img src={loginUI} alt="Login Illustration"
 
-                            className="rounded-xl" />
+                            className="rounded-xl select-none pointer-events-none" />
                     </div>
 
 
