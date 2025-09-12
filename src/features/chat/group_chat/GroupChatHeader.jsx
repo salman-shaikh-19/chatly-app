@@ -4,13 +4,14 @@ import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
 import resolveName from '../../../common/utils/resolveName'
 import ChatHeaderAction from "../components/ChatHeaderAction";
-const GroupChatHeader = ({ 
-  selectedChatUser, 
-  onlineUsers, 
-  handleDeleteAll, 
-  messages, 
-  goBack, 
-  typing, 
+import GroupDetailDropdown from "./GroupDetailDropdown";
+const GroupChatHeader = ({
+  selectedChatUser,
+  onlineUsers,
+  handleDeleteAll,
+  messages,
+  goBack,
+  typing,
   typingUserNames,
   selectedMsgs,
   handleSelectedDelete,
@@ -18,8 +19,10 @@ const GroupChatHeader = ({
   allUsers
 }) => {
   const name = selectedChatUser?.name || "Unknown Group";
-  const avatar = selectedChatUser?.avatar;
-  const commonActionStyle="text-white border p-1 rounded-sm hover:text-gray-500 cursor-pointer";
+  const avatar = selectedChatUser?.avatar;//means group porifle pic
+
+  // console.log(selectedChatUser);
+  
   // const resolveName = (userId) => {
   //   const user = allUsers?.find(u => u.id === userId);
   //   return user ? user.name : "Unknown";
@@ -27,7 +30,7 @@ const GroupChatHeader = ({
 
   return (
     <div className="flex items-center px-3 py-2 text-sm border-b border-gray-300 bg-teal-950">
-      {/* Avatar */}
+ 
       <div className="relative w-12 h-12 mr-3">
         <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
       </div>
@@ -39,13 +42,13 @@ const GroupChatHeader = ({
           <div className="flex flex-col overflow-hidden">
             <span className="font-semibold text-white truncate">{name}</span>
 
- 
+
             <span className="text-xs text-gray-300 truncate max-w-xs">
               {groupUsers.length > 0 && (
                 <>
                   {groupUsers
                     .map(gUser => {
-                      const userName = resolveName(gUser.userId,allUsers);
+                      const userName = resolveName(gUser.userId, allUsers);
                       const isOnline = onlineUsers.includes(gUser.userId);
                       return (
                         <span
@@ -55,7 +58,7 @@ const GroupChatHeader = ({
                         </span>
                       );
                     })
-                    .filter(Boolean).slice(0, 3) .reduce((prev, curr) => [prev, ", ", curr])}
+                    .filter(Boolean).slice(0, 3).reduce((prev, curr) => [prev, ", ", curr])}
                   {groupUsers.length > 3 && (
                     <span className="text-gray-400"> +{groupUsers.length - 3} more</span>
                   )}
@@ -66,29 +69,32 @@ const GroupChatHeader = ({
 
 
           <div className="flex items-center space-x-2">
-           
-            <ChatHeaderAction
-            icon={faUsers}
-            title="Group Members"
-            />
-            
+
+        <GroupDetailDropdown
+        allUsers={allUsers}
+        groupUsers={groupUsers}
+        onlineUsers={onlineUsers}
+        selectedChatUser={selectedChatUser}
+      
+        />
+
             {messages.length > 0 && selectedMsgs.length === 0 && (
 
-              <ChatHeaderAction 
-              onClick={handleDeleteAll}
-              icon={faTrashAlt}
-              title="Delete all messages"
+              <ChatHeaderAction
+                onClick={handleDeleteAll}
+                icon={faTrashAlt}
+                title="Delete all messages"
               />
             )}
             {selectedMsgs.length > 0 && (
-             
-               <ChatHeaderAction 
-              onClick={handleSelectedDelete}
-              icon={faTrashAlt}
-              title="Delete selected messages"
+
+              <ChatHeaderAction
+                onClick={handleSelectedDelete}
+                icon={faTrashAlt}
+                title="Delete selected messages"
               >
                 ({selectedMsgs.length})
-                </ChatHeaderAction>
+              </ChatHeaderAction>
             )}
             <ChatHeaderAction
               onClick={goBack}
@@ -96,18 +102,18 @@ const GroupChatHeader = ({
               icon={faArrowCircleLeft}
               title="Back to user list"
             />
-            
+
           </div>
         </div>
 
 
         <span className="text-gray-400 text-xs">
           {typing && typingUserNames?.length > 0 ? (
-            typingUserNames.length === 1 
+            typingUserNames.length === 1
               ? `${typingUserNames[0]} is typing...`
               : typingUserNames.length === 2
-              ? `${typingUserNames[0]} and ${typingUserNames[1]} are typing...`
-              : `${typingUserNames[0]} and ${typingUserNames.length - 1} others are typing...`
+                ? `${typingUserNames[0]} and ${typingUserNames[1]} are typing...`
+                : `${typingUserNames[0]} and ${typingUserNames.length - 1} others are typing...`
           ) : ""}
         </span>
       </div>
