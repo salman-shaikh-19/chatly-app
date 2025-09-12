@@ -1,8 +1,9 @@
-import { faArrowCircleLeft, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleLeft, faTrashAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
 import resolveName from '../../../common/utils/resolveName'
+import ChatHeaderAction from "../components/ChatHeaderAction";
 const GroupChatHeader = ({ 
   selectedChatUser, 
   onlineUsers, 
@@ -18,7 +19,7 @@ const GroupChatHeader = ({
 }) => {
   const name = selectedChatUser?.name || "Unknown Group";
   const avatar = selectedChatUser?.avatar;
-
+  const commonActionStyle="text-white border p-1 rounded-sm hover:text-gray-500 cursor-pointer";
   // const resolveName = (userId) => {
   //   const user = allUsers?.find(u => u.id === userId);
   //   return user ? user.name : "Unknown";
@@ -65,32 +66,37 @@ const GroupChatHeader = ({
 
 
           <div className="flex items-center space-x-2">
+           
+            <ChatHeaderAction
+            icon={faUsers}
+            title="Group Members"
+            />
+            
             {messages.length > 0 && selectedMsgs.length === 0 && (
-              <button
-                className="p-1 bg-teal-800 text-white rounded"
-                onClick={handleDeleteAll}
-                title="Delete all messages"
-              >
-                <FontAwesomeIcon icon={faTrashAlt} />
-              </button>
-            )}
 
+              <ChatHeaderAction 
+              onClick={handleDeleteAll}
+              icon={faTrashAlt}
+              title="Delete all messages"
+              />
+            )}
             {selectedMsgs.length > 0 && (
-              <button
-                className="p-1 bg-teal-800 text-white rounded"
-                onClick={handleSelectedDelete}
-                title="Delete selected messages"
+             
+               <ChatHeaderAction 
+              onClick={handleSelectedDelete}
+              icon={faTrashAlt}
+              title="Delete selected messages"
               >
-                <FontAwesomeIcon icon={faTrashAlt} /> ({selectedMsgs.length})
-              </button>
+                ({selectedMsgs.length})
+                </ChatHeaderAction>
             )}
-
-            <button
+            <ChatHeaderAction
               onClick={goBack}
-              className="bg-teal-800 text-white rounded lg:hidden md:hidden"
-            >
-              <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
-            </button>
+              className="lg:hidden md:hidden"
+              icon={faArrowCircleLeft}
+              title="Back to user list"
+            />
+            
           </div>
         </div>
 
@@ -110,3 +116,5 @@ const GroupChatHeader = ({
 };
 
 export default React.memo(GroupChatHeader);
+
+
