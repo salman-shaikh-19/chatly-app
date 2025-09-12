@@ -2,8 +2,10 @@ import { faArrowCircleLeft, faTrashAlt } from "@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
+import ChatHeaderAction from "../components/ChatHeaderAction";
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsgs,handleSelectedDelete, messages, goBack, typing }) => {
     const userId = selectedChatUser?.id;
+    const commonActionStyle="text-white border p-1 rounded-sm hover:text-gray-500";
     return (
         <div
 
@@ -28,34 +30,53 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll,selectedMsg
                         <b>{selectedChatUser.name}</b>
                     </span>
                     {messages.length > 0 && selectedMsgs.length===0 && (
-                        <button
-                            className="ms-auto p-1 block bg-teal-800 text-white rounded mx-1"
-                            onClick={handleDeleteAll}
-                            title="Delete all messsage"
-                        >
-                            <FontAwesomeIcon icon={faTrashAlt} />
-                        </button>
+                        <ChatHeaderAction
+                        icon={faTrashAlt}
+                        onClick={handleDeleteAll}
+                        title="Delete all messages"
+
+                        />
+                        // <button
+                        //     className="ms-auto p-1 block bg-teal-800 text-white rounded mx-1"
+                        //     onClick={handleDeleteAll}
+                        //     title="Delete all messsage"
+                        // >
+                        //     <FontAwesomeIcon icon={faTrashAlt} />
+                        // </button>
                     )}
                    
                     {
                         selectedMsgs.length >0 && (
-                            <button
-                            className=" p-1 block bg-teal-800 text-white rounded mx-1"
-                            onClick={handleSelectedDelete}
+                              <ChatHeaderAction
+                        icon={faTrashAlt}
+                         onClick={handleSelectedDelete}
                             title="Delete selected messages"
+
                         >
-                            <FontAwesomeIcon icon={faTrashAlt} /> ({selectedMsgs.length})
-                        </button>
+                           ({selectedMsgs.length}) 
+                        </ChatHeaderAction>
+                        //     <button
+                        //     className=" p-1 block bg-teal-800 text-white rounded mx-1"
+                        //     onClick={handleSelectedDelete}
+                        //     title="Delete selected messages"
+                        // >
+                        //     <FontAwesomeIcon icon={faTrashAlt} /> ({selectedMsgs.length})
+                        // </button>
                         ) 
                     }
 
-
-                    <button
+                    <ChatHeaderAction 
+                    className="ms-1 lg:hidden md:hidden"
+                    onClick={goBack}
+                    title="back to user list"
+                    icon={faArrowCircleLeft}
+                    />
+                    {/* <button
                         onClick={goBack}
                         className="    bg-teal-800 text-white rounded lg:hidden md:hidden"
                     >
                         <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
-                    </button>
+                    </button> */}
                 </div>
                 <span className="text-gray-400 mx-2 ">
                     {typing ? `${selectedChatUser.name} Typing.....` : onlineUsers.includes(selectedChatUser.id) ? 'Online' : 'Offline'}</span>
