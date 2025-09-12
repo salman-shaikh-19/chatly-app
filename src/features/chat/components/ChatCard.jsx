@@ -53,11 +53,11 @@ const ChatCard = ({
   }}
     >
    <div className="relative flex-shrink-0 w-16 h-16 flex items-center justify-center">
-  <CommonAvatar avatar={avatar} avatarClassName={`h-12 w-12  ${!isGroup && online ? ' p-0.5 bg-green-800' : 'p-0.5 bg-gray-400' }`} />
+  <CommonAvatar avatar={avatar} avatarClassName={`h-13 w-13  ${!isGroup && online ? ' p-0.5 bg-green-800' : 'p-0.5 bg-gray-400' }`} />
 
   {!isGroup && (
     <span
-      className={`absolute bottom-2 right-1.5  w-3.5 h-3.5  rounded-full border-2 border-white shadow-sm
+      className={`absolute bottom-1.5 right-1.5  w-3.5 h-3.5  rounded-full border-2 border-white shadow-sm
         ${online ? "bg-green-500" : "bg-gray-400"}`}
     />
   )}
