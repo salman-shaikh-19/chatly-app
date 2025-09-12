@@ -12,7 +12,9 @@ body{
   -ms-overflow-style: none; /* IE, edge */
   scrollbar-width: none; /* forefox */
 }
-
+.blurred {
+  filter: blur(20px);
+}
 .custom-emoji-picker * {
   color: #042f2e !important; /*teal colour for text*/
 }
