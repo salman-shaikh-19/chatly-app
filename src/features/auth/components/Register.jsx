@@ -143,7 +143,7 @@ const Regsiter = () => {
 
 
                     <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-6">
-                        <img src={registerUI} alt="Login Illustration" className="rounded-xl" />
+                        <img src={registerUI} alt="Login Illustration" className="rounded-xl select-none pointer-events-none" />
                     </div>
                 </div>
             </div>
