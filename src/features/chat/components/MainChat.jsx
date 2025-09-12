@@ -271,17 +271,7 @@ const notificationSoundRef = useRef(null);
   }, [messages]);
 
   // console.log(selectChat);
-useEffect(() => {
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      document.body.classList.add("blurred");
-    } else {
-      document.body.classList.remove("blurred");
-    }
-  };
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-}, []);
+
   return (
     <div className="h-screen flex">
       <div className={`${isChatOpen ? "hidden sm:flex" : "flex"} flex flex-col bg-white border-r w-full sm:w-72 lg:w-80`}>
