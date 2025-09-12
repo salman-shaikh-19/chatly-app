@@ -53,7 +53,7 @@ const ChatCard = ({
   }}
     >
    <div className="relative flex-shrink-0 w-16 h-16 flex items-center justify-center">
-  <CommonAvatar avatar={avatar} avatarClassName={`h-12 w-12 p-0.5 ${online ? 'bg-green-800' : 'bg-gray-400' }`} />
+  <CommonAvatar avatar={avatar} avatarClassName={`h-12 w-12  ${!isGroup && online ? ' p-0.5 bg-green-800' : 'p-0.5 bg-gray-400' }`} />
 
   {!isGroup && (
     <span
