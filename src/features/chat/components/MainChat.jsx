@@ -18,7 +18,9 @@ import {
   updateGroupMessage,
   updateMessage,
   softDeleteGroupMessage,
-  deleteAllGroupMessages
+  deleteAllGroupMessages,
+  leaveGroup,
+  removeUserFromGroup
 } from "../chatSlice";
 import _ from "lodash";
 import ChatWindow from "../private_chat/ChatWindow"
@@ -42,7 +44,7 @@ const MainChat = () => {
 
   const socketRef = useRef(null);
   const selectedChatUserRef = useRef(selectedChatUser);
-const notificationSoundRef = useRef(null);
+  const notificationSoundRef = useRef(null);
 
   // custom hook for tab visibility
   const isTabVisible = useTabVisibility();
@@ -56,13 +58,13 @@ const notificationSoundRef = useRef(null);
 
   //play notification tone
   function playNotificationSound() {
-  if (notificationSoundRef.current) {
-    notificationSoundRef.current.currentTime = 0;
-    notificationSoundRef.current.play().catch(err => {
-      console.warn("sound play blocked:", err);
-    });
+    if (notificationSoundRef.current) {
+      notificationSoundRef.current.currentTime = 0;
+      notificationSoundRef.current.play().catch(err => {
+        console.warn("sound play blocked:", err);
+      });
+    }
   }
-}
 
 
 
@@ -140,8 +142,7 @@ const notificationSoundRef = useRef(null);
         const sender = users.find(u => u.id === senderId);
         const senderName = sender?.name || "New Message";
         const isActiveChat = selectedChatUserRef.current?.id === senderId;
-        if(!isActiveChat)
-        {
+        if (!isActiveChat) {
           dispatch(setMessageCounts({ chatId, count: 1 }));
         }
         if (!isTabVisible || !isActiveChat) {
@@ -151,6 +152,15 @@ const notificationSoundRef = useRef(null);
         }
       }
     });
+
+
+
+
+
+
+
+
+
 
 
 
@@ -191,8 +201,7 @@ const notificationSoundRef = useRef(null);
       // console.log("group id",groupId);//here id got
       if (senderId !== loggedInUserId) {
         const isActiveChat = selectedChatUserRef.current?.id == groupId;
-       if(!isActiveChat)
-        {
+        if (!isActiveChat) {
           dispatch(setMessageCounts({ chatId: groupId, count: 1 }));
         }
 
@@ -217,6 +226,23 @@ const notificationSoundRef = useRef(null);
     socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
       dispatch(updateGroupMessage({ groupId, messageId, message, updatedAt, senderId }));
     });
+   socket.on("groupUpdate", ({ groupId, userId, isAdmin = false }) => {
+      const isCurrentUser = Number(userId) === Number(loggedInUserId);
+      
+      if (isCurrentUser) {
+        // Current user left or was removed
+        dispatch(leaveGroup({ groupId, userId, isAdmin }));
+        
+        // // If the current active chat is the group being left, clear the selected chat
+        // if (selectedChatUser?.id === groupId) {
+        //   dispatch(setSelectedChatUser(null));
+        // }
+      } else {
+        // Other group members
+        dispatch(removeUserFromGroup({ groupId, userId }));
+      }
+    });
+
 
     socket.on("deleteGroupMessage", ({ groupId, messageId, isDeleted, deletedAt }) => {
       dispatch(softDeleteGroupMessage({ groupId, messageId, isDeleted, deletedAt }));
@@ -271,6 +297,17 @@ const notificationSoundRef = useRef(null);
   }, [messages]);
 
   // console.log(selectChat);
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        document.body.classList.add("blurred");
+      } else {
+        document.body.classList.remove("blurred");
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
 
   return (
     <div className="h-screen flex">
@@ -293,7 +330,7 @@ const notificationSoundRef = useRef(null);
           // backgroundSize: "cover",
           backgroundPosition: "center"
         }}
-        
+
       >
         {selectedChatUser ? (
           selectedChatUser.isGroup ? (
