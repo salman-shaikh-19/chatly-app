@@ -13,6 +13,7 @@ import { leaveGroup, removeUserFromGroup } from "../chatSlice";
 const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUsers, socket }) => {
     const [openGroupDetail, setOpenGroupDetail] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [selectedNewUser, setSelectedNewUser] = useState(null);
     const groupDetailDropdownRef = useRef(null);
     const { loggedInUserData } = useSelector(state => state.common);
     const dispatch = useDispatch();
@@ -162,6 +163,49 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
         }
     }, [socket, selectedChatUser, loggedInUserData.id, loggedInGroupUser?.groupRole, isProcessing]);
 
+
+const handleAddGroupMember = useCallback(async () => {
+    if (!socket || !selectedChatUser?.id || !selectedNewUser || isProcessing) return;
+
+    try {
+        setIsProcessing(true);
+        const newUser = allUsers.find(u => u.id === selectedNewUser);
+        if (!newUser) {
+            toast.error('Selected user not found');
+            return;
+        }
+
+        // Check if user is already in the group
+        const userExists = groupUsers.some(u => u.userId === selectedNewUser);
+        if (userExists) {
+            toast.info(`${newUser.name} is already in this group`);
+            return;
+        }
+
+        // Emit event to add user to group
+        socket.emit("addGroupUser", {
+            groupId: selectedChatUser.id,
+            newUser: { 
+                userId: selectedNewUser, 
+                role: "member",
+                joinedAt: new Date().toISOString()
+            },
+            addedById: loggedInUserData.id,
+            groupName: selectedChatUser.name,
+            isAdmin: loggedInGroupUser?.groupRole === "admin"
+        });
+
+        // Show success message
+        toast.success(`${newUser.name} has been added to the group`);
+        setSelectedNewUser(null);
+    } catch (error) {
+        console.error('Error adding user to group:', error);
+        toast.error('Failed to add user to group');
+    } finally {
+        setIsProcessing(false);
+    }
+}, [socket, selectedChatUser, selectedNewUser, loggedInUserData.id, loggedInGroupUser?.groupRole, groupUsers, allUsers, isProcessing]);
+
     return (
         <div className="relative z-50">
             <ChatHeaderAction
@@ -180,7 +224,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
                         <div className="flex items-center bg-teal-950 text-white rounded p-2">
                             <CommonAvatar avatar={selectedChatUser?.avatar} avatarClassName="h-12 w-12 mx-2" />
                             <div className="flex flex-col p-1 mx-1">
-                                <span className="font-bold mb-1">{selectedChatUser?.name}</span>
+                                <span className="font-bold mb-1  break-all">{selectedChatUser?.name}</span>
                                 <span className="text-gray-400">{groupUsers.length} members</span>
                             </div>
                             <div className="ms-auto">
@@ -239,10 +283,14 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
 
                                         <span className="text-gray-800 select-none font-semibold mx-1">Add Memeber:</span>
                                         <div className="flex justify-between p-1 gap-2">
-                                            <select className="border border-gray-500 w-100 focus:border-gray-600 ring:border-gray-600 rounded-sm p-2">
-                                                <option>Select user to add</option>
+                                            <select
+                                                value={selectedNewUser || ""}
+                                                onChange={(e) => setSelectedNewUser(Number(e.target.value))}
+                                                className="border border-gray-500 w-100 focus:border-gray-600 ring:border-gray-600 rounded-sm p-2"
+                                            >
+                                                <option value="">Select user to add</option>
                                                 {allUsers
-                                                    .filter((user) => !groupUsers.some((gu) => gu.userId === user.id))
+                                                    .filter((user) => !groupUsers.some((gu) => Number(gu.userId) === Number(user.id)))
                                                     .map((user) => (
                                                         <option value={user.id} key={`select-user-${user.id}`}>
                                                             {user?.name || "Unknown"}
@@ -250,9 +298,14 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
                                                     ))}
                                             </select>
 
-                                            <span title="Add new member"
+                                            <span
+                                                title="Add new member"
+                                                onClick={handleAddGroupMember}
                                                 className="flex items-center p-1 border rounded select-none cursor-pointer text-blue-800 hover:bg-blue-950 hover:text-white"
-                                            >Add</span>
+                                            >
+                                                Add
+                                            </span>
+
                                         </div>
                                     </div>
                                 </>
