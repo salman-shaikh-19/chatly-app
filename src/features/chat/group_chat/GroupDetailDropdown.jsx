@@ -1,32 +1,30 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV, faUsers, faX, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
-import ChatHeaderAction from "../components/ChatHeaderAction";
-import CommonAvatar from "../../user/components/CommonAvatar";
-import { useSelector } from "react-redux";
-import dayjs from "dayjs";
-// import relativeTime from "dayjs/plugin/relativeTime";
-// dayjs.extend(relativeTime); 
-const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUsers }) => {
-    //group users, all users,selecte chat user,online users
-    // console.log(groupUsers);
 
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+import ChatHeaderAction from "../components/ChatHeaderAction";
+import { faUsers, faX, faXmarkCircle, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import CommonAvatar from "../../user/components/CommonAvatar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { leaveGroup, removeUserFromGroup } from "../chatSlice";
+
+const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUsers, socket, onGroupLeft }) => {
     const [openGroupDetail, setOpenGroupDetail] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const groupDetailDropdownRef = useRef(null);
     const { loggedInUserData } = useSelector(state => state.common);
-    // close dropdown when clicking outside or pressing esc key 
+    const dispatch = useDispatch();
+    // const navigate = useNavigate();
+
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (
-                groupDetailDropdownRef.current &&
-                !groupDetailDropdownRef.current.contains(e.target)
-            ) {
+            if (groupDetailDropdownRef.current && !groupDetailDropdownRef.current.contains(e.target)) {
                 setOpenGroupDetail(false);
             }
         };
-        const handleEsc = (e) => {
-            if (e.key === "Escape") setOpenGroupDetail(false);
-        };
+        const handleEsc = (e) => e.key === "Escape" && setOpenGroupDetail(false);
 
         document.addEventListener("mousedown", handleClickOutside);
         document.addEventListener("keydown", handleEsc);
@@ -38,145 +36,201 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
     }, []);
 
     const groupUserDetails = useMemo(() => {
-        return groupUsers.map((gu) => {
-            const user = allUsers.find((u) => u.id === gu.userId);
-            return user
-                ? { ...user, groupRole: gu.role, joinedAt: gu.joinedAt }
-                : null;
-        }).filter(Boolean); // remove nulls if any user not found
+        return groupUsers.map(gu => {
+            const user = allUsers.find(u => u.id === gu.userId);
+            const currentUser = groupUsers.find(u => u.userId === loggedInUserData.id);
+            const isAdmin = currentUser?.groupRole === 'admin';
+            return user ? { ...user, groupRole: gu.role, joinedAt: gu.joinedAt, isAdmin } : null;
+        }).filter(Boolean);
     }, [allUsers, groupUsers]);
 
-    // console.log(onlineUsers);
+    const loggedInGroupUser = groupUserDetails.find(gu => gu.id === loggedInUserData.id);
 
+    // Handle group update events from server
+    useEffect(() => {
+        if (!socket) return;
 
-    // console.log("groupUserDetails", groupUserDetails);
-    const loggedInGroupUser = groupUserDetails.find(
-        (gu) => gu.id === loggedInUserData.id
-    );
+        const handleGroupUpdate = (data) => {
+            const { action, userId, groupId, groupName, removedById } = data;
+            
+            if (action === 'left' || action === 'removed') {
+                // If current user was removed or left
+                if (userId === loggedInUserData.id) {
+                    dispatch(leaveGroup({ groupId }));
+                    onGroupLeft?.();
+                    setOpenGroupDetail(false);
+                    
+                    // Show success message
+                    const message = action === 'left' 
+                        ? `You have left "${groupName || 'the group'}"` 
+                        : `You have been removed from "${groupName || 'the group'}"`;
+                    toast[action === 'left' ? 'success' : 'info'](message);
+                } else {
+                    // Other user left or was removed
+                    dispatch(removeUserFromGroup({ groupId, userId }));
+                    
+                    // Show notification for group members
+                    const user = allUsers.find(u => u.id === userId);
+                    const remover = allUsers.find(u => u.id === removedById);
+                    
+                    if (user) {
+                        const message = action === 'left'
+                            ? `${user.name} has left "${groupName || 'the group'}"`
+                            : `${remover?.name || 'Someone'} removed ${user.name} from "${groupName || 'the group'}"`;
+                        toast.info(message);
+                    }
+                }
+            }
+        };
 
+        socket.on('groupUpdate', handleGroupUpdate);
 
+        return () => {
+            socket.off('groupUpdate', handleGroupUpdate);
+        };
+    }, [socket, dispatch, loggedInUserData.id, allUsers, onGroupLeft]);
+
+    // Remove user from group (admin action)
+    const handleRemoveUser = useCallback(async (user) => {
+        if (!socket || !selectedChatUser?.id || isProcessing) return;
+        
+        const result = await Swal.fire({
+            title: `Remove ${user.name}?`,
+            text: `Are you sure you want to remove ${user.name} from this group?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove user!',
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (result.isConfirmed) {
+            setIsProcessing(true);
+            try {
+                socket.emit('removeGroupUser', {
+                    groupId: selectedChatUser.id,
+                    userId: user.id,
+                    removedById: loggedInUserData.id,
+                    groupName: selectedChatUser.name,
+                    isAdmin: loggedInGroupUser?.groupRole === 'admin'
+                });
+            } catch (error) {
+                console.error('Error removing user:', error);
+                toast.error('Failed to remove user from group');
+            } finally {
+                setIsProcessing(false);
+            }
+        }
+    }, [socket, selectedChatUser, loggedInUserData.id, loggedInGroupUser?.groupRole, isProcessing]);
+
+    // Handle user leaving the group
+    const handleLeaveGroup = useCallback(async () => {
+        if (!socket || !selectedChatUser?.id || isProcessing) return;
+        
+        const result = await Swal.fire({
+            title: 'Leave Group?',
+            text: `Are you sure you want to leave ${selectedChatUser.name}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, leave group!',
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (result.isConfirmed) {
+            setIsProcessing(true);
+            try {
+                const isAdmin = loggedInGroupUser?.groupRole === 'admin';
+                
+                socket.emit('groupUpdate', {
+                    groupId: selectedChatUser.id,
+                    action: 'left',
+                    userId: loggedInUserData.id,
+                    removedById: loggedInUserData.id,
+                    groupName: selectedChatUser.name,
+                    isAdmin
+                });
+                
+                // The actual state update will happen in the groupUpdate handler
+            } catch (error) {
+                console.error('Error leaving group:', error);
+                toast.error('Failed to leave group');
+                setIsProcessing(false);
+            }
+        }
+    }, [socket, selectedChatUser, loggedInUserData.id, loggedInGroupUser?.groupRole, isProcessing]);
 
     return (
-        <div className="relative z-50" >
+        <div className="relative z-50">
             <ChatHeaderAction
-                onClick={() => setOpenGroupDetail((prev) => !prev)}
+                onClick={() => setOpenGroupDetail(prev => !prev)}
                 icon={faUsers}
                 aria-haspopup="true"
                 aria-expanded={openGroupDetail}
                 title="Group Members"
             />
-            {/* <button
-        onClick={() => setOpenGroupDetail((prev) => !prev)}
-        title="More actions"
-        aria-haspopup="true"
-        aria-expanded={openGroupDetail}
-        className="flex items-center select-none justify-center p-1  focus:outline-none hover:cursor-pointer"
-      >
-        <FontAwesomeIcon icon={faEllipsisV} className="text-gray-700  text-lg" />
-      </button> */}
 
             {openGroupDetail && (
-                <div
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                    <div ref={groupDetailDropdownRef} className="bg-white border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md">
 
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    {/* popup body  */}
-                    <div ref={groupDetailDropdownRef} className="bg-white border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md" >
-                        {/* popup header  */}
+                        {/* Header */}
                         <div className="flex items-center bg-teal-950 text-white rounded p-2">
-                            <div className="bg-teal-700/50 border rounded-full object-contain mx-2 select-none pointer-events-none">
-                                <CommonAvatar
-                                    avatar={selectedChatUser?.avatar}
-                                    avatarClassName="h-12 w-12  "
-                                />
+                            <CommonAvatar avatar={selectedChatUser?.avatar} avatarClassName="h-12 w-12 mx-2" />
+                            <div className="flex flex-col p-1 mx-1">
+                                <span className="font-bold mb-1">{selectedChatUser?.name}</span>
+                                <span className="text-gray-400">{groupUsers.length} members</span>
                             </div>
-                            <div className="flex flex-col  p-1 mx-1 ">
-                                <span className="font-bold mb-1 select-none">{selectedChatUser?.name}</span>
-                                <span className="text-gray-400 select-none">{groupUsers.length || 0} memebers</span>
-                            </div>
-                            <div className="ms-auto mt-auto">
-                                <button
-                                    onClick={() => setOpenGroupDetail(false)}
-                                    title="Close"
-                                    className="absolute top-2 right-2 p-2 text-white hover:text-gray-400 hover:cursor-pointer"
-                                >
+                            <div className="ms-auto">
+                                <button onClick={() => setOpenGroupDetail(false)} className="absolute top-2 right-2 text-white">
                                     <FontAwesomeIcon icon={faX} />
                                 </button>
                                 <span
-                                    title="Leave group"
-                                    className="p-1 border rounded select-none cursor-pointer hover:bg-teal-600/50 hover:text-white">Leave</span>
+                                    onClick={handleLeaveGroup}
+                                    className="p-1 border rounded cursor-pointer hover:bg-teal-600/50 hover:text-white"
+                                >Leave</span>
                             </div>
                         </div>
 
-                        {/* popup content body  */}
-                        {/* <div className="flex justify-between">
-                             <span className="text-gray-800 select-none">Created By:admin</span>
-                              <span className="text-gray-800 select-none">Created at:12 sep 2024</span>
-                           </div> */}
-                        {/* <hr className="border border-gray-300" /> */}
+                     
                         <div className="overflow-y-auto max-h-72 p-2 pt-0 space-y-1">
-
-                            {/* user card  */}
-                            {
-                                groupUserDetails.map((groupUser, index) =>
-                                {
-                                    const isGroupUserOnline=onlineUsers.includes(groupUser.id);
-                                  return  (
-                                    <>
-                                        <div key={`group-user-${index}`} className="flex border-b p-2 border-gray-300">
-                                            <div className="bg-white  rounded-full object-contain mx-2 select-none pointer-events-none">
-                                                <CommonAvatar
-                                                    avatar={groupUser?.avatar}
-                                                    avatarClassName={`h-14 w-14  p-0.5 ${isGroupUserOnline ? 'bg-green-800' : 'bg-red-700'}`}
-                                                />
-
-                                            </div>
-
-                                            <div className="flex flex-col  p-1 mx-1 ">
-                                                <span className="font-bold mb-1 select-none">{groupUser?.id == loggedInUserData.id ? "You" : groupUser?.name}</span>
-                                                <span className={`text-gray-400 select-none ${isGroupUserOnline ? 'text-green-800' : 'text-red-700'}`}>{isGroupUserOnline ? 'Online' : 'Offline'}</span>
-                                            </div>
-                                            <div className="ms-auto flex items-center">
-
-                                                <span
-                                                    className={`px-2 py-0.5 text-[10px] font-semibold rounded-sm select-none
-                                        ${groupUser.groupRole === "admin"
-                                                            ? "bg-teal-700 text-white"
-                                                            : "bg-blue-900 text-white"}`}
-                                                >
-                                                    {groupUser.groupRole === "admin" ? "Admin" : "Member"}
-                                                </span>
-
-
-
-                                                {
-                                                    loggedInGroupUser?.groupRole === "admin" &&
-                                                    groupUser.id !== loggedInUserData.id && (
-                                                        <span
-                                                            title={`Remove ${groupUser?.name}`}
-                                                            className="p-0.5 flex items-center ms-0.5 border text-red-800 rounded select-none cursor-pointer hover:text-red-400"
-                                                        >
-                                                            <FontAwesomeIcon icon={faXmarkCircle} />
-                                                        </span>
-                                                    )
-                                                }
-
-
-
-                                            </div>
-
+                            {groupUserDetails.map((groupUser, index) => {
+                                const isOnline = onlineUsers.includes(groupUser.id);
+                                return (
+                                    <div key={groupUser.id} className="flex border-b p-2 border-gray-300">
+                                        <CommonAvatar
+                                            avatar={groupUser.avatar}
+                                            avatarClassName={`h-14 w-14 p-0.5 ${isOnline ? 'bg-green-800' : 'bg-red-700'}`}
+                                        />
+                                        <div className="flex flex-col p-1 mx-1">
+                                            <span className="font-bold">{groupUser.id === loggedInUserData.id ? "You" : groupUser.name}</span>
+                                            <span className={`text-gray-400 ${isOnline ? 'text-green-800' : 'text-red-700'}`}>
+                                                {isOnline ? 'Online' : 'Offline'}
+                                            </span>
                                         </div>
+                                        <div className="ms-auto flex items-center">
+                                            <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-sm select-none
+                                                ${groupUser.groupRole === "admin" ? "bg-teal-700 text-white" : "bg-blue-900 text-white"}`}>
+                                                {groupUser.groupRole === "admin" ? "Admin" : "Member"}
+                                            </span>
 
-                                    </>
-
-
-                                )
-                                }
-                            )
-                            }
-
-
+                                            {loggedInGroupUser?.groupRole === "admin" && groupUser.id !== loggedInUserData.id && (
+                                                <span
+                                                    onClick={() => handleRemoveUser(groupUser)}
+                                                    className="p-0.5 flex items-center ms-0.5 border text-red-800 rounded cursor-pointer hover:text-red-400"
+                                                      title={`Remove ${groupUser.name}`}
+                                                >
+                                                    <FontAwesomeIcon icon={faXmarkCircle} />
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                        {
+                         {
                             loggedInGroupUser?.groupRole === "admin" && (
                                 <>
                                     <div className="bg-gray-200/50 border-t border-gray-400 ">
@@ -204,6 +258,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
                                 </>
                             )
                         }
+
                     </div>
                 </div>
             )}
