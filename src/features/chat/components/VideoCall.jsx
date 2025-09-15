@@ -5,51 +5,61 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
   const remoteVideoRef = useRef(null);
   const peerConnection = useRef(null);
   const [inCall, setInCall] = useState(false);
-  const iceQueue = useRef([]); // store ICE candidates if peer not ready
+  const pendingCandidates = useRef([]); // store ICE until remote description is set
 
   useEffect(() => {
     if (!socket) return;
 
-    // Handle Offer
+    // Handle offer
     socket.on("offer", async ({ from, sdp }) => {
       if (from !== selectedUserId) return;
+      await createPeerConnection();
       try {
-        await createPeerConnection();
         await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
         const answer = await peerConnection.current.createAnswer();
         await peerConnection.current.setLocalDescription(answer);
         socket.emit("answer", { to: from, sdp: answer });
+
+        // apply queued ICE
+        while (pendingCandidates.current.length) {
+          const c = pendingCandidates.current.shift();
+          await peerConnection.current.addIceCandidate(new RTCIceCandidate(c));
+        }
       } catch (err) {
         alert("Offer error: " + err.message);
       }
     });
 
-    // Handle Answer
+    // Handle answer
     socket.on("answer", async ({ from, sdp }) => {
       if (from !== selectedUserId) return;
       try {
-        if (peerConnection.current) {
-          await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
-        } else {
-          alert("Peer connection missing when answer received!");
+        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
+
+        // apply queued ICE
+        while (pendingCandidates.current.length) {
+          const c = pendingCandidates.current.shift();
+          await peerConnection.current.addIceCandidate(new RTCIceCandidate(c));
         }
       } catch (err) {
         alert("Answer error: " + err.message);
       }
     });
 
-    // Handle ICE candidates
+    // Handle ICE candidate
     socket.on("ice-candidate", async ({ from, candidate }) => {
       if (from !== selectedUserId) return;
+      if (!candidate) return;
+
       try {
-        if (peerConnection.current) {
+        if (peerConnection.current && peerConnection.current.remoteDescription) {
           await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
         } else {
-          // store until peer ready
-          iceQueue.current.push(candidate);
+          // queue until remote description is set
+          pendingCandidates.current.push(candidate);
         }
       } catch (err) {
-        alert("ICE error: " + err.message);
+        alert("ICE candidate error: " + err.message);
       }
     });
 
@@ -60,7 +70,6 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     };
   }, [socket, selectedUserId]);
 
-  // Create Peer Connection
   const createPeerConnection = async () => {
     peerConnection.current = new RTCPeerConnection();
 
@@ -89,24 +98,13 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
         peerConnection.current.addTrack(track, stream);
       });
     } catch (err) {
-      alert("Media device error: " + err.message);
-    }
-
-    // process queued ICE candidates
-    while (iceQueue.current.length) {
-      const c = iceQueue.current.shift();
-      try {
-        await peerConnection.current.addIceCandidate(new RTCIceCandidate(c));
-      } catch (err) {
-        alert("Error adding queued ICE: " + err.message);
-      }
+      alert("Camera/Mic error: " + err.message);
     }
   };
 
-  // Start call
   const startCall = async () => {
+    await createPeerConnection();
     try {
-      await createPeerConnection();
       const offer = await peerConnection.current.createOffer();
       await peerConnection.current.setLocalDescription(offer);
       socket.emit("offer", { to: selectedUserId, from: loggedInUserId, sdp: offer });
@@ -116,15 +114,10 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     }
   };
 
-  // End call
   const endCall = () => {
-    try {
-      peerConnection.current?.close();
-      peerConnection.current = null;
-      setInCall(false);
-    } catch (err) {
-      alert("End call error: " + err.message);
-    }
+    peerConnection.current?.close();
+    peerConnection.current = null;
+    setInCall(false);
   };
 
   return (
