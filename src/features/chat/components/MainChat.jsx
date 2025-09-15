@@ -20,7 +20,8 @@ import {
   softDeleteGroupMessage,
   deleteAllGroupMessages,
   leaveGroup,
-  removeUserFromGroup
+  removeUserFromGroup,
+  addGroupUser
 } from "../chatSlice";
 import _ from "lodash";
 import ChatWindow from "../private_chat/ChatWindow"
@@ -226,22 +227,37 @@ const MainChat = () => {
     socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
       dispatch(updateGroupMessage({ groupId, messageId, message, updatedAt, senderId }));
     });
-   socket.on("groupUpdate", ({ groupId, userId, isAdmin = false }) => {
-      const isCurrentUser = Number(userId) === Number(loggedInUserId);
+    socket.on("groupUpdate", (data) => {
+      const { groupId, userId, isAdmin = false, newUser, addedById, action } = data;
       
-      if (isCurrentUser) {
-        // Current user left or was removed
-        dispatch(leaveGroup({ groupId, userId, isAdmin }));
+      // Handle user added to group
+      if (action === 'userAdded' && newUser) {
+        dispatch(addGroupUser({ groupId, newUser }));
         
-        // // If the current active chat is the group being left, clear the selected chat
-        // if (selectedChatUser?.id === groupId) {
-        //   dispatch(setSelectedChatUser(null));
-        // }
-      } else {
-        // Other group members
-        dispatch(removeUserFromGroup({ groupId, userId }));
+        // Show notification to the added user if it's the current user
+        if (Number(newUser.userId) === Number(loggedInUserId)) {
+          const group = Object.values(groups).find(g => g.groupId == groupId);
+          if (group) {
+            toast.success(`You've been added to the group: ${group.groupName}`);
+          }
+        }
+        return;
+      }
+      
+      // Handle user left/removed
+      if (userId) {
+        const isCurrentUser = Number(userId) === Number(loggedInUserId);
+        
+        if (isCurrentUser) {
+          // Current user left or was removed
+          dispatch(leaveGroup({ groupId, userId, isAdmin }));
+        } else {
+          // Other group members
+          dispatch(removeUserFromGroup({ groupId, userId }));
+        }
       }
     });
+
 
 
     socket.on("deleteGroupMessage", ({ groupId, messageId, isDeleted, deletedAt }) => {
