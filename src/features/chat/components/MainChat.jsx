@@ -227,36 +227,106 @@ const MainChat = () => {
     socket.on("updateGroupMessage", ({ groupId, messageId, message, updatedAt, senderId }) => {
       dispatch(updateGroupMessage({ groupId, messageId, message, updatedAt, senderId }));
     });
-    socket.on("groupUpdate", (data) => {
-      const { groupId, userId, isAdmin = false, newUser, addedById, action } = data;
+    // socket.on("groupUpdate", (data) => {
+    //   const { groupId, userId, isAdmin = false, newUser, addedById, action } = data;
       
-      // Handle user added to group
-      if (action === 'userAdded' && newUser) {
-        dispatch(addGroupUser({ groupId, newUser }));
+    //   if (action === 'userAdded' && newUser) {
+    //     dispatch(addGroupUser({ groupId, newUser }));
         
-        // Show notification to the added user if it's the current user
-        if (Number(newUser.userId) === Number(loggedInUserId)) {
-          const group = Object.values(groups).find(g => g.groupId == groupId);
-          if (group) {
-            toast.success(`You've been added to the group: ${group.groupName}`);
+    //     // Show notification to the added user if it's the current user
+    //     if (Number(newUser.userId) === Number(loggedInUserId)) {
+    //       const group = Object.values(groups).find(g => g.groupId == groupId);
+    //       if (group) {
+    //         toast.success(`You've been added to the group: ${group.groupName}`);
+    //       }
+    //     }
+    //     return;
+    //   }
+      
+    //   //left/removed
+    //   if (userId) {
+    //     const isCurrentUser = Number(userId) === Number(loggedInUserId);
+        
+    //     if (isCurrentUser) {
+    //       // Current user left or was removed
+    //               const message = action === 'left' 
+    //                               ? `You have left "${groupName || 'the group'}"` 
+    //                               : `You have been removed from "${groupName || 'the group'}"`;
+    //                           toast[action === 'left' ? 'success' : 'info'](message);
+    //       dispatch(leaveGroup({ groupId, userId, isAdmin }));
+    //     } else {
+    //       // other group members
+    //       //  Show notification for group members
+    //                 const user = allUsers.find(u => u.id === userId);
+    //                 const remover = allUsers.find(u => u.id === removedById);
+                    
+    //                 if (user) {
+    //                     const message = action === 'left'
+    //                         ? `${user.name} has left "${groupName || 'the group'}"`
+    //                         : `${remover?.name || 'Someone'} removed ${user.name} from "${groupName || 'the group'}"`;
+    //                     toast.info(message);
+    //                 }
+    //       dispatch(removeUserFromGroup({ groupId, userId }));
+    //     }
+    //   }
+    // });
+socket.on("groupUpdate", (data) => {
+  const { groupId, userId, isAdmin = false, newUser, action, addedById, removedById } = data;
+
+  // User added to group
+  if (action === "userAdded" && newUser) {
+    dispatch(addGroupUser({ groupId, newUser }));
+
+    // If current user is added, show a welcome toast
+    if (Number(newUser.userId) === Number(loggedInUserId)) {
+      const group = Object.values(groups).find((g) => g.groupId == groupId);
+      if (group) {
+        toast.success(`🎉 You've been added to the group: "${group.groupName}"`);
+      }
+    }
+    return;
+  }
+
+  // User left or removed
+  if (userId) {
+    const isCurrentUser = Number(userId) === Number(loggedInUserId);
+    const group = Object.values(groups).find((g) => g.groupId == groupId);
+    const groupName = group?.groupName || "the group";
+
+    if (isCurrentUser) {
+      // Current user left/removed
+      const message =
+        action === "left"
+          ? `You have left "${groupName}"`
+          : `You have been removed from "${groupName}"`;
+      toast[action === "left" ? "success" : "info"](message);
+
+      dispatch(leaveGroup({ groupId, userId, isAdmin }));
+    } else {
+      // other user left/removed
+      const user = users.find((u) => u.id === userId);
+      const remover = users.find((u) => u.id === removedById);
+
+      if (user) {
+        let message;
+        if (action === "left") {
+          // User left voluntarily
+          message = `${user.id === loggedInUserId ? "You" : user.name} have left "${groupName}"`;
+        } else {
+          // User was removed
+          if (Number(removedById) === Number(loggedInUserId)) {
+            message = `You removed ${user.name} from "${groupName}"`;
+          } else {
+            message = `${remover?.name || "Someone"} removed ${user.name} from "${groupName}"`;
           }
         }
-        return;
+        toast.info(message);
       }
-      
-      // Handle user left/removed
-      if (userId) {
-        const isCurrentUser = Number(userId) === Number(loggedInUserId);
-        
-        if (isCurrentUser) {
-          // Current user left or was removed
-          dispatch(leaveGroup({ groupId, userId, isAdmin }));
-        } else {
-          // Other group members
-          dispatch(removeUserFromGroup({ groupId, userId }));
-        }
-      }
-    });
+
+      dispatch(removeUserFromGroup({ groupId, userId }));
+    }
+  }
+});
 
 
 
