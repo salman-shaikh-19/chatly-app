@@ -23,14 +23,15 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
       await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
     });
 
-    socket.on("ice-candidate", async ({ from, candidate }) => {
-      if (from !== selectedUserId) return;
-      try {
-        await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
-      } catch (err) {
-        console.error("Error adding ice candidate", err);
-      }
-    });
+ socket.on("ice-candidate", async ({ from, candidate }) => {
+  if (from !== selectedUserId) return;
+  try {
+    await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+  } catch (err) {
+    alert("❌ ICE Candidate Error: " + err.message);
+  }
+});
+
 
     return () => {
       socket.off("offer");
@@ -39,7 +40,10 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     };
   }, [socket, selectedUserId]);
 
-  const createPeerConnection = async () => {
+ 
+
+const createPeerConnection = async () => {
+  try {
     peerConnection.current = new RTCPeerConnection();
 
     peerConnection.current.onicecandidate = (event) => {
@@ -61,15 +65,23 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     stream.getTracks().forEach((track) => {
       peerConnection.current.addTrack(track, stream);
     });
-  };
+  } catch (err) {
+    alert("❌ createPeerConnection Error: " + err.message);
+  }
+};
 
-  const startCall = async () => {
+const startCall = async () => {
+  try {
     await createPeerConnection();
     const offer = await peerConnection.current.createOffer();
     await peerConnection.current.setLocalDescription(offer);
     socket.emit("offer", { to: selectedUserId, from: loggedInUserId, sdp: offer });
     setInCall(true);
-  };
+  } catch (err) {
+    alert("❌ Start Call Error: " + err.message);
+  }
+};
+
 
   const endCall = () => {
     peerConnection.current?.close();
