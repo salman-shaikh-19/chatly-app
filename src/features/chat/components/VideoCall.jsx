@@ -18,24 +18,21 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
           await createPeerConnection();
         }
 
-        // Set remote description
         await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
 
-        // Only answer if we’re in correct state
         if (peerConnection.current.signalingState === "have-remote-offer") {
           const answer = await peerConnection.current.createAnswer();
           await peerConnection.current.setLocalDescription(answer);
-
           socket.emit("answer", { to: from, sdp: answer });
         }
 
-        // Flush queued ICE candidates
+        // apply queued ICE
         while (pendingCandidates.current.length > 0) {
           const candidate = pendingCandidates.current.shift();
           await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
         }
       } catch (err) {
-        alert("Offer error: " + err.message + " | state: " + peerConnection.current?.signalingState);
+        alert("Offer error: " + err.message);
       }
     });
 
@@ -85,11 +82,22 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
       remoteVideoRef.current.srcObject = event.streams[0];
     };
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideoRef.current.srcObject = stream;
-    stream.getTracks().forEach((track) => {
-      peerConnection.current.addTrack(track, stream);
-    });
+    try {
+      // ✅ Try to get camera + mic
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+      // show own stream if available
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+      }
+
+      stream.getTracks().forEach((track) => {
+        peerConnection.current.addTrack(track, stream);
+      });
+    } catch (err) {
+      // No camera/mic available — just warn
+      alert("No camera/mic found on this device. You will only see remote video.");
+    }
   };
 
   const startCall = async () => {
@@ -114,7 +122,10 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
   return (
     <div className="flex flex-col items-center gap-2 p-2 border rounded bg-gray-100">
       <div className="flex gap-2">
-        <video ref={localVideoRef} autoPlay playsInline muted className="w-40 h-32 bg-black" />
+        {/* Local video (might be empty on desktop with no camera) */}
+        <video ref={localVideoRef} autoPlay playsInline muted className="w-40 h-32 bg-gray-800" />
+
+        {/* Remote video (always shows when mobile sends stream) */}
         <video ref={remoteVideoRef} autoPlay playsInline className="w-40 h-32 bg-black" />
       </div>
 
