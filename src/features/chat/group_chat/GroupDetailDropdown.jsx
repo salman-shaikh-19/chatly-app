@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { leaveGroup, removeUserFromGroup } from "../chatSlice";
 
-const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUsers, socket, onGroupLeft }) => {
+const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUsers, socket }) => {
     const [openGroupDetail, setOpenGroupDetail] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const groupDetailDropdownRef = useRef(null);
@@ -57,7 +57,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
                 // If current user was removed or left
                 if (userId === loggedInUserData.id) {
                     dispatch(leaveGroup({ groupId }));
-                    onGroupLeft?.();
+                    // onGroupLeft?.();
                     setOpenGroupDetail(false);
                     
                     // Show success message
@@ -88,7 +88,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
         return () => {
             socket.off('groupUpdate', handleGroupUpdate);
         };
-    }, [socket, dispatch, loggedInUserData.id, allUsers, onGroupLeft]);
+    }, [socket, dispatch, loggedInUserData.id, allUsers]);
 
     // Remove user from group (admin action)
     const handleRemoveUser = useCallback(async (user) => {
