@@ -11,7 +11,6 @@ import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import { v4 as uuidv4 } from "uuid";
 import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
-import VideoCall from "../components/VideoCall";
 const MySwal = withReactContent(Swal);
 
 const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
@@ -170,14 +169,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         handleSelectedDelete={handleSelectedDelete}
         selectedMsgs={selectedMsgs}
       />
-      {selectedChatUser && (
-  <VideoCall
-    socket={socket}
-    loggedInUserId={loggedInUserId}
-    selectedUserId={selectedUserId}
-  />
-)}
-
+      
       <ChatMessages
         messages={messages}
         loggedInUserId={loggedInUserId}
