@@ -182,6 +182,12 @@ export const chatSlice = createSlice({
         state.groupMessages[groupId] = [];
       }
     },
+    deleteGroup(state, action) {
+      const { groupId } = action.payload;
+      if (!groupId) return;
+      if (state.groups) delete state.groups[groupId];
+      if (state.groupMessages) delete state.groupMessages[groupId];
+    },
     // remove user from group
     removeUserFromGroup(state, action) {
       const { groupId, userId } = action.payload;
@@ -221,6 +227,20 @@ export const chatSlice = createSlice({
       // Update the group's updatedAt timestamp
       state.groups[groupId].updatedAt = new Date().toISOString();
     },
+    addGroupUser(state, action) {
+      const { groupId, newUser } = action.payload;
+      if (!state.groups[groupId] || !newUser) return;
+
+      // Check if user already exists in the group
+      const userExists = state.groups[groupId].groupUsers.some(u => u.userId === newUser.userId);
+      if (userExists) return; // User already in group, do nothing
+
+      // Add the new user to the group
+      state.groups[groupId].groupUsers.push(newUser);
+
+      // Update the group's updatedAt timestamp
+      state.groups[groupId].updatedAt = new Date().toISOString();
+    },  
   },
 
 });
@@ -242,7 +262,9 @@ export const {
   updateMessage, 
   softDeleteFromAll,
   leaveGroup,
-  removeUserFromGroup 
+  removeUserFromGroup ,
+  addGroupUser
+
 } = chatSlice.actions;
 export default chatSlice.reducer;
 // export { getChatId };
