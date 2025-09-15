@@ -19,7 +19,8 @@ const GroupChatHeader = ({
   groupUsers,
   allUsers,
   socket,
-  isUserInGroup
+  isUserInGroup,
+  handleGroupDelete
 }) => {
 
   
@@ -77,7 +78,7 @@ const GroupChatHeader = ({
 
           <div className="flex items-center space-x-2">
         {
-          isUserInGroup && 
+          isUserInGroup ?
           (
 
             <GroupDetailDropdown
@@ -88,6 +89,16 @@ const GroupChatHeader = ({
               selectedChatUser={selectedChatUser}
               // onGroupLeft={handleGroupLeft}
             />
+          )
+          :
+          (
+             <ChatHeaderAction
+                onClick={handleGroupDelete}
+                icon={faTrashAlt}
+                title="Delete group from me"
+              >
+               Group
+              </ChatHeaderAction>
           )
         }
 
