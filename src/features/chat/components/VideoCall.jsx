@@ -11,24 +11,29 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     if (!socket) return;
 
     // Handle offer
-    socket.on("offer", async ({ from, sdp }) => {
-      if (from !== selectedUserId) return;
-      await createPeerConnection();
-      try {
-        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
-        const answer = await peerConnection.current.createAnswer();
-        await peerConnection.current.setLocalDescription(answer);
-        socket.emit("answer", { to: from, sdp: answer });
+socket.on("offer", async ({ from, sdp }) => {
+  if (from !== selectedUserId) return;
+  await createPeerConnection();
 
-        // apply queued ICE
-        while (pendingCandidates.current.length) {
-          const c = pendingCandidates.current.shift();
-          await peerConnection.current.addIceCandidate(new RTCIceCandidate(c));
-        }
-      } catch (err) {
-        alert("Offer error: " + err.message);
-      }
-    });
+  try {
+    await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
+
+    if (peerConnection.current.signalingState === "have-remote-offer") {
+      const answer = await peerConnection.current.createAnswer();
+      await peerConnection.current.setLocalDescription(answer);
+      socket.emit("answer", { to: from, sdp: answer });
+    }
+
+    // ✅ apply queued ICE after remote description
+    while (pendingCandidates.current.length) {
+      const c = pendingCandidates.current.shift();
+      await peerConnection.current.addIceCandidate(new RTCIceCandidate(c));
+    }
+  } catch (err) {
+    alert("Offer error: " + err.message + " | state: " + peerConnection.current?.signalingState);
+  }
+});
+
 
     // Handle answer
     socket.on("answer", async ({ from, sdp }) => {
