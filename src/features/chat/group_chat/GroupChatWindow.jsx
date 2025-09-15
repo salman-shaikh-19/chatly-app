@@ -28,6 +28,7 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
   const groups = useSelector(state => state.chat.groups || {});
   const groupMessages = useSelector(state => state.chat.groupMessages[selectedGroupId] || []);
   
+  // Get the latest group data from Redux store
   const currentGroup = groups[selectedGroupId];
   const groupUsers = currentGroup?.groupUsers || [];
 
@@ -36,6 +37,13 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
     acc[user.id] = user.name;
     return acc;
   }, {});
+
+ 
+  // useEffect(() => {
+  //   console.log('Current group users:', groupUsers);
+  //   console.log('Logged in user ID:', loggedInUserId);
+  //   console.log('Is user in group?', groupUsers.some(u => u.userId === loggedInUserId));
+  // }, [groupUsers, loggedInUserId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -254,8 +262,9 @@ const handleGroupDelete = () => {
   const typingUsers = Object.keys(groupTyping).filter(userId => groupTyping[userId]);
   const typingUserNames = typingUsers.map(userId => userLookup[userId] || `User ${userId}`);
   const isAnyoneTyping = typingUsers.length > 0;
-const isUserInGroup = groupUsers.some(u => u.userId === loggedInUserId);
-const currentUserRole = groupUsers.find(u => u.userId === loggedInUserId)?.role;
+// Ensure we're comparing the same data types (convert both to string or number)
+const isUserInGroup = groupUsers.some(u => Number(u.userId) === Number(loggedInUserId));
+const currentUserRole = groupUsers.find(u => Number(u.userId) === Number(loggedInUserId))?.role;
 let chatDisabledMessage = "";
 
 if (!isUserInGroup) {
