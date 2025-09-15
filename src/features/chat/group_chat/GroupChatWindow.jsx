@@ -235,8 +235,18 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
   const typingUsers = Object.keys(groupTyping).filter(userId => groupTyping[userId]);
   const typingUserNames = typingUsers.map(userId => userLookup[userId] || `User ${userId}`);
   const isAnyoneTyping = typingUsers.length > 0;
+const isUserInGroup = groupUsers.some(u => u.userId === loggedInUserId);
 const currentUserRole = groupUsers.find(u => u.userId === loggedInUserId)?.role;
-const canChat = currentGroup?.type === "public" || (currentGroup?.type === "private" && currentUserRole === "admin");
+let chatDisabledMessage = "";
+
+if (!isUserInGroup) {
+  chatDisabledMessage = "You are not a member of this group";
+} else if (currentGroup?.type === "private" && currentUserRole !== "admin") {
+  chatDisabledMessage = "Only admins can send messages in this group";
+}
+
+const canChat = isUserInGroup && (currentGroup?.type === "public" || (currentGroup?.type === "private" && currentUserRole === "admin"));
+
 // console.log(currentGroup);
 
   return (
@@ -253,6 +263,8 @@ const canChat = currentGroup?.type === "public" || (currentGroup?.type === "priv
         selectedMsgs={selectedMsgs}
         groupUsers={groupUsers}
           allUsers={users}
+          socket={socket}
+          isUserInGroup={isUserInGroup}
       />
       
       <GroupChatMessages
@@ -279,7 +291,7 @@ const canChat = currentGroup?.type === "public" || (currentGroup?.type === "priv
     ):(
      <div className="w-full flex justify-center my-2 ">
         <div className="mx-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-center text-sm shadow-sm border border-yellow-300 max-w-md">
-          <FontAwesomeIcon icon={faWarning} /> Only admins can send messages in this group
+          <FontAwesomeIcon icon={faWarning} />{chatDisabledMessage}
         </div>
       </div>
 
