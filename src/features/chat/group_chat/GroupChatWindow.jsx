@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import ChatInputBar from "../components/ChatInputBar";
 import GroupChatHeader from "./GroupChatHeader";
 import GroupChatMessages from "./GroupChatMessages";
-import { addGroupMessage, updateGroupMessage, softDeleteGroupMessage, deleteAllGroupMessages, deleteGroupMessage } from "../chatSlice";
+import { addGroupMessage, updateGroupMessage, softDeleteGroupMessage, deleteAllGroupMessages, deleteGroupMessage, deleteGroup } from "../chatSlice";
 import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWarning } from "@fortawesome/free-solid-svg-icons";
@@ -192,7 +192,26 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
   });
 };
 
-
+const handleGroupDelete = () => {
+    MySwal.fire({
+      title: 'Delete group from your list?',
+      text: "This will remove the group and all its messages from your view only.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete for me!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Only delete locally for the user, don't emit to server 
+        dispatch(deleteGroup({ groupId: selectedGroupId }));
+        // dispatch(deleteAllGroupMessages({ groupId: selectedGroupId }));
+        setSelectedMsgs([]);
+        toast.success(`Group deleted from your side`);
+        goBack();
+      }
+    });
+  }
   const handleDeleteAll = () => {
     MySwal.fire({
       title: 'Are you sure?',
@@ -265,6 +284,7 @@ const canChat = isUserInGroup && (currentGroup?.type === "public" || (currentGro
           allUsers={users}
           socket={socket}
           isUserInGroup={isUserInGroup}
+          handleGroupDelete={handleGroupDelete}
       />
       
       <GroupChatMessages
