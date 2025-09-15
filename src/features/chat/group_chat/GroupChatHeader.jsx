@@ -21,16 +21,10 @@ const GroupChatHeader = ({
   socket,
   isUserInGroup
 }) => {
-  const navigate = useNavigate();
+
   
   // Handle when user leaves the group
-  const handleGroupLeft = () => {
-    // Navigate back to chat list
-    navigate('/chat');
-    
-    // Show a toast notification
-    // This will be shown by the GroupDetailDropdown component
-  };
+  
   const name = selectedChatUser?.name || "Unknown Group";
   const avatar = selectedChatUser?.avatar;//means group porifle pic
 
@@ -92,7 +86,7 @@ const GroupChatHeader = ({
               groupUsers={groupUsers}
               onlineUsers={onlineUsers}
               selectedChatUser={selectedChatUser}
-              onGroupLeft={handleGroupLeft}
+              // onGroupLeft={handleGroupLeft}
             />
           )
         }
