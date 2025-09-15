@@ -48,50 +48,50 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
     const loggedInGroupUser = groupUserDetails.find(gu => gu.id === loggedInUserData.id);
 
     // Handle group update events from server
-    useEffect(() => {
-        if (!socket) return;
+    // useEffect(() => {
+    //     if (!socket) return;
 
-        const handleGroupUpdate = (data) => {
-            const { action, userId, groupId, groupName, removedById } = data;
+    //     const handleGroupUpdate = (data) => {
+    //         const { action, userId, groupId, groupName, removedById } = data;
             
-            if (action === 'left' || action === 'removed') {
-                // If current user was removed or left
-                if (userId === loggedInUserData.id) {
-                    dispatch(leaveGroup({ groupId }));
-                    // onGroupLeft?.();
-                    setOpenGroupDetail(false);
+    //         if (action === 'left' || action === 'removed') {
+    //             // If current user was removed or left
+    //             if (userId === loggedInUserData.id) {
+    //                 dispatch(leaveGroup({ groupId }));
+    //                 // onGroupLeft?.();
+    //                 setOpenGroupDetail(false);
                     
-                    // Show success message
-                    const message = action === 'left' 
-                        ? `You have left "${groupName || 'the group'}"` 
-                        : `You have been removed from "${groupName || 'the group'}"`;
-                    toast[action === 'left' ? 'success' : 'info'](message);
-                } else {
-                    // Other user left or was removed
-                    dispatch(removeUserFromGroup({ groupId, userId }));
+    //                 // Show success message
+    //                 const message = action === 'left' 
+    //                     ? `You have left "${groupName || 'the group'}"` 
+    //                     : `You have been removed from "${groupName || 'the group'}"`;
+    //                 toast[action === 'left' ? 'success' : 'info'](message);
+    //             } else {
+    //                 // Other user left or was removed
+    //                 dispatch(removeUserFromGroup({ groupId, userId }));
                     
-                    // Show notification for group members
-                    const user = allUsers.find(u => u.id === userId);
-                    const remover = allUsers.find(u => u.id === removedById);
+    //                 // Show notification for group members
+    //                 const user = allUsers.find(u => u.id === userId);
+    //                 const remover = allUsers.find(u => u.id === removedById);
                     
-                    if (user) {
-                        const message = action === 'left'
-                            ? `${user.name} has left "${groupName || 'the group'}"`
-                            : `${remover?.name || 'Someone'} removed ${user.name} from "${groupName || 'the group'}"`;
-                        toast.info(message);
-                    }
-                }
-            }
-        };
+    //                 if (user) {
+    //                     const message = action === 'left'
+    //                         ? `${user.name} has left "${groupName || 'the group'}"`
+    //                         : `${remover?.name || 'Someone'} removed ${user.name} from "${groupName || 'the group'}"`;
+    //                     toast.info(message);
+    //                 }
+    //             }
+    //         }
+    //     };
 
-        socket.on('groupUpdate', handleGroupUpdate);
+    //     socket.on('groupUpdate', handleGroupUpdate);
 
-        return () => {
-            socket.off('groupUpdate', handleGroupUpdate);
-        };
-    }, [socket, dispatch, loggedInUserData.id, allUsers]);
+    //     return () => {
+    //         socket.off('groupUpdate', handleGroupUpdate);
+    //     };
+    // }, [socket, dispatch, loggedInUserData.id, allUsers]);
 
-    // Remove user from group (admin action)
+    // remove user from group 
     const handleRemoveUser = useCallback(async (user) => {
         if (!socket || !selectedChatUser?.id || isProcessing) return;
         
@@ -125,7 +125,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
         }
     }, [socket, selectedChatUser, loggedInUserData.id, loggedInGroupUser?.groupRole, isProcessing]);
 
-    // Handle user leaving the group
+    // leave from group
     const handleLeaveGroup = useCallback(async () => {
         if (!socket || !selectedChatUser?.id || isProcessing) return;
         
@@ -154,7 +154,6 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
                     isAdmin
                 });
                 
-                // The actual state update will happen in the groupUpdate handler
             } catch (error) {
                 console.error('Error leaving group:', error);
                 toast.error('Failed to leave group');
@@ -175,14 +174,13 @@ const handleAddGroupMember = useCallback(async () => {
             return;
         }
 
-        // Check if user is already in the group
         const userExists = groupUsers.some(u => u.userId === selectedNewUser);
         if (userExists) {
             toast.info(`${newUser.name} is already in this group`);
             return;
         }
 
-        // Emit event to add user to group
+   
         socket.emit("addGroupUser", {
             groupId: selectedChatUser.id,
             newUser: { 
@@ -194,8 +192,6 @@ const handleAddGroupMember = useCallback(async () => {
             groupName: selectedChatUser.name,
             isAdmin: loggedInGroupUser?.groupRole === "admin"
         });
-
-        // Show success message
         toast.success(`${newUser.name} has been added to the group`);
         setSelectedNewUser(null);
     } catch (error) {
