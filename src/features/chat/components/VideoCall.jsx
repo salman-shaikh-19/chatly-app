@@ -10,6 +10,7 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
   useEffect(() => {
     if (!socket) return;
 
+    // Handle Offer
     socket.on("offer", async ({ from, sdp }) => {
       if (from !== selectedUserId) return;
 
@@ -18,43 +19,77 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
           await createPeerConnection();
         }
 
-        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(sdp)
+        );
 
+        // Create Answer only if state is correct
         if (peerConnection.current.signalingState === "have-remote-offer") {
           const answer = await peerConnection.current.createAnswer();
           await peerConnection.current.setLocalDescription(answer);
+
           socket.emit("answer", { to: from, sdp: answer });
         }
 
-        // apply queued ICE
+        // ✅ Apply queued ICE candidates
         while (pendingCandidates.current.length > 0) {
-          const candidate = pendingCandidates.current.shift();
-          await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+          const cand = pendingCandidates.current.shift();
+          try {
+            await peerConnection.current.addIceCandidate(
+              new RTCIceCandidate(cand)
+            );
+          } catch (err) {
+            console.error("Queued ICE error:", err);
+            alert("Queued ICE error: " + err.message);
+          }
         }
       } catch (err) {
         alert("Offer error: " + err.message);
       }
     });
 
+    // Handle Answer
     socket.on("answer", async ({ from, sdp }) => {
       if (from !== selectedUserId) return;
       try {
-        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(sdp));
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(sdp)
+        );
+
+        // ✅ Apply queued ICE after remote desc set
+        while (pendingCandidates.current.length > 0) {
+          const cand = pendingCandidates.current.shift();
+          try {
+            await peerConnection.current.addIceCandidate(
+              new RTCIceCandidate(cand)
+            );
+          } catch (err) {
+            console.error("Queued ICE error:", err);
+          }
+        }
       } catch (err) {
         alert("Answer error: " + err.message);
       }
     });
 
+    // Handle ICE Candidate
     socket.on("ice-candidate", async ({ from, candidate }) => {
       if (from !== selectedUserId) return;
+
       try {
+        if (!candidate) return; // ignore null candidates
+
         if (peerConnection.current?.remoteDescription) {
-          await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+          await peerConnection.current.addIceCandidate(
+            new RTCIceCandidate(candidate)
+          );
         } else {
+          // queue until remote description is set
           pendingCandidates.current.push(candidate);
         }
       } catch (err) {
-        alert("ICE error: " + err.message);
+        console.error("ICE error:", err);
+        alert("ICE Candidate error: " + err.message);
       }
     });
 
@@ -79,14 +114,18 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
     };
 
     peerConnection.current.ontrack = (event) => {
-      remoteVideoRef.current.srcObject = event.streams[0];
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      }
     };
 
     try {
-      // ✅ Try to get camera + mic
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      // Try to get camera + mic
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
 
-      // show own stream if available
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
@@ -95,8 +134,9 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
         peerConnection.current.addTrack(track, stream);
       });
     } catch (err) {
-      // No camera/mic available — just warn
-      alert("No camera/mic found on this device. You will only see remote video.");
+      alert(
+        "No camera/mic found on this device. You will only see remote video."
+      );
     }
   };
 
@@ -106,7 +146,12 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
       const offer = await peerConnection.current.createOffer();
       await peerConnection.current.setLocalDescription(offer);
 
-      socket.emit("offer", { to: selectedUserId, from: loggedInUserId, sdp: offer });
+      socket.emit("offer", {
+        to: selectedUserId,
+        from: loggedInUserId,
+        sdp: offer,
+      });
+
       setInCall(true);
     } catch (err) {
       alert("Start call error: " + err.message);
@@ -122,19 +167,36 @@ const VideoCall = ({ socket, loggedInUserId, selectedUserId }) => {
   return (
     <div className="flex flex-col items-center gap-2 p-2 border rounded bg-gray-100">
       <div className="flex gap-2">
-        {/* Local video (might be empty on desktop with no camera) */}
-        <video ref={localVideoRef} autoPlay playsInline muted className="w-40 h-32 bg-gray-800" />
+        {/* Local video (may be empty if no camera) */}
+        <video
+          ref={localVideoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-40 h-32 bg-gray-800"
+        />
 
-        {/* Remote video (always shows when mobile sends stream) */}
-        <video ref={remoteVideoRef} autoPlay playsInline className="w-40 h-32 bg-black" />
+        {/* Remote video */}
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline
+          className="w-40 h-32 bg-black"
+        />
       </div>
 
       {!inCall ? (
-        <button onClick={startCall} className="px-4 py-2 bg-green-500 text-white rounded">
+        <button
+          onClick={startCall}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
           📞 Start Call
         </button>
       ) : (
-        <button onClick={endCall} className="px-4 py-2 bg-red-500 text-white rounded">
+        <button
+          onClick={endCall}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
           ❌ End Call
         </button>
       )}
