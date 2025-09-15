@@ -1,8 +1,9 @@
 import { faArrowCircleLeft, faTrashAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import CommonAvatar from "../../user/components/CommonAvatar";
-import resolveName from '../../../common/utils/resolveName'
+import resolveName from '../../../common/utils/resolveName';
 import ChatHeaderAction from "../components/ChatHeaderAction";
 import GroupDetailDropdown from "./GroupDetailDropdown";
 const GroupChatHeader = ({
@@ -16,8 +17,20 @@ const GroupChatHeader = ({
   selectedMsgs,
   handleSelectedDelete,
   groupUsers,
-  allUsers
+  allUsers,
+  socket,
+  isUserInGroup
 }) => {
+  const navigate = useNavigate();
+  
+  // Handle when user leaves the group
+  const handleGroupLeft = () => {
+    // Navigate back to chat list
+    navigate('/chat');
+    
+    // Show a toast notification
+    // This will be shown by the GroupDetailDropdown component
+  };
   const name = selectedChatUser?.name || "Unknown Group";
   const avatar = selectedChatUser?.avatar;//means group porifle pic
 
@@ -69,14 +82,20 @@ const GroupChatHeader = ({
 
 
           <div className="flex items-center space-x-2">
+        {
+          isUserInGroup && 
+          (
 
-        <GroupDetailDropdown
-        allUsers={allUsers}
-        groupUsers={groupUsers}
-        onlineUsers={onlineUsers}
-        selectedChatUser={selectedChatUser}
-      
-        />
+            <GroupDetailDropdown
+              socket={socket}
+              allUsers={allUsers}
+              groupUsers={groupUsers}
+              onlineUsers={onlineUsers}
+              selectedChatUser={selectedChatUser}
+              onGroupLeft={handleGroupLeft}
+            />
+          )
+        }
 
             {messages.length > 0 && selectedMsgs.length === 0 && (
 
@@ -86,7 +105,7 @@ const GroupChatHeader = ({
                 title="Delete all messages"
               />
             )}
-            {selectedMsgs.length > 0 && (
+            {selectedMsgs.length > 0 && isUserInGroup && (
 
               <ChatHeaderAction
                 onClick={handleSelectedDelete}
