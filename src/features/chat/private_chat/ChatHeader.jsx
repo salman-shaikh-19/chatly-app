@@ -27,12 +27,14 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                 ></span>
             </div>
             <div className="w-full  ">
-                <div className="flex justify-between">
-                    <span className="block ml-2 font-semibold text-white me-auto">
+                <div className="flex justify-between flex-row items-center ">
+                    <span className="block ml-2  font-semibold text-white me-auto">
                         <b>{selectedChatUser.name}</b>
                     </span>
+                    <div className="flex ">
                     {messages.length > 0 && selectedMsgs.length === 0 && (
                         <ChatHeaderAction
+                          className="text-xs "
                             icon={faTrashAlt}
                             onClick={handleDeleteAll}
                             title="Delete all messages"
@@ -42,6 +44,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     {
                         selectedMsgs.length > 0 && (
                             <ChatHeaderAction
+                             className="text-xs"
                                 icon={faTrashAlt}
                                 onClick={handleSelectedDelete}
                                 title="Delete selected messages"
@@ -51,13 +54,14 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                         )
                     }
 
+
                     <ChatHeaderAction
-                        className="ms-1 lg:hidden md:hidden"
+                        className="ms-1 lg:hidden md:hidden  "
                         onClick={goBack}
                         title="back to user list"
                         icon={faArrowCircleLeft}
                     />
-
+                    </div>
                 </div>
                 <span className="text-gray-400 mx-2 select-none   text-xs ">
                     {typing ? `${selectedChatUser.name} Typing.....` : onlineUsers.includes(selectedChatUser.id) ? 'Online' : lastSeen?.[selectedChatUser?.id]
