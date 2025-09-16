@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
-import { setLastSeen, setMessageCounts, setSelectedChatUser, setTyping } from "../../../common/commonSlice";
+import {  setMessageCounts, setSelectedChatUser, setTyping } from "../../../common/commonSlice";
 import { setOnlineUsers } from "../../user/userSlice";
 import {
   addGroup,
@@ -105,7 +105,7 @@ const MainChat = () => {
 
     socket.on("lastSeenUpdate", ({ userId, lastSeen }) => {
       
-      dispatch(setLastSeen({ userId, lastSeen }));
+      // dispatch(setLastSeen({ userId, lastSeen }));
     
     });
 
