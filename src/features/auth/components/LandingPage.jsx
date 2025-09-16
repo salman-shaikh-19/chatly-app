@@ -12,10 +12,10 @@ const LandingPage = ({onClick}) => {
                             </div>
                             <div className="px-4 flex flex-col items-center justify-center select-none ">
                                 <h1 className="text-teal-950 font-bold text-4xl">Welcome to Chatly!</h1>
-                                <p className="my-4 text-gray-600 ">Your ultimate chat application for seamless communication.</p>
-                                <div className="flex gap-4 justify-center">
+                                <p className="my-4 text-gray-600 ">Connect, chat, and share moments with friends and communities in real-time. Your conversations, your way!</p>
+                                <div className="flex gap-4 items-center ">
                               
-                                    <span onClick={onClick} className="bg-white text-teal-600 border border-teal-600 px-6 py-2 rounded-lg shadow hover:bg-teal-200/50 cursor-pointer transition" title="Get Started">
+                                    <span onClick={onClick} className=" text-white border bg-teal-950  px-6 py-2 rounded-lg shadow hover:bg-teal-800 hover:text-white hover:border-0 cursor-pointer transition" title="Get Started">
                                         Get Started
                                     </span>
                                    
