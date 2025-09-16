@@ -16,7 +16,8 @@ function getLastSeenText(time) {
   }
   if (diffSeconds < 60)
   {
-    return `${diffSeconds} seconds ago`;  // return 'few seconds ago';
+    // return 'few seconds ago';
+    return `${diffSeconds} seconds ago`;  // like 45 seconds ago or 20 seconds ago etc
   }
    
   if (dayjs(time).isToday()) {
@@ -47,4 +48,21 @@ function getLastSeenText(time) {
   return `${dayjs(time).format('MMM D, YYYY')}`; // older than a month like sep 10, 2022
 }
 
-export default getLastSeenText;
+ function getLastMsgTime(time) {
+  const msgTime = dayjs(time);
+
+  if (msgTime.isToday()) {
+    return msgTime.format("h:mm A"); // like 3:45 PM
+  }
+  if (msgTime.isYesterday()) {
+    return "Yesterday";
+  }
+  if (dayjs().diff(msgTime, "day") < 7) {
+    return msgTime.format("ddd"); // like Mon, Tue
+  }
+  // return msgTime.format("MMM D"); // like Sep 8
+  return msgTime.format("MMM D, YYYY"); // like Sep 8, 2022
+}
+
+// export getLastMsgTime;
+export  {getLastSeenText,getLastMsgTime};
