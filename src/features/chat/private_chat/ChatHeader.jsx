@@ -5,7 +5,7 @@ import CommonAvatar from "../../user/components/CommonAvatar";
 import ChatHeaderAction from "../components/ChatHeaderAction";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
-import getLastSeenText from "../../../common/utils/getLastSeen";
+import {getLastSeenText} from "../../../common/utils/getLastSeen";
 
 
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMsgs, handleSelectedDelete, messages, goBack, typing }) => {
