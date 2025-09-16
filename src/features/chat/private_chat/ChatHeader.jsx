@@ -31,10 +31,11 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     <span className="block ml-2  font-semibold text-white me-auto">
                         <b>{selectedChatUser.name}</b>
                     </span>
-                    <div className="flex ">
+                    <div className=" flex items-center text-lg">
                     {messages.length > 0 && selectedMsgs.length === 0 && (
                         <ChatHeaderAction
-                          className="text-xs "
+
+                          className=" "
                             icon={faTrashAlt}
                             onClick={handleDeleteAll}
                             title="Delete all messages"
@@ -44,7 +45,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     {
                         selectedMsgs.length > 0 && (
                             <ChatHeaderAction
-                             className="text-xs"
+                             className=""
                                 icon={faTrashAlt}
                                 onClick={handleSelectedDelete}
                                 title="Delete selected messages"
