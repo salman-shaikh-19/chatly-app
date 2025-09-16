@@ -170,36 +170,61 @@ const GroupChatMessages = ({
   const creatorId = currentGroup ? Number(currentGroup.createdBy) : null;
 
   // ✅ Helper: render "user added" labels
-  const renderUserAddedLabels = (filterFn, wrapper = true) => {
-    if (!currentGroup) return null;
-    return currentGroup.groupUsers.map((user, i) => {
+  // const renderUserAddedLabels = (filterFn, wrapper = true) => {
+  //   if (!currentGroup) return null;
+  //   return currentGroup.groupUsers.map((user, i) => {
+  //     const userObj = usersMap.get(Number(user.userId));
+  //     if (!userObj) return null;
+  //     if (Number(user.userId) === creatorId) return null;
+
+  //     if (filterFn(user)) {
+  //       const label = (
+  //         <ChatCommonLabel key={i}>
+  //           {userObj?.name} was added
+  //           {user.joinedAt &&
+  //             ` on ${dayjs(user.joinedAt).format("MMM D, YYYY")}`}
+  //         </ChatCommonLabel>
+  //       );
+
+  //       return wrapper ? (
+  //         <div
+  //           key={`added-${user.userId}`}
+  //           className="text-xs flex flex-col items-center justify-center"
+  //         >
+  //           {label}
+  //         </div>
+  //       ) : (
+  //         label
+  //       );
+  //     }
+  //     return null;
+  //   });
+  // };
+// ✅ Helper: render "user added" labels for a specific date
+const renderUserAddedLabelsForDate = (date) => {
+  if (!currentGroup) return null;
+
+  return currentGroup.groupUsers
+    .filter((user) => {
+      const joinedDay = dayjs(user.joinedAt);
+      return joinedDay.isSame(dayjs(date), "day") && Number(user.userId) !== creatorId;
+    })
+    .map((user, i) => {
       const userObj = usersMap.get(Number(user.userId));
       if (!userObj) return null;
-      if (Number(user.userId) === creatorId) return null;
 
-      if (filterFn(user)) {
-        const label = (
-          <ChatCommonLabel key={i}>
+      return (
+        <div
+          key={`added-${user.userId}-${i}`}
+          className="text-xs flex flex-col items-center justify-center"
+        >
+          <ChatCommonLabel>
             {userObj?.name} was added
-            {user.joinedAt &&
-              ` on ${dayjs(user.joinedAt).format("MMM D, YYYY")}`}
           </ChatCommonLabel>
-        );
-
-        return wrapper ? (
-          <div
-            key={`added-${user.userId}`}
-            className="text-xs flex flex-col items-center justify-center"
-          >
-            {label}
-          </div>
-        ) : (
-          label
-        );
-      }
-      return null;
+        </div>
+      );
     });
-  };
+};
 
   return (
     <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
@@ -225,52 +250,42 @@ const GroupChatMessages = ({
         </div>
       )}
 
-      {messages.length > 0 ? (
-        messages.map((msg, index) => {
-          const prevMsg = index > 0 ? messages[index - 1] : null;
-          const showDateBadge =
-            !prevMsg ||
-            !dayjs(prevMsg.timestamp).isSame(msg.timestamp, "day");
-          const isMsgEditAndDeletable = isEditOrDeletable(msg.timestamp);
+      {messages.map((msg, index) => {
+  const prevMsg = index > 0 ? messages[index - 1] : null;
+  const showDateBadge =
+    !prevMsg || !dayjs(prevMsg.timestamp).isSame(msg.timestamp, "day");
 
-          return (
-            <React.Fragment key={`group-msg-${msg.messageId}-${index}`}>
-              {showDateBadge && (
-                <>
-                  <div className="text-xs flex items-center justify-center">
-                    <ChatCommonLabel>
-                      <ChatCommonDateLabel timestamp={msg.timestamp} />
-                    </ChatCommonLabel>
-                  </div>
+  const isMsgEditAndDeletable = isEditOrDeletable(msg.timestamp);
 
-                  {/* Users added after group creation */}
-                  {renderUserAddedLabels((user) =>
-                    dayjs(user.joinedAt).isAfter(
-                      dayjs(currentGroup?.createdAt),
-                      "day"
-                    )
-                  )}
-                </>
-              )}
-
-              <GroupChatMessage
-                msg={msg}
-                isEditableAndDeletable={isMsgEditAndDeletable}
-                isOwnMessage={msg.senderId === loggedInUserId}
-                isSelected={selectedMsgs.includes(msg.messageId)}
-                toggleSelect={() => toggleSelect(msg.messageId)}
-                handleDeleteMessage={handleDeleteMessage}
-                handleEditMsg={handleEditMsg}
-                loggedInUserId={loggedInUserId}
-                selectionMode={selectedMsgs.length > 0}
-                currentGroup={currentGroup}
-              />
-            </React.Fragment>
-          );
-        })
-      ) : (
-        <NoMsgYet />
+  return (
+    <React.Fragment key={`group-msg-${msg.messageId}-${index}`}>
+      {showDateBadge && (
+        <div className="text-xs flex items-center justify-center">
+          <ChatCommonLabel>
+            <ChatCommonDateLabel timestamp={msg.timestamp} />
+          </ChatCommonLabel>
+        </div>
       )}
+
+      {/* Show users added on the same day as this message */}
+      {renderUserAddedLabelsForDate(msg.timestamp)}
+
+      <GroupChatMessage
+        msg={msg}
+        isEditableAndDeletable={isMsgEditAndDeletable}
+        isOwnMessage={msg.senderId === loggedInUserId}
+        isSelected={selectedMsgs.includes(msg.messageId)}
+        toggleSelect={() => toggleSelect(msg.messageId)}
+        handleDeleteMessage={handleDeleteMessage}
+        handleEditMsg={handleEditMsg}
+        loggedInUserId={loggedInUserId}
+        selectionMode={selectedMsgs.length > 0}
+        currentGroup={currentGroup}
+      />
+    </React.Fragment>
+  );
+})}
+
 
       {typing && typingUserNames?.length > 0 && (
         <div className="text-gray-500 italic text-sm mt-auto ">
