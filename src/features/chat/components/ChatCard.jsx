@@ -21,7 +21,7 @@ const ChatCard = ({
   selectChat,
 }) => {
   const { users } = useSelector((state) => state.user);
-  const { messageCounts } = useSelector((state) => state.common);
+  const { messageCounts,selectedChatUser } = useSelector((state) => state.common);
   const dispatch=useDispatch();
   // console.log(id);
   const chatKey = isGroup 
@@ -44,7 +44,7 @@ const ChatCard = ({
 
   return (
     <div
-      className={`flex items-center select-none px-3  py-3 border-b cursor-pointer hover:bg-gray-200`}
+      className={`flex items-center select-none px-3  py-3 border-b cursor-pointer hover:bg-gray-200 ${selectedChatUser?.id === id ? 'bg-gray-300' : '' }`}
       // onClick={() => selectChat({ id, name, avatar, isGroup })}
        onClick={() => {
     selectChat({ id, name, avatar, isGroup });
