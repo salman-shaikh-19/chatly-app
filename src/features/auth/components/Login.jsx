@@ -10,14 +10,15 @@ import { CustomButtonAuth } from "../../../common/components/CustomButton";
 import loginUI from '../../../assets/images/auth/loginUI.png'
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faCommentAlt, faUserLock } from "@fortawesome/free-solid-svg-icons";
+import {  faUserLock } from "@fortawesome/free-solid-svg-icons";
+import LandingPage from "./LandingPage";
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch(); //use to dispatch action
     const { userLoading } = useSelector(state => state.auth);
-  
-const { isGetStarted } = useSelector(state => state.common);
+
+    const { isGetStarted } = useSelector(state => state.common);
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             const userData = { email: values.userEmail, password: values.userPassword };
@@ -47,112 +48,89 @@ const { isGetStarted } = useSelector(state => state.common);
         <>
             {
                 !isGetStarted ?
-                (
-                    <div className="bg-teal-950/80 p-2 bg-teal-750 min-h-screen flex flex-col items-center justify-center text-center overflow-x-hidden  sm:space-y-6">
-                        <div className="flex max-w-3xl bg-white rounded-2xl shadow-lg p-8 sm:flex-row flex-col gap-6 ">
-                            <div className="text-6xl text-teal-600 mx-auto mb-4">
-                                <FontAwesomeIcon icon={faCommentAlt} size="4x"  />
-                                {/* <img src='ChatlLogoByGPT.png' alt='' className="h-100 w-100"/> */}
-                            </div>
-                            <div className="px-4 flex flex-col items-center justify-center select-none ">
-                                <h1 className="text-teal-950 font-bold text-4xl">Welcome to Chatly!</h1>
-                                <p className="my-4 text-gray-600 ">Your ultimate chat application for seamless communication.</p>
-                                <div className="flex gap-4 justify-center">
-                              
-                                    <span onClick={()=>dispatch(setGetStarted(true))} className="bg-white text-teal-600 border border-teal-600 px-6 py-2 rounded-lg shadow hover:bg-teal-200/50 cursor-pointer transition" title="Get Started">
-                                        Get Started
-                                    </span>
-                                   
-                                </div>
-                                {/* <div className="mt-10">
-                                 <span className="text-gray-400 text-sm mt-6 select-none">
-                                    Copyright &copy; 2025 Chatly. All rights reserved.
-                                 </span>
-                                  </div> */}
-                            </div>
-                        </div>
-                    </div>
-                )
-                :
-                (
-                    <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
-                <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
+                    (
+                        <LandingPage onClick={() => dispatch(setGetStarted(true))} />
+                    )
+                    :
+                    (
+                        <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
+                            <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
                 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
-                    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-8">
-                        <img src={loginUI} alt="Login Illustration"
-                            className="rounded-xl select-none pointer-events-none" />
-                    </div>
-
-
-                    <div className="w-full lg:w-1/2 flex items-center justify-center p-10 ">
-
-                        <Formik
-                            initialValues={{ userEmail: '', userPassword: '' }}
-                            validationSchema={Yup.object({
-                                userEmail: Yup.string().email('Email address is invalid').required('Email is required'),
-                                userPassword: Yup.string().required("Password is required")
-                            })}
-                            onSubmit={handleSubmit}
-                        >
-                            <Form className="space-y-5">
-
-                                <h1 className="text-center text-3xl font-bold text-teal-800 mb-6 flex flex-col items-center gap-2">
-                                    <FontAwesomeIcon
-                                        icon={faUserLock}
-                                        className="text-5xl text-teal-600 drop-shadow-sm"
-                                    />
-                                    <span>Sign in to your account</span>
-                                    <p className="text-sm text-gray-500 font-normal">
-                                        Login to continue
-                                    </p>
-                                </h1>
-                                <CustomInputWithError
-                                    inputId="userEmail"
-                                    inputName="userEmail"
-                                    inputLabelText="Email"
-                                    inputPlaceHolder="Enter registered email"
-                                    inputType="email"
-                                    isLabelEnabled={true}
-                                    inputClassName="mb-4 "
-                                />
-                                <CustomPasswordInputWithError
-                                    inputId="userPassword"
-                                    inputName="userPassword"
-                                    inputLabelText="Password"
-                                    inputPlaceHolder="Enter your password"
-                                // inputClassName="mb-3"
-                                />
-                                <div className="mb-3">
-                                    <CustomButtonAuth
-                                        btnText="Login"
-                                        isDisable={userLoading}
-                                        btnClassName="w-full py-3 rounded-xl shadow-md mt-4"
-                                        isLogin={true}
-                                    />
+                                <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-8">
+                                    <img src={loginUI} alt="Login Illustration"
+                                        className="rounded-xl select-none pointer-events-none" />
                                 </div>
-                                <div className="text-center mt-4">
-                                    <p className="text-gray-600 text-sm">
-                                        Don't have an account?{" "}
-                                        <Link
-                                            to="/register"
-                                            className="text-teal-600 font-semibold hover:underline"
-                                        >
-                                            Create one
-                                        </Link>
-                                    </p>
+
+
+                                <div className="w-full lg:w-1/2 flex items-center justify-center p-10 ">
+
+                                    <Formik
+                                        initialValues={{ userEmail: '', userPassword: '' }}
+                                        validationSchema={Yup.object({
+                                            userEmail: Yup.string().email('Email address is invalid').required('Email is required'),
+                                            userPassword: Yup.string().required("Password is required")
+                                        })}
+                                        onSubmit={handleSubmit}
+                                    >
+                                        <Form className="space-y-5">
+
+                                            <h1 className="text-center text-3xl font-bold text-teal-800 mb-6 flex flex-col items-center gap-2">
+                                                <FontAwesomeIcon
+                                                    icon={faUserLock}
+                                                    className="text-5xl text-teal-600 drop-shadow-sm"
+                                                />
+                                                <span>Sign in to your account</span>
+                                                <p className="text-sm text-gray-500 font-normal">
+                                                    Login to continue
+                                                </p>
+                                            </h1>
+                                            <CustomInputWithError
+                                                inputId="userEmail"
+                                                inputName="userEmail"
+                                                inputLabelText="Email"
+                                                inputPlaceHolder="Enter registered email"
+                                                inputType="email"
+                                                isLabelEnabled={true}
+                                                inputClassName="mb-4 "
+                                            />
+                                            <CustomPasswordInputWithError
+                                                inputId="userPassword"
+                                                inputName="userPassword"
+                                                inputLabelText="Password"
+                                                inputPlaceHolder="Enter your password"
+                                            // inputClassName="mb-3"
+                                            />
+                                            <div className="mb-3">
+                                                <CustomButtonAuth
+                                                    btnText="Login"
+                                                    isDisable={userLoading}
+                                                    btnClassName="w-full py-3 rounded-xl shadow-md mt-4"
+                                                    isLogin={true}
+                                                />
+                                            </div>
+                                            <div className="text-center mt-4">
+                                                <p className="text-gray-600 text-sm">
+                                                    Don't have an account?{" "}
+                                                    <Link
+                                                        to="/register"
+                                                        className="text-teal-600 font-semibold hover:underline"
+                                                    >
+                                                        Create one
+                                                    </Link>
+                                                </p>
+                                            </div>
+                                        </Form>
+                                    </Formik>
                                 </div>
-                            </Form>
-                        </Formik>
-                    </div>
-                </div>
-            </div>
-                )
+                            </div>
+                        </div>
+                    )
 
             }
 
-            
+
         </>
     )
 }
