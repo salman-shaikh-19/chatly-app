@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { decryptData, encryptData } from "../common/utils/encryption";
+import { last } from "lodash";
 
 // fetch logged-in user
 export const fetchLoggedInUser = createAsyncThunk(
@@ -59,6 +60,7 @@ export const commonSlice = createSlice({
     loading: false,
     error: null,
     messageCounts:{},
+    lastSeen:{},
   },
   reducers: {
     setTheme(state, action) {
@@ -103,7 +105,15 @@ export const commonSlice = createSlice({
           
           state.messageCounts[chatId] = (state.messageCounts[chatId] || 0) + count;
         }
-    }
+    },
+    setLastSeen(state, action) {
+      const { userId, lastSeen } = action.payload;
+
+        if (!state.lastSeen) {
+          state.lastSeen = {}; // ensure it is always  object
+        }
+          state.lastSeen[userId] = lastSeen;
+    },
 
   },
   extraReducers: (builder) => {
@@ -126,5 +136,5 @@ export const commonSlice = createSlice({
   },
 });
 
-export const { setTheme,  setIsUserLoggedIn,setSelectedChatUser,setTyping,setLoggedInUserDataToNull,setMessageCounts} = commonSlice.actions;
+export const { setTheme,  setIsUserLoggedIn,setSelectedChatUser,setTyping,setLoggedInUserDataToNull,setMessageCounts,setLastSeen} = commonSlice.actions;
 export default commonSlice.reducer;
