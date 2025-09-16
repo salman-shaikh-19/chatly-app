@@ -76,7 +76,7 @@ const GroupChatHeader = ({
           </div>
 
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center  space-x-1">
         {
           isUserInGroup ?
           (
@@ -93,6 +93,7 @@ const GroupChatHeader = ({
           :
           (
              <ChatHeaderAction
+             className="text-lg"
                 onClick={handleGroupDelete}
                 icon={faTrashAlt}
                 title="Delete group from me"
@@ -105,6 +106,7 @@ const GroupChatHeader = ({
             {messages.length > 0 && selectedMsgs.length === 0 && (
 
               <ChatHeaderAction
+               className="text-lg"
                 onClick={handleDeleteAll}
                 icon={faTrashAlt}
                 title="Delete all messages"
@@ -113,6 +115,7 @@ const GroupChatHeader = ({
             {selectedMsgs.length > 0 && isUserInGroup && (
 
               <ChatHeaderAction
+               className="text-lg"
                 onClick={handleSelectedDelete}
                 icon={faTrashAlt}
                 title="Delete selected messages"
@@ -121,8 +124,9 @@ const GroupChatHeader = ({
               </ChatHeaderAction>
             )}
             <ChatHeaderAction
+            
               onClick={goBack}
-              className="lg:hidden md:hidden"
+              className="lg:hidden md:hidden text-lg"
               icon={faArrowCircleLeft}
               title="Back to user list"
             />
