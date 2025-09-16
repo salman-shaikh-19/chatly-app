@@ -3,9 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
 import ChatHeaderAction from "../components/ChatHeaderAction";
+import { useSelector } from "react-redux";
+import dayjs from "dayjs";
+import getLastSeenText from "../../../common/utils/getLastSeen";
+
+
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMsgs, handleSelectedDelete, messages, goBack, typing }) => {
     const userId = selectedChatUser?.id;
-
+    const {lastSeen} =useSelector(state=>state.common);
     return (
         <div className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 bg-teal-950"
         >
@@ -54,8 +59,10 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     />
 
                 </div>
-                <span className="text-gray-400 mx-2 ">
-                    {typing ? `${selectedChatUser.name} Typing.....` : onlineUsers.includes(selectedChatUser.id) ? 'Online' : 'Offline'}</span>
+                <span className="text-gray-400 mx-2 select-none   text-xs ">
+                    {typing ? `${selectedChatUser.name} Typing.....` : onlineUsers.includes(selectedChatUser.id) ? 'Online' : lastSeen?.[selectedChatUser?.id]
+                        ? <span className=""> last seen {getLastSeenText(lastSeen[selectedChatUser.id])}</span>
+                        : 'Offline'}</span>
             </div>
         </div>
     )
