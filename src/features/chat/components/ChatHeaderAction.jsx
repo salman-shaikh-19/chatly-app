@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
-const commonActionStyle = "text-white border p-0.5 rounded-sm hover:text-gray-500 cursor-pointer";
+const commonActionStyle = "flex items-center text-white border p-0.5 rounded-sm hover:text-gray-500 cursor-pointer";
 
 
 const ChatHeaderAction = ({ 
