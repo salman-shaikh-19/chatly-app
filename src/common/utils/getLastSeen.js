@@ -50,7 +50,10 @@ function getLastSeenText(time) {
 
  function getLastMsgTime(time) {
   const msgTime = dayjs(time);
+   const diffSeconds = dayjs().diff(msgTime, "second");
 
+  if (diffSeconds < 10) return "just now";                // within 10s
+  if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
   if (msgTime.isToday()) {
     return msgTime.format("h:mm A"); // like 3:45 PM
   }
