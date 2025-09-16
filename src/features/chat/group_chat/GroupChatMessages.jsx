@@ -245,7 +245,9 @@ const usersMap = useMemo(() => {
                   &&
                     <div className="text-xs flex flex-col items-center justify-center">
                   <ChatCommonLabel key={i}>
-                    {userObj?.name} was added 
+{/*                     {userObj?.name} was added  */}
+                    {userObj?.name} was added By {creatorId==Number(loggedInUserId) ? "You" : (usersMap.get(creatorId)?.name || "Unknown")}
+
                   </ChatCommonLabel>
                 </div>
                   
