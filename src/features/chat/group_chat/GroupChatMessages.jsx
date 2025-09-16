@@ -127,6 +127,7 @@
 // };
 
 // export default React.memo(GroupChatMessages);
+
 import React, { useCallback, useMemo } from "react";
 import GroupChatMessage from "./GroupChatMessage";
 import dayjs from "dayjs";
@@ -168,22 +169,7 @@ const GroupChatMessages = ({
 
   const creatorId = currentGroup ? Number(currentGroup.createdBy) : null;
 
-  // Generate proper system message for "user added"
-  const getUserAddedMessage = (userId, addedById) => {
-    const userName = usersMap.get(Number(userId))?.name || "Unknown";
-
-    if (userId === addedById) {
-      return `${userName} joined the group`;
-    } else {
-      const addedByName =
-        addedById === Number(loggedInUserId)
-          ? "You"
-          : usersMap.get(addedById)?.name || "Unknown";
-      return `${userName} was added by ${addedByName}`;
-    }
-  };
-
-  // Combine messages and user-added events chronologically
+  // ✅ Combine messages and "user added" events
   const combinedEvents = useMemo(() => {
     if (!currentGroup) return [];
 
@@ -193,27 +179,26 @@ const GroupChatMessages = ({
         type: "added",
         userId: u.userId,
         timestamp: u.joinedAt,
-        addedBy: creatorId,
       }));
 
     const msgEvents = messages.map((m) => ({ type: "message", message: m }));
 
-    const allEvents = [...msgEvents, ...addedEvents];
+    const allEvents = [...addedEvents, ...msgEvents];
 
     allEvents.sort(
       (a, b) => dayjs(a.timestamp).unix() - dayjs(b.timestamp).unix()
     );
 
     return allEvents;
-  }, [messages, currentGroup, creatorId]);
+  }, [currentGroup, messages, creatorId]);
 
   return (
     <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
       {currentGroup && (
-        <div className="text-xs flex flex-col items-center justify-center mb-2">
+        <div className="text-xs flex flex-col items-center justify-center">
           <ChatCommonLabel>
             {currentGroup?.groupName} was created on{" "}
-            {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} by{" "}
+            {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} By{" "}
             {creatorId === Number(loggedInUserId)
               ? "You"
               : usersMap.get(creatorId)?.name || "Unknown"}
@@ -231,25 +216,25 @@ const GroupChatMessages = ({
 
         return (
           <React.Fragment key={index}>
-            {/* Date Badge */}
             {showDateBadge && (
-              <div className="text-xs flex items-center justify-center my-1">
+              <div className="text-xs flex items-center justify-center">
                 <ChatCommonLabel>
                   <ChatCommonDateLabel timestamp={event.timestamp} />
                 </ChatCommonLabel>
               </div>
             )}
 
-            {/* User Added Badge */}
             {event.type === "added" && (
-              <div className="text-xs flex flex-col items-center justify-center my-1">
+              <div className="text-xs flex flex-col items-center justify-center">
                 <ChatCommonLabel>
-                  {getUserAddedMessage(event.userId, event.addedBy)}
+                  {usersMap.get(Number(event.userId))?.name} was added By{" "}
+                  {creatorId === Number(loggedInUserId)
+                    ? "You"
+                    : usersMap.get(creatorId)?.name || "Unknown"}
                 </ChatCommonLabel>
               </div>
             )}
 
-            {/* Message */}
             {event.type === "message" && (
               <GroupChatMessage
                 msg={event.message}
@@ -270,7 +255,6 @@ const GroupChatMessages = ({
         );
       })}
 
-      {/* Typing Indicator */}
       {typing && typingUserNames?.length > 0 && (
         <div className="text-gray-500 italic text-sm mt-auto">
           {typingUserNames.length === 1
@@ -289,5 +273,6 @@ const GroupChatMessages = ({
 };
 
 export default React.memo(GroupChatMessages);
+
 
 
