@@ -66,7 +66,7 @@ const ChatCard = ({
 
       <div className="w-full ml-2 overflow-hidden">
         <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">{name}</span>
+          <span className="font-semibold truncate max-w-[140px] text-gray-600">{name}</span>
           <span className="text-sm text-gray-500">
             {lastMsgTime ? dayjs(lastMsgTime).format("hh:mm A") : ""}
           </span>
