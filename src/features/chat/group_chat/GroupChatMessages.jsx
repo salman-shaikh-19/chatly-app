@@ -168,7 +168,22 @@ const GroupChatMessages = ({
 
   const creatorId = currentGroup ? Number(currentGroup.createdBy) : null;
 
-  // ✅ Combine messages and "user added" events
+  // Generate proper system message for "user added"
+  const getUserAddedMessage = (userId, addedById) => {
+    const userName = usersMap.get(Number(userId))?.name || "Unknown";
+
+    if (userId === addedById) {
+      return `${userName} joined the group`;
+    } else {
+      const addedByName =
+        addedById === Number(loggedInUserId)
+          ? "You"
+          : usersMap.get(addedById)?.name || "Unknown";
+      return `${userName} was added by ${addedByName}`;
+    }
+  };
+
+  // Combine messages and user-added events chronologically
   const combinedEvents = useMemo(() => {
     if (!currentGroup) return [];
 
@@ -178,26 +193,27 @@ const GroupChatMessages = ({
         type: "added",
         userId: u.userId,
         timestamp: u.joinedAt,
+        addedBy: creatorId,
       }));
 
     const msgEvents = messages.map((m) => ({ type: "message", message: m }));
 
-    const allEvents = [...addedEvents, ...msgEvents];
+    const allEvents = [...msgEvents, ...addedEvents];
 
     allEvents.sort(
       (a, b) => dayjs(a.timestamp).unix() - dayjs(b.timestamp).unix()
     );
 
     return allEvents;
-  }, [currentGroup, messages, creatorId]);
+  }, [messages, currentGroup, creatorId]);
 
   return (
     <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
       {currentGroup && (
-        <div className="text-xs flex flex-col items-center justify-center">
+        <div className="text-xs flex flex-col items-center justify-center mb-2">
           <ChatCommonLabel>
             {currentGroup?.groupName} was created on{" "}
-            {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} By{" "}
+            {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} by{" "}
             {creatorId === Number(loggedInUserId)
               ? "You"
               : usersMap.get(creatorId)?.name || "Unknown"}
@@ -215,26 +231,25 @@ const GroupChatMessages = ({
 
         return (
           <React.Fragment key={index}>
+            {/* Date Badge */}
             {showDateBadge && (
-              <div className="text-xs flex items-center justify-center">
+              <div className="text-xs flex items-center justify-center my-1">
                 <ChatCommonLabel>
                   <ChatCommonDateLabel timestamp={event.timestamp} />
                 </ChatCommonLabel>
               </div>
             )}
 
+            {/* User Added Badge */}
             {event.type === "added" && (
-              <div className="text-xs flex flex-col items-center justify-center">
+              <div className="text-xs flex flex-col items-center justify-center my-1">
                 <ChatCommonLabel>
-                  {usersMap.get(Number(event.userId))?.name} was added
-{/*                   {creatorId === Number(loggedInUserId)
-                    ? "You"
-                    // : usersMap.get(creatorId)?.name || "Unknown"}
-                    : 'Admin'} */}
+                  {getUserAddedMessage(event.userId, event.addedBy)}
                 </ChatCommonLabel>
               </div>
             )}
 
+            {/* Message */}
             {event.type === "message" && (
               <GroupChatMessage
                 msg={event.message}
@@ -255,6 +270,7 @@ const GroupChatMessages = ({
         );
       })}
 
+      {/* Typing Indicator */}
       {typing && typingUserNames?.length > 0 && (
         <div className="text-gray-500 italic text-sm mt-auto">
           {typingUserNames.length === 1
