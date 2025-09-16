@@ -205,6 +205,7 @@ const handleAddGroupMember = useCallback(async () => {
     return (
         <div className="relative z-50">
             <ChatHeaderAction
+             className="text-lg"
                 onClick={() => setOpenGroupDetail(prev => !prev)}
                 icon={faUsers}
                 aria-haspopup="true"
