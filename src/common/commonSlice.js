@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { decryptData, encryptData } from "../common/utils/encryption";
 import { last } from "lodash";
 
-// fetch logged-in user
+// fetch logged-in user 
 export const fetchLoggedInUser = createAsyncThunk(
   "common/fetchLoggedInUser",
   async (_, { rejectWithValue }) => {
