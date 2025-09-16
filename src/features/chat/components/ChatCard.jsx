@@ -5,6 +5,7 @@ import resolveName from "../../../common/utils/resolveName";
 import { useDispatch, useSelector } from "react-redux";
 import { getChatId } from "../../../common/utils/getChatId";
 import { setMessageCounts } from "../../../common/commonSlice";
+import {getLastMsgTime} from "../../../common/utils/getLastSeen";
 
 const ChatCard = ({
   id,
@@ -47,10 +48,10 @@ const ChatCard = ({
       className={`flex items-center select-none px-3  py-3 border-b cursor-pointer hover:bg-gray-200 ${selectedChatUser?.id === id ? 'bg-gray-300' : '' }`}
       // onClick={() => selectChat({ id, name, avatar, isGroup })}
        onClick={() => {
-    selectChat({ id, name, avatar, isGroup });
-    
-    dispatch(setMessageCounts({ chatId: chatKey, count: 0 }));
-  }}
+            selectChat({ id, name, avatar, isGroup });
+            
+            dispatch(setMessageCounts({ chatId: chatKey, count: 0 }));
+          }}
     >
    <div className="relative flex-shrink-0 w-16 h-16 flex items-center justify-center">
   <CommonAvatar avatar={avatar} avatarClassName={`h-13 w-13  ${!isGroup && online ? ' p-0.5 bg-green-800' : 'p-0.5 bg-gray-400' }`} />
@@ -68,7 +69,7 @@ const ChatCard = ({
         <div className="flex justify-between">
           <span className="font-semibold truncate max-w-[140px] text-gray-600">{name}</span>
           <span className="text-sm text-gray-500">
-            {lastMsgTime ? dayjs(lastMsgTime).format("hh:mm A") : ""}
+            {lastMsgTime ? getLastMsgTime( lastMsgTime) : ""}
           </span>
         </div>
         <div className="flex justify-between">
