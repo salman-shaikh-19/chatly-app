@@ -115,7 +115,7 @@ const GroupChatHeader = ({
             {selectedMsgs.length > 0 && isUserInGroup && (
 
               <ChatHeaderAction
-               className="text-lg"
+               className="text-md"
                 onClick={handleSelectedDelete}
                 icon={faTrashAlt}
                 title="Delete selected messages"
