@@ -207,6 +207,37 @@ const usersMap = useMemo(() => {
           </div>
         )
       }
+            {
+              currentGroup.groupUsers.map((user, i) => {
+                // console.log(currentGroup);
+                
+                const userObj = usersMap.get(Number(user.userId));
+                // console.log(userObj);
+                    if (!userObj) return null;
+                 if (Number(user.userId) === creatorId) return null;
+
+                return (
+                  // <span key={i} className="text-gray-500 my-1 px-3 py-1 rounded-md bg-white">
+                  //   {userObj?.name} was added on {dayjs(user.joinedAt).format("MMM D, YYYY")}
+                  // </span>
+                
+                  // dayjs(user.joinedAt).isAfter(dayjs(currentGroup?.createdAt), "day")
+                  !dayjs(currentGroup?.createdAt).isSame(dayjs(user.joinedAt)) && 
+                  dayjs(user.joinedAt).isSame(dayjs(msg.timestamp), "day")
+
+                  &&
+                    <div className="text-xs flex flex-col items-center justify-center">
+                  <ChatCommonLabel key={i}>
+                    {userObj?.name} was added By {creatorId==Number(loggedInUserId) ? "You" : (usersMap.get(creatorId)?.name || "Unknown")}
+
+                  </ChatCommonLabel>
+                </div>
+                  
+                  
+
+                )
+              })
+            }
       {messages.length > 0 ? (
         messages.map((msg, index) => {
           const prevMsg = index > 0 ? messages[index - 1] : null;
@@ -225,37 +256,7 @@ const usersMap = useMemo(() => {
                   
 
                 </div>
-                   {
-              currentGroup.groupUsers.map((user, i) => {
-
-                const userObj = usersMap.get(Number(user.userId));
-                // console.log(userObj);
-                    if (!userObj) return null;
-                 if (Number(user.userId) === creatorId) return null;
-
-                return (
-                  // <span key={i} className="text-gray-500 my-1 px-3 py-1 rounded-md bg-white">
-                  //   {userObj?.name} was added on {dayjs(user.joinedAt).format("MMM D, YYYY")}
-                  // </span>
-                
-                  // dayjs(user.joinedAt).isAfter(dayjs(currentGroup?.createdAt), "day")
-                  !dayjs(currentGroup?.createdAt).isSame(dayjs(user.joinedAt)) && 
-                  dayjs(user.joinedAt).isSame(dayjs(msg.timestamp), "day")
-
-                  &&
-                    <div className="text-xs flex flex-col items-center justify-center">
-                  <ChatCommonLabel key={i}>
-{/*                     {userObj?.name} was added  */}
-                    {userObj?.name} was added By {creatorId==Number(loggedInUserId) ? "You" : (usersMap.get(creatorId)?.name || "Unknown")}
-
-                  </ChatCommonLabel>
-                </div>
-                  
-                  
-
-                )
-              })
-            }
+             
                 </>
                 
               )}
