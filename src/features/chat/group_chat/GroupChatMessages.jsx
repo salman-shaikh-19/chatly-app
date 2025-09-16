@@ -207,6 +207,25 @@ const usersMap = useMemo(() => {
           </div>
         )
       }
+      {messages.length > 0 ? (
+        messages.map((msg, index) => {
+          const prevMsg = index > 0 ? messages[index - 1] : null;
+          const showDateBadge = !prevMsg || !dayjs(prevMsg.timestamp).isSame(msg.timestamp, "day");
+          const isMsgEditAndDeletable = isEditOrDeletable(msg.timestamp);
+          return (
+            <React.Fragment key={`group-msg-${msg.messageId}-${index}`}>
+              {showDateBadge && (
+                <>
+                <div className="text-xs flex items-center justify-center">
+                  <ChatCommonLabel>
+                   
+                   <ChatCommonDateLabel timestamp={msg.timestamp}/>
+              
+                  </ChatCommonLabel>
+                  
+
+                </div>
+             
             {
               currentGroup.groupUsers.map((user, i) => {
                 // console.log(currentGroup);
@@ -238,25 +257,6 @@ const usersMap = useMemo(() => {
                 )
               })
             }
-      {messages.length > 0 ? (
-        messages.map((msg, index) => {
-          const prevMsg = index > 0 ? messages[index - 1] : null;
-          const showDateBadge = !prevMsg || !dayjs(prevMsg.timestamp).isSame(msg.timestamp, "day");
-          const isMsgEditAndDeletable = isEditOrDeletable(msg.timestamp);
-          return (
-            <React.Fragment key={`group-msg-${msg.messageId}-${index}`}>
-              {showDateBadge && (
-                <>
-                <div className="text-xs flex items-center justify-center">
-                  <ChatCommonLabel>
-                   
-                   <ChatCommonDateLabel timestamp={msg.timestamp}/>
-              
-                  </ChatCommonLabel>
-                  
-
-                </div>
-             
                 </>
                 
               )}
