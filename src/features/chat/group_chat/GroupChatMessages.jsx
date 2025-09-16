@@ -226,10 +226,11 @@ const GroupChatMessages = ({
             {event.type === "added" && (
               <div className="text-xs flex flex-col items-center justify-center">
                 <ChatCommonLabel>
-                  {usersMap.get(Number(event.userId))?.name} was added By{" "}
-                  {creatorId === Number(loggedInUserId)
+                  {usersMap.get(Number(event.userId))?.name} was added
+{/*                   {creatorId === Number(loggedInUserId)
                     ? "You"
-                    : usersMap.get(creatorId)?.name || "Unknown"}
+                    // : usersMap.get(creatorId)?.name || "Unknown"}
+                    : 'Admin'} */}
                 </ChatCommonLabel>
               </div>
             )}
