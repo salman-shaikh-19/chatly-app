@@ -45,7 +45,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     {
                         selectedMsgs.length > 0 && (
                             <ChatHeaderAction
-                             className=""
+                             className="text-md"
                                 icon={faTrashAlt}
                                 onClick={handleSelectedDelete}
                                 title="Delete selected messages"
