@@ -21,7 +21,8 @@ import {
   deleteAllGroupMessages,
   leaveGroup,
   removeUserFromGroup,
-  addGroupUser
+  addGroupUser,
+  setDisappearingMessagesForChat
 } from "../chatSlice";
 import _ from "lodash";
 import ChatWindow from "../private_chat/ChatWindow"
@@ -334,7 +335,9 @@ socket.on("groupUpdate", (data) => {
   }
 });
 
-
+socket.on('disappearingMessageChat', ({ chatId, expiryTime, isGroup }) => {
+  dispatch(setDisappearingMessagesForChat({ chatId, expiryTime }));
+});
 
     socket.on("deleteGroupMessage", ({ groupId, messageId, isDeleted, deletedAt }) => {
       dispatch(softDeleteGroupMessage({ groupId, messageId, isDeleted, deletedAt }));
