@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { getChatId } from "../../common/utils/getChatId";
+import { set } from "lodash";
 // const getChatId = (user1, user2) => {
 //   return [user1, user2].sort().join("_"); // e.g. "1_3"
 // };
@@ -11,8 +12,27 @@ export const chatSlice = createSlice({
     groups: {},
     groupMessages: {},
     // unreadMessages: {}
+    disappearingMessagesChats: {} // { chatId: expiryTime}
   },
   reducers: {
+
+    setDisappearingMessagesForChat(state, action) {
+      const { chatId, expiryTime } = action.payload;
+
+      // enusre object exist
+      if (!state.disappearingMessagesChats) {
+        state.disappearingMessagesChats = {};
+      }
+
+      if (expiryTime) {
+        state.disappearingMessagesChats[chatId] = expiryTime;
+      } else {
+        if (state.disappearingMessagesChats[chatId]) {
+          delete state.disappearingMessagesChats[chatId];
+        }
+      }
+    },
+
     addMessage(state, action) {
       const { loggedInUserId, userId, message } = action.payload;
 
@@ -107,7 +127,7 @@ export const chatSlice = createSlice({
         groupAvatar: groupDetails.groupAvatar,
         createdBy: groupDetails.createdBy,
         createdAt: groupDetails.createdAt,
-        type:groupDetails.type,
+        type: groupDetails.type,
         updatedAt: groupDetails.updatedAt,
         groupUsers: groupDetails.groupUsers
       };
@@ -194,7 +214,7 @@ export const chatSlice = createSlice({
       if (!state.groups[groupId]) return;
 
       // remove user from groupUsers
-      state.groups[groupId].groupUsers = 
+      state.groups[groupId].groupUsers =
         state.groups[groupId].groupUsers.filter(u => u.userId !== userId);
 
       // update the group updatedAt timestamp
@@ -209,7 +229,7 @@ export const chatSlice = createSlice({
       if (!state.groups[groupId]) return;
 
       // remove user from groupUsers
-      state.groups[groupId].groupUsers = 
+      state.groups[groupId].groupUsers =
         state.groups[groupId].groupUsers.filter(u => u.userId !== userId);
 
       // if the user is an admin and there are other users, assign a new admin
@@ -240,29 +260,30 @@ export const chatSlice = createSlice({
 
       // Update the group's updatedAt timestamp
       state.groups[groupId].updatedAt = new Date().toISOString();
-    },  
+    },
   },
 
 });
 
 
-export const { 
-  addMessage, 
-  clearMessages, 
-  deleteSelectedMessages, 
-  deleteMessage, 
-  addGroup, 
-  addGroupMessage, 
-  updateGroupMessage, 
-  softDeleteGroupMessage, 
-  deleteGroupMessage, 
-  deleteAllGroupMessages, 
-  deleteGroup, 
-  deleteAllMessages, 
-  updateMessage, 
+export const {
+  setDisappearingMessagesForChat,
+  addMessage,
+  clearMessages,
+  deleteSelectedMessages,
+  deleteMessage,
+  addGroup,
+  addGroupMessage,
+  updateGroupMessage,
+  softDeleteGroupMessage,
+  deleteGroupMessage,
+  deleteAllGroupMessages,
+  deleteGroup,
+  deleteAllMessages,
+  updateMessage,
   softDeleteFromAll,
   leaveGroup,
-  removeUserFromGroup ,
+  removeUserFromGroup,
   addGroupUser
 
 } = chatSlice.actions;
