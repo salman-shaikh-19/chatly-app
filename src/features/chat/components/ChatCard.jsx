@@ -112,9 +112,10 @@ import { setMessageCounts } from "../../../common/commonSlice";
 import { getLastMsgTime } from "../../../common/utils/getLastSeen";
 import { deleteAllGroupMessages, deleteAllMessages, setDisappearingMessagesForChat } from "../chatSlice";
 import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
-import ChatMessageDisappearingModal from "./ChatMessageDisappearingModal";
+
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ChatMessageDisappearingModal from "./ChatMessageDisappearingModal";
 
 const ChatCard = ({
   id,
@@ -185,22 +186,49 @@ const ChatCard = ({
       const hoursMap = { "24hours": 24, "7days": 168, "90days": 2160 }; // hours
       expiryTime = dayjs().add(hoursMap[value], "hour").toISOString();
     }
+    // console.log("hii",socket);
+    
 
+    // if (isGroup) {
+    //   // console.log(groupUsers);
+      
+    //   socket.emit("disappearingMessageChat", {
+    //     chatId: chatKey,
+    //     expiryTime,
+    //     isGroup: true,
+    //     groupUsers
+    //   });
+    // } else {
+    //   socket.emit("disappearingMessageChat", {
+    //     chatId: chatKey,
+    //     expiryTime,
+    //     isGroup: false,
+    //     groupUsers: []
+    //   });
+    // }
+    // console.log("users",groupUsers);
+    // console.log("users",chatKey,expiryTime,isGroup);
+      if (socket) {
+        console.log("users",groupUsers);
+        
     if (isGroup) {
-      socket.emit("disappearingMessageChat", {
+      socket.current.emit("disappearingMessageChat", {
         chatId: chatKey,
         expiryTime,
         isGroup: true,
         groupUsers
       });
     } else {
-      socket.emit("disappearingMessageChat", {
+      socket.current.emit("disappearingMessageChat", {
         chatId: chatKey,
         expiryTime,
         isGroup: false,
         groupUsers: []
       });
     }
+  } else {
+    console.warn("Socket is not connected yet");
+  }
 
 
     dispatch(setDisappearingMessagesForChat({ chatId: chatKey, expiryTime }));
