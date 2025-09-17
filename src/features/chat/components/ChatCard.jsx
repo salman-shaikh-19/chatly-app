@@ -112,7 +112,7 @@ import { setMessageCounts } from "../../../common/commonSlice";
 import { getLastMsgTime } from "../../../common/utils/getLastSeen";
 import { deleteAllGroupMessages, deleteAllMessages, setDisappearingMessagesForChat } from "../chatSlice";
 import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
-import ChatMessageDisapperaingModal from "./ChatMessageDisapperaingModal";
+import ChatMessageDisappearingModal from "./ChatMessageDisappearingModal";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -306,7 +306,7 @@ const ChatCard = ({
       </div>
 
       {showTimerModal && (
-        <ChatMessageDisapperaingModal
+        <ChatMessageDisappearingModal
           onClose={() => setShowTimerModal(false)}
           onSelectTimer={handleTimerSelect}
           oldTimer={getOldTimerKey(disappearingMessagesChats?.[chatKey])}
