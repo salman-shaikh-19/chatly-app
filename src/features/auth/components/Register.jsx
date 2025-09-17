@@ -5,18 +5,24 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../authSlice";
 import { toast } from "react-toastify";
-import { fetchLoggedInUser, setGetStarted, setIsUserLoggedIn } from "../../../common/commonSlice";
+// import { fetchLoggedInUser, setGetStarted, setIsUserLoggedIn } from "../../../common/commonSlice";
 import { CustomButtonAuth } from "../../../common/components/CustomButton";
 import registerUI from '../../../assets/images/auth/registerUI.png'
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserEdit, faUserLock } from "@fortawesome/free-solid-svg-icons";
-import LandingPage from "./LandingPage";
+import { useEffect } from "react";
+// import LandingPage from "./LandingPage";
 const Regsiter = () => {
     const dispatch = useDispatch(); //use to dispatch action
     const { userLoading } = useSelector(state => state.auth);
     const { isGetStarted } = useSelector(state => state.common);
     const navigate = useNavigate();
+      useEffect(() => {
+            if (isGetStarted === false) {
+                navigate("/get-started");
+            }
+        }, [isGetStarted, navigate]);
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             const userData = { email: values.userEmail, password: values.userPassword, name: values.userName, avatar: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D" };
@@ -48,15 +54,11 @@ const Regsiter = () => {
     return (
         <>
             {
-                !isGetStarted ?
-                    (
-                        <LandingPage onClick={() => dispatch(setGetStarted(true))} />
-                    )
-                    :
+              
                     (
                         <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
                             <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
-                rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
+                             rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
 
