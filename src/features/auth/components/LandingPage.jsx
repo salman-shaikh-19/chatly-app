@@ -34,10 +34,11 @@
 import { faA, faArrowRight, faCommentAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import InstallApp from "./InstallApp";
 
 const LandingPage = ({ onClick }) => {
     return (
-        <div className="relative  p-2 bg-teal-750 min-h-screen flex flex-col  items-center justify-center text-center overflow-x-hidden  sm:space-y-6">
+        <div className="relative  p-2 bg-teal-750 min-h-screen flex flex-col   items-center justify-center text-center overflow-x-hidden  sm:space-y-6">
             {/* <div className="relative min-h-screen flex items-center justify-center overflow-hidden"> */}
             {/* bg design */}
             <div className="absolute inset-0 -z-10">
@@ -49,18 +50,22 @@ const LandingPage = ({ onClick }) => {
             </div>
 
             <div className="flex max-w-3xl bg-white rounded-2xl shadow-lg p-8 sm:flex-row flex-col gap-6 ">
-                <div className="text-6xl text-teal-600 mx-auto mb-4 ">
-                    <FontAwesomeIcon icon={faCommentAlt} size="4x" className="fa-bounce" />
+                <div className="text-6xl text-teal-600 mx-auto mb-4 animate-bounce ">
+                    <FontAwesomeIcon icon={faCommentAlt} size="4x"  />
                     {/* <img src='ChatlLogoByGPT.png' alt='' className="h-100 w-100"/> */}
                 </div>
                 <div className="px-4 flex flex-col items-center justify-center select-none ">
                     <h1 className="text-teal-950 font-bold text-4xl">Welcome to Chatly!</h1>
                     <p className="my-4 text-gray-600  ">Connect, chat, and share moments with friends and communities in real-time. Your conversations, your way!</p>
-                    <div className="flex gap-4 items-center ">
+                    <div className="flex gap-4 items-center sm:flex-row flex-col ">
 
                         <span onClick={onClick} className=" text-white border bg-teal-950  px-6 py-2 rounded-lg shadow hover:bg-teal-800 hover:text-white hover:border-0 cursor-pointer transition" title="Get Started">
                             Get Started <FontAwesomeIcon icon={faArrowRight} className="ml-2" fade />
                         </span>
+                           <InstallApp className={"text-black border border-gray-200 bg-gray-200  px-6 py-2 rounded-lg shadow hover:bg-gray-800 hover:text-white hover:border-0 cursor-pointer transition"} />
+                   
+                   
+                        
 
                     </div>
                     {/* <div className="mt-10">
