@@ -37,7 +37,7 @@ import React from "react";
 
 const LandingPage = ({ onClick }) => {
     return (
-        <div className="relative  p-2 bg-teal-750 min-h-screen flex flex-col justify-center items-center justify-center text-center overflow-x-hidden  sm:space-y-6">
+        <div className="relative  p-2 bg-teal-750 min-h-screen flex flex-col  items-center justify-center text-center overflow-x-hidden  sm:space-y-6">
             {/* <div className="relative min-h-screen flex items-center justify-center overflow-hidden"> */}
             {/* bg design */}
             <div className="absolute inset-0 -z-10">
