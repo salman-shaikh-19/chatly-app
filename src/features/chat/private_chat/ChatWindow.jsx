@@ -168,6 +168,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         typing={typing}
         handleSelectedDelete={handleSelectedDelete}
         selectedMsgs={selectedMsgs}
+        loggedInUserId={loggedInUserId}
       />
       
       <ChatMessages
