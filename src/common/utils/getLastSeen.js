@@ -14,11 +14,11 @@ function getLastSeenText(time) {
   {
     return 'just now'; // within 10 seconds
   }
-  if (diffSeconds < 60)
-  {
-    // return 'few seconds ago';
-    return `${diffSeconds} seconds ago`;  // like 45 seconds ago or 20 seconds ago etc
-  }
+  // if (diffSeconds < 60)
+  // {
+  //   // return 'few seconds ago';
+  //   return `${diffSeconds} seconds ago`;  // like 45 seconds ago or 20 seconds ago etc
+  // }
    
   if (dayjs(time).isToday()) {
     return `today at ${dayjs(time).format('h:mm A')}`;
@@ -50,10 +50,11 @@ function getLastSeenText(time) {
 
  function getLastMsgTime(time) {
   const msgTime = dayjs(time);
+
    const diffSeconds = dayjs().diff(msgTime, "second");
 
   if (diffSeconds < 10) return "just now";                // within 10s
-  if (diffSeconds < 60) return `${diffSeconds} seconds ago`;
+  // if (diffSeconds < 60) return `${diffSeconds} seconds ago`; // like 45 seconds ago or 20 seconds ago etc
   if (msgTime.isToday()) {
     return msgTime.format("h:mm A"); // like 3:45 PM
   }
