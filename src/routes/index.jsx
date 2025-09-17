@@ -5,6 +5,7 @@ import Register from "../features/auth/components/Register";
 import MainChat from "../features/chat/components/MainChat";
 import UnAuthorized from "../common/components/UnAuthorized";
 import NotFoundPage from "../common/components/NotFoundPage";
+import ShowLandingPage from "../features/auth/components/ShowLandingPage";
 
 const AppRoutes = () => {
     return (
@@ -19,6 +20,12 @@ const AppRoutes = () => {
             <Route path="/register" element={
                 <ProtectedRoute publicOnly={true}>
                     <Register />
+                </ProtectedRoute>
+            }
+            />
+              <Route path="/get-started" element={
+                <ProtectedRoute publicOnly={true}>
+                    <ShowLandingPage />
                 </ProtectedRoute>
             }
             />
