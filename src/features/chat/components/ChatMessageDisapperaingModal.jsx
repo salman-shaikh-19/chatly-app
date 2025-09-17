@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 
-const ChatMessageDisappearingModal = ({ onClose, onSelectTimer, oldTimer = "off" }) => {
+const ChatMessageDisapperaingModal = ({ onClose, onSelectTimer, oldTimer = "off" }) => {
   const [selectedTimer, setSelectedTimer] = useState(oldTimer);
   const modalRef = useRef();
 
@@ -84,4 +84,4 @@ const ChatMessageDisappearingModal = ({ onClose, onSelectTimer, oldTimer = "off"
   );
 };
 
-export default React.memo(ChatMessageDisappearingModal);
+export default React.memo(ChatMessageDisapperaingModal);
