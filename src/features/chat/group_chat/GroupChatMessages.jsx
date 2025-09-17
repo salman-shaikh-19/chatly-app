@@ -30,43 +30,46 @@ const GroupChatMessages = ({
   }, [setSelectedMsgs]);
   const { users } = useSelector(state => state.user);
   // console.log(currentGroup);
-const usersMap = useMemo(() => {
-  const map = new Map();
-  users.forEach(u => map.set(u.id, u));
-  return map;
-}, [users]);
-// console.log(currentGroup);
+  const usersMap = useMemo(() => {
+    const map = new Map();
+    users.forEach(u => map.set(u.id, u));
+    return map;
+  }, [users]);
+  // console.log(currentGroup);
   const creatorId = currentGroup ? Number(currentGroup.createdBy) : null;
-  
+
   return (
     <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
       {
         currentGroup && (
           <div className="text-xs flex flex-col items-center justify-center">
             <ChatCommonLabel>
-              {currentGroup?.groupName} was created on {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} By {creatorId==Number(loggedInUserId) ? "You" : (usersMap.get(creatorId)?.name || "Unknown")}
+              {currentGroup?.groupName} was created on {dayjs(currentGroup?.createdAt).format("MMM D, YYYY")} By {creatorId == Number(loggedInUserId) ? "You" : (usersMap.get(creatorId)?.name || "Unknown")}
 
             </ChatCommonLabel>
 
 
             {
-              currentGroup.groupUsers.map((user, i) => {
+              messages.length === 0 && currentGroup.groupUsers.map((user, i) => {
 
                 const userObj = usersMap.get(Number(user.userId));
                 // console.log(userObj);
-                    if (!userObj) return null;
-                 if (Number(user.userId) === creatorId) return null;
+                if (!userObj) return null;
+                if (Number(user.userId) === creatorId) return null;
 
                 return (
                   // <span key={i} className="text-gray-500 my-1 px-3 py-1 rounded-md bg-white">
                   //   {userObj?.name} was added on {dayjs(user.joinedAt).format("MMM D, YYYY")}
                   // </span>
-                
+
+                  // !dayjs(user.joinedAt).isAfter(dayjs(currentGroup?.createdAt), "day")
+                  // &&
                   <ChatCommonLabel key={i}>
                     {userObj?.name} was added on {dayjs(user.joinedAt).format("MMM D, YYYY")}
                   </ChatCommonLabel>
-                  
-                  
+
+
+
 
                 )
               })
@@ -82,14 +85,49 @@ const usersMap = useMemo(() => {
           return (
             <React.Fragment key={`group-msg-${msg.messageId}-${index}`}>
               {showDateBadge && (
-                <div className="text-xs flex items-center justify-center">
-                  <ChatCommonLabel>
-                   
-                   <ChatCommonDateLabel timestamp={msg.timestamp}/>
-              
-                  </ChatCommonLabel>
+                <>
+                  <div className="text-xs flex items-center justify-center">
+                    <ChatCommonLabel>
 
-                </div>
+                      <ChatCommonDateLabel timestamp={msg.timestamp} />
+
+                    </ChatCommonLabel>
+
+
+                  </div>
+                  {
+                    currentGroup.groupUsers.map((user, i) => {
+                      // console.log(currentGroup);
+
+                      const userObj = usersMap.get(Number(user.userId));
+                      // console.log(userObj);
+                      if (!userObj) return null;
+                      if (Number(user.userId) === creatorId) return null;
+
+                      return (
+                        // <span key={i} className="text-gray-500 my-1 px-3 py-1 rounded-md bg-white">
+                        //   {userObj?.name} was added on {dayjs(user.joinedAt).format("MMM D, YYYY")}
+                        // </span>
+
+                        // dayjs(user.joinedAt).isAfter(dayjs(currentGroup?.createdAt), "day")
+                        // !dayjs(currentGroup?.createdAt).isSame(dayjs(user.joinedAt)) &&
+                        dayjs(user.joinedAt).isSame(dayjs(msg.timestamp), "day")
+
+                        &&
+                        <div className="text-xs flex flex-col items-center justify-center">
+                          <ChatCommonLabel key={i}>
+                            {userObj?.name} was added
+
+                          </ChatCommonLabel>
+                        </div>
+
+
+
+                      )
+                    })
+                  }
+                </>
+
               )}
 
               <GroupChatMessage
@@ -104,13 +142,16 @@ const usersMap = useMemo(() => {
                 selectionMode={selectedMsgs.length > 0}
                 currentGroup={currentGroup}
               />
+
             </React.Fragment>
           );
         })
       ) : (
-          <NoMsgYet />
+        <NoMsgYet />
 
       )}
+
+
 
       {typing && typingUserNames?.length > 0 && (
         <div className="text-gray-500 italic text-sm mt-auto ">
@@ -127,7 +168,3 @@ const usersMap = useMemo(() => {
 };
 
 export default React.memo(GroupChatMessages);
-
-
-
-
