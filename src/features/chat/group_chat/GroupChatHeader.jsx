@@ -6,6 +6,9 @@ import CommonAvatar from "../../user/components/CommonAvatar";
 import resolveName from '../../../common/utils/resolveName';
 import ChatHeaderAction from "../components/ChatHeaderAction";
 import GroupDetailDropdown from "./GroupDetailDropdown";
+import { useSelector } from "react-redux";
+
+import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
 const GroupChatHeader = ({
   selectedChatUser,
   onlineUsers,
@@ -28,6 +31,7 @@ const GroupChatHeader = ({
   
   const name = selectedChatUser?.name || "Unknown Group";
   const avatar = selectedChatUser?.avatar;//means group porifle pic
+  const {disappearingMessagesChats} = useSelector(state=>state.chat);
 
   // console.log(selectedChatUser);
   
@@ -39,9 +43,23 @@ const GroupChatHeader = ({
   return (
     <div className="flex items-center px-3 py-2 text-sm border-b border-gray-300 bg-teal-950">
  
-      <div className="relative w-12 h-12 mr-3">
-        <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
-      </div>
+   <div className="relative w-12 h-12 mr-3">
+  <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
+
+  {disappearingMessagesChats?.[selectedChatUser?.id] && (
+    <span
+      className="absolute bottom-0 -right-1 w-5 h-5 rounded-full overflow-hidden shadow-md border border-white"
+      title="Disappearing messages active"
+    >
+      <img
+        src={disappearingMsgs}
+        alt="Disappearing"
+        className="w-full h-full object-cover bg-white z-10"
+      />
+    </span>
+  )}
+</div>
+
 
 
       <div className="flex-1 overflow-hidden">
