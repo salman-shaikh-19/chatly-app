@@ -102,6 +102,7 @@
 //     prev.lastMsgTime === next.lastMsgTime
 //   );
 // });
+
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import CommonAvatar from "../../user/components/CommonAvatar";
@@ -179,61 +180,61 @@ const ChatCard = ({
   //   deleteMessage(message.id);
   // }
 
-  const handleTimerSelect = (value) => {
-    let expiryTime = null;
+  // const handleTimerSelect = (value) => {
+  //   let expiryTime = null;
 
-    if (value !== "off") {
-      const hoursMap = { "24hours": 24, "7days": 168, "90days": 2160 }; // hours
-      expiryTime = dayjs().add(hoursMap[value], "hour").toISOString();
-    }
-    // console.log("hii",socket);
+  //   if (value !== "off") {
+  //     const hoursMap = { "24hours": 24, "7days": 168, "90days": 2160 }; // hours
+  //     expiryTime = dayjs().add(hoursMap[value], "hour").toISOString();
+  //   }
+  //   // console.log("hii",socket);
     
 
-    // if (isGroup) {
-    //   // console.log(groupUsers);
+  //   // if (isGroup) {
+  //   //   // console.log(groupUsers);
       
-    //   socket.emit("disappearingMessageChat", {
-    //     chatId: chatKey,
-    //     expiryTime,
-    //     isGroup: true,
-    //     groupUsers
-    //   });
-    // } else {
-    //   socket.emit("disappearingMessageChat", {
-    //     chatId: chatKey,
-    //     expiryTime,
-    //     isGroup: false,
-    //     groupUsers: []
-    //   });
-    // }
-    // console.log("users",groupUsers);
-    // console.log("users",chatKey,expiryTime,isGroup);
-      if (socket) {
-        // console.log("users",groupUsers);
+  //   //   socket.emit("disappearingMessageChat", {
+  //   //     chatId: chatKey,
+  //   //     expiryTime,
+  //   //     isGroup: true,
+  //   //     groupUsers
+  //   //   });
+  //   // } else {
+  //   //   socket.emit("disappearingMessageChat", {
+  //   //     chatId: chatKey,
+  //   //     expiryTime,
+  //   //     isGroup: false,
+  //   //     groupUsers: []
+  //   //   });
+  //   // }
+  //   // console.log("users",groupUsers);
+  //   // console.log("users",chatKey,expiryTime,isGroup);
+  //     if (socket) {
+  //       // console.log("users",groupUsers);
         
-    if (isGroup) {
-      socket.current.emit("disappearingMessageChat", {
-        chatId: chatKey,
-        expiryTime,
-        isGroup: true,
-        groupUsers
-      });
-    } else {
-      socket.current.emit("disappearingMessageChat", {
-        chatId: chatKey,
-        expiryTime,
-        isGroup: false,
-        groupUsers: []
-      });
-    }
-  } else {
-    console.warn("Socket is not connected yet");
-  }
+  //   if (isGroup) {
+  //     socket.current.emit("disappearingMessageChat", {
+  //       chatId: chatKey,
+  //       expiryTime,
+  //       isGroup: true,
+  //       groupUsers
+  //     });
+  //   } else {
+  //     socket.current.emit("disappearingMessageChat", {
+  //       chatId: chatKey,
+  //       expiryTime,
+  //       isGroup: false,
+  //       groupUsers: []
+  //     });
+  //   }
+  // } else {
+  //   console.warn("Socket is not connected yet");
+  // }
 
 
-    dispatch(setDisappearingMessagesForChat({ chatId: chatKey, expiryTime }));
-    setShowTimerModal(false);
-  };
+  //   dispatch(setDisappearingMessagesForChat({ chatId: chatKey, expiryTime }));
+  //   setShowTimerModal(false);
+  // };
 
   return (
     <>
@@ -336,7 +337,11 @@ const ChatCard = ({
       {showTimerModal && (
         <ChatMessageDisappearingModal
           onClose={() => setShowTimerModal(false)}
-          onSelectTimer={handleTimerSelect}
+          // onSelectTimer={handleTimerSelect}
+          socketRef={socket}
+          chatKey={chatKey}
+          isGroup={isGroup}
+          groupUsers={groupUsers}
           oldTimer={getOldTimerKey(disappearingMessagesChats?.[chatKey])}
         />
       )}
