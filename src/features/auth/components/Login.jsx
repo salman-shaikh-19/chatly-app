@@ -11,7 +11,8 @@ import loginUI from '../../../assets/images/auth/loginUI.png'
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {  faUserLock } from "@fortawesome/free-solid-svg-icons";
-import LandingPage from "./LandingPage";
+import { useEffect } from "react";
+// import LandingPage from "./LandingPage";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -19,6 +20,12 @@ const Login = () => {
     const { userLoading } = useSelector(state => state.auth);
 
     const { isGetStarted } = useSelector(state => state.common);
+    useEffect(() => {
+        if (isGetStarted === false) {
+            navigate("/get-started");
+        }
+    }, [isGetStarted, navigate]);
+   
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             const userData = { email: values.userEmail, password: values.userPassword };
@@ -47,15 +54,11 @@ const Login = () => {
     return (
         <>
             {
-                !isGetStarted ?
-                    (
-                        <LandingPage onClick={() => dispatch(setGetStarted(true))} />
-                    )
-                    :
+             
                     (
                         <div className="flex items-center justify-center min-h-screen  bg-gradient-to-br from-gray-200 via-white to-gray-100 ">
                             <div className="flex w-full max-w-5xl mx-4 sm:mx-6 md:mx-8 lg:mx-0 my-6 
-                rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
+                                rounded-2xl shadow-2xl overflow-hidden border border-gray-200 bg-white">
 
 
                                 <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-teal-200 to-teal-100 items-center justify-center p-8">
