@@ -429,6 +429,7 @@ const Sidebar = ({
     );
   }, [users, loggedInUserId, Object.keys(lastMessages).length, searchText]);
 
+// console.log('in',socketRef.current);
 
   const loggedInUser = users.find(u => u.id === loggedInUserId);
 
@@ -643,7 +644,7 @@ const Sidebar = ({
                         lastMsgTime={lastMessages[chatId]?.timestamp}
                         loggedInUserId={loggedInUserId}
                         selectChat={selectChat}
-                        socket={socketRef.current}
+                        socket={socketRef}
 
                         
                       />
@@ -695,6 +696,7 @@ const Sidebar = ({
                   name={groupName}
                   avatar={groupAvatar}
                   isGroup={true}
+                  socket={socketRef}
                   isTyping={isGroupTyping}
                   lastMsgId={lastMsg?.messageId}
                   lastMsgText={lastMsg?.message}
@@ -702,7 +704,6 @@ const Sidebar = ({
                   lastMsgTime={lastMsg?.timestamp}
                   loggedInUserId={loggedInUserId}
                   selectChat={selectChat}
-                  socket={socketRef.current}
                   groupUsers={group.groupUsers || []}
                   // groupUsers={group.groupUsers || []}
                   // selectChat={() => selectChat({ id: groupId, name: groupName, avatar: groupAvatar, isGroup: true })}
@@ -737,4 +738,3 @@ export default React.memo(Sidebar, (prev, next) =>
   prev.loggedInUserId === next.loggedInUserId &&
   prev.logoutFunction === next.logoutFunction
 );
-
