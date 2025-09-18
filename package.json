@@ -26,6 +26,7 @@
     "framer-motion": "^12.23.12",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
+    "mark.js": "^8.11.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-infinite-scroll-component": "^6.1.0",
