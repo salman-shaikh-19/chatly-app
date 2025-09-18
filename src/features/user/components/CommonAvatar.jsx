@@ -5,7 +5,7 @@ const CommonAvatar=({avatar,avatarClassName=''})=>{
     return (
           <img
           src={avatar || userFallback}
-             className={`object-cover w-12 h-12 rounded-full  ${avatarClassName}`}
+             className={`select-none pointer-events-none object-cover rounded-full ${avatarClassName}`}
               onError={(e) => {
                              e.currentTarget.onerror = null; // prevents infinite loop
                              e.currentTarget.src = userFallback;
