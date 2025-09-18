@@ -14,25 +14,37 @@ const InChatSearchDropdown = ({
     const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
     const instance = new Mark(chatRef.current);
     const context = chatRef.current;
-    useEffect(() => {
-        const handleEscape = (e) => { if (e.key === "Escape") onClose(); };
-        window.addEventListener("keydown", handleEscape);
-        return () => window.removeEventListener("keydown", handleEscape);
-    }, [onClose]);
-
 
     useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (modalRef.current && !modalRef.current.contains(e.target))
-                {
-                  
-                    instance.unmark();
-                    onClose();
-                } 
-        };
-        window.addEventListener("mousedown", handleClickOutside);
-        return () => window.removeEventListener("mousedown", handleClickOutside);
+    const handleEnter = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            prevNextSearch("next");
+        }
+    };
+    const handleEscape = (e) => {
+        if (e.key === "Escape") onClose();
+    };
+    
+    const handleClickOutside = (e) => {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+            instance.unmark();
+            onClose();
+        }
+    };
+    
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleEnter);
+  
+    window.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+        window.removeEventListener("keydown", handleEscape);
+          window.removeEventListener("keydown", handleEnter);
+        window.removeEventListener("mousedown", handleClickOutside);
+    };
     }, [onClose]);
+
 
     const handleSearch = _.debounce(() => {
         const searchTxt = inputRef.current.value;
@@ -53,23 +65,18 @@ const InChatSearchDropdown = ({
                         firstMark.classList.add("current-highlight"); // add class to first mark
                         firstMark.scrollIntoView({ behavior: "smooth", block: "center" });
                     }
-                    // runSetTotalMatches();
-                    //set total matches
-                    const marks = context.querySelectorAll("mark"); // get all marks
-                     setTotalMatches(marks.length); // set total matches
-                     
-
+                    runSetTotalMatches();
                 }
             });
         }
     }, 300);
-    // const runSetTotalMatches = () => {
+    const runSetTotalMatches = () => {
         
-    //     if (!context) return;
-    //     const marks = context.querySelectorAll("mark");
-    //     setTotalMatches(marks.length);
+        if (!context) return;
+        const marks = context.querySelectorAll("mark");
+        setTotalMatches(marks.length);
 
-    // }
+    }
     const prevNextSearch = (direction) => {
        
         if (!context) return;
