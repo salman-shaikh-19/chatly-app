@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import {getLastSeenText} from "../../../common/utils/getLastSeen";
 import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
 import { getChatId } from "../../../common/utils/getChatId";
-import InChatSearchDropdown from "../components/InChatSearch";
+import InChatSearchDropdown from "../components/InChatSearchDropdown";
 
 
 const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMsgs, handleSelectedDelete, messages, goBack, typing, loggedInUserId,chatRef }) => {
