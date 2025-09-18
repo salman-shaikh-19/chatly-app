@@ -20,7 +20,8 @@ const GroupChatMessages = ({
   typingUserNames,
   handleDeleteMessage,
   handleEditMsg,
-  currentGroup
+  currentGroup,
+  chatRef
 }) => {
 
   const toggleSelect = useCallback((id) => {
@@ -39,7 +40,7 @@ const GroupChatMessages = ({
   const creatorId = currentGroup ? Number(currentGroup.createdBy) : null;
 
   return (
-    <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
+    <div ref={chatRef} className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar">
       {
         currentGroup && (
           <div className="text-xs flex flex-col items-center justify-center">
