@@ -9,6 +9,7 @@ import GroupDetailDropdown from "./GroupDetailDropdown";
 import { useSelector } from "react-redux";
 
 import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
+import ChatSearchHeaderBar from "../components/ChatSearchHeaderBar";
 const GroupChatHeader = ({
   selectedChatUser,
   onlineUsers,
@@ -23,18 +24,19 @@ const GroupChatHeader = ({
   allUsers,
   socket,
   isUserInGroup,
-  handleGroupDelete
+  handleGroupDelete,
+  chatRef
 }) => {
 
-  
+
   // Handle when user leaves the group
-  
+
   const name = selectedChatUser?.name || "Unknown Group";
   const avatar = selectedChatUser?.avatar;//means group porifle pic
-  const {disappearingMessagesChats} = useSelector(state=>state.chat);
+  const { disappearingMessagesChats } = useSelector(state => state.chat);
 
   // console.log(selectedChatUser);
-  
+
   // const resolveName = (userId) => {
   //   const user = allUsers?.find(u => u.id === userId);
   //   return user ? user.name : "Unknown";
@@ -42,23 +44,23 @@ const GroupChatHeader = ({
 
   return (
     <div className="flex items-center px-3 py-2 text-sm border-b border-gray-300 bg-teal-950">
- 
-   <div className="relative w-12 h-12 mr-3">
-  <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
 
-  {disappearingMessagesChats?.[selectedChatUser?.id] && (
-    <span
-      className="absolute bottom-0 -right-1 w-5 h-5 rounded-full overflow-hidden shadow-md border border-white"
-      title="Disappearing messages active"
-    >
-      <img
-        src={disappearingMsgs}
-        alt="Disappearing"
-        className="w-full h-full object-cover bg-white z-10"
-      />
-    </span>
-  )}
-</div>
+      <div className="relative w-12 h-12 mr-3">
+        <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
+
+        {disappearingMessagesChats?.[selectedChatUser?.id] && (
+          <span
+            className="absolute bottom-0 -right-1 w-5 h-5 rounded-full overflow-hidden shadow-md border border-white"
+            title="Disappearing messages active"
+          >
+            <img
+              src={disappearingMsgs}
+              alt="Disappearing"
+              className="w-full h-full object-cover bg-white z-10"
+            />
+          </span>
+        )}
+      </div>
 
 
 
@@ -95,36 +97,37 @@ const GroupChatHeader = ({
 
 
           <div className="flex items-center  space-x-1">
-        {
-          isUserInGroup ?
-          (
+               <ChatSearchHeaderBar chatRef={chatRef} />
+            {
+              isUserInGroup ?
+                (
 
-            <GroupDetailDropdown
-              socket={socket}
-              allUsers={allUsers}
-              groupUsers={groupUsers}
-              onlineUsers={onlineUsers}
-              selectedChatUser={selectedChatUser}
-              // onGroupLeft={handleGroupLeft}
-            />
-          )
-          :
-          (
-             <ChatHeaderAction
-             className="text-lg"
-                onClick={handleGroupDelete}
-                icon={faTrashAlt}
-                title="Delete group from me"
-              >
-               Group
-              </ChatHeaderAction>
-          )
-        }
+                  <GroupDetailDropdown
+                    socket={socket}
+                    allUsers={allUsers}
+                    groupUsers={groupUsers}
+                    onlineUsers={onlineUsers}
+                    selectedChatUser={selectedChatUser}
+                  // onGroupLeft={handleGroupLeft}
+                  />
+                )
+                :
+                (
+                  <ChatHeaderAction
+                    className="text-lg"
+                    onClick={handleGroupDelete}
+                    icon={faTrashAlt}
+                    title="Delete group from me"
+                  >
+                    Group
+                  </ChatHeaderAction>
+                )
+            }
 
             {messages.length > 0 && selectedMsgs.length === 0 && (
 
               <ChatHeaderAction
-               className="text-lg"
+                className="text-lg"
                 onClick={handleDeleteAll}
                 icon={faTrashAlt}
                 title="Delete all messages"
@@ -133,7 +136,7 @@ const GroupChatHeader = ({
             {selectedMsgs.length > 0 && isUserInGroup && (
 
               <ChatHeaderAction
-               className="text-md"
+                className="text-md"
                 onClick={handleSelectedDelete}
                 icon={faTrashAlt}
                 title="Delete selected messages"
@@ -142,7 +145,7 @@ const GroupChatHeader = ({
               </ChatHeaderAction>
             )}
             <ChatHeaderAction
-            
+
               onClick={goBack}
               className="lg:hidden md:hidden text-lg"
               icon={faArrowCircleLeft}
