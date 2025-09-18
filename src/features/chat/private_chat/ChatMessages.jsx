@@ -10,7 +10,7 @@ import NoMsgYet from "../../../common/components/NoMsgYet";
 
 
 
-const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,selectedMsgs, typing, messagesEndRef, handleDeleteMessage }) => {
+const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,selectedMsgs, typing, messagesEndRef, handleDeleteMessage,chatRef }) => {
 
     const toggleSelect = useCallback((id) => {
           setSelectedMsgs((prev) =>
@@ -21,7 +21,7 @@ const ChatMessages = ({ messages, handleEditMsg, loggedInUserId,setSelectedMsgs,
       );
 
   return (
-    <div className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar" id="chatWindow">
+    <div ref={chatRef} className="flex-1 overflow-y-auto p-2 flex flex-col space-y-2 hide-scrollbar" id="chatWindow">
       {messages.length > 0 ? (
         messages.map((msg, index) => {
           const msgDate = dayjs(msg.timestamp);
