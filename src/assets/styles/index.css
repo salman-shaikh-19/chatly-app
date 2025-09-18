@@ -12,6 +12,9 @@ body{
   -ms-overflow-style: none; /* IE, edge */
   scrollbar-width: none; /* forefox */
 }
+.blurred {
+  filter: blur(20px);
+}
 
 .custom-emoji-picker * {
   color: #042f2e !important; /*teal colour for text*/
@@ -44,5 +47,9 @@ body {
   padding: 0;          
   -webkit-font-smoothing: antialiased; 
   -moz-osx-font-smoothing: grayscale;
+}
+.current-highlight {
+  background-color: #f03636 !important; /* Tailwind red-400 */
+  color: white; /* optional */
 }
 
