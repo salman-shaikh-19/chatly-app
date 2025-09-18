@@ -1,6 +1,6 @@
-import { faArrowCircleLeft, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowCircleLeft, faSearch, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import CommonAvatar from "../../user/components/CommonAvatar";
 import ChatHeaderAction from "../components/ChatHeaderAction";
 import { useSelector } from "react-redux";
@@ -8,16 +8,26 @@ import dayjs from "dayjs";
 import {getLastSeenText} from "../../../common/utils/getLastSeen";
 import disappearingMsgs from '../../../assets/images/chat/disappearingMsgs.png';
 import { getChatId } from "../../../common/utils/getChatId";
+import InChatSearchDropdown from "../components/InChatSearch";
 
 
-const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMsgs, handleSelectedDelete, messages, goBack, typing, loggedInUserId, }) => {
+const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMsgs, handleSelectedDelete, messages, goBack, typing, loggedInUserId,chatRef }) => {
     const userId = selectedChatUser?.id;
     const {lastSeen} =useSelector(state=>state.common);
     const {disappearingMessagesChats} = useSelector(state=>state.chat);
     const chatKey = getChatId(loggedInUserId, selectedChatUser?.id);
+    const [openSearchModal, setOpenSearchModal] = useState(false);
       const isDisappearing = !!disappearingMessagesChats?.[chatKey];
   const isOnline = onlineUsers.includes(selectedChatUser?.id);
 
+  const openInChatSearch=()=>{
+    // console.log('clecked');
+    
+ setOpenSearchModal(true);
+  }
+  const closeInChatSearch=()=>{
+    setOpenSearchModal(false);
+  }
     return (
         <div className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 bg-teal-950"
         >
@@ -64,6 +74,12 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                         <b>{selectedChatUser.name}</b>
                     </span>
                     <div className=" flex items-center ">
+                         <ChatHeaderAction
+                        className="textlg"
+                        onClick={openInChatSearch}
+                        title="Search in chat"
+                        icon={faSearch}
+                    />
                     {messages.length > 0 && selectedMsgs.length === 0 && (
                         <ChatHeaderAction
 
@@ -101,6 +117,13 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                         ? <span className=""> last seen {getLastSeenText(lastSeen[selectedChatUser.id])}</span>
                         : 'Offline'}</span>
             </div>
+
+            {
+                openSearchModal && <InChatSearchDropdown
+                 onClose={closeInChatSearch}
+                 chatRef={chatRef}
+                  />
+            }
         </div>
     )
 }
