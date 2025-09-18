@@ -18,6 +18,7 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
   const dispatch = useDispatch();
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const chatRef = useRef();
 
   const [editMsg, setEditMsg] = useState(null);
   const [selectedMsgs, setSelectedMsgs] = useState([]);
@@ -294,6 +295,7 @@ const canChat = isUserInGroup && (currentGroup?.type === "public" || (currentGro
           socket={socket}
           isUserInGroup={isUserInGroup}
           handleGroupDelete={handleGroupDelete}
+          chatRef={chatRef}
       />
       
       <GroupChatMessages
@@ -307,6 +309,7 @@ const canChat = isUserInGroup && (currentGroup?.type === "public" || (currentGro
         handleDeleteMessage={handleDeleteMessage}
         handleEditMsg={handleEditMessage}
         currentGroup={currentGroup}
+        chatRef={chatRef}
     
       />
       
