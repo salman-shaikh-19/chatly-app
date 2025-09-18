@@ -74,12 +74,15 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                         <b>{selectedChatUser.name}</b>
                     </span>
                     <div className=" flex items-center ">
-                         <ChatHeaderAction
+                      {
+                        !openSearchModal && (
+                            <ChatHeaderAction
                         className="text-lg mr-1"
                         onClick={openInChatSearch}
                         title="Search in chat"
                         icon={faSearch}
                     />
+                        ) }
                     {messages.length > 0 && selectedMsgs.length === 0 && (
                         <ChatHeaderAction
 
