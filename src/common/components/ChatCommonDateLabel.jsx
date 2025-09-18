@@ -9,11 +9,13 @@ const ChatCommonDateLabel = ({timestamp}) => {
     
     return (
         <>
+        <span className="no-search-highlight">
             {dayjs(timestamp).isToday()
                 ? "Today"
                 : dayjs(timestamp).isYesterday()
                     ? "Yesterday"
                     : dayjs(timestamp).format("MMM D, YYYY")}
+                    </span>
         </>
     )
 }
