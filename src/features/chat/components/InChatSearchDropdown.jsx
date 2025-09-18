@@ -74,6 +74,7 @@ const InChatSearchDropdown = ({
             instance.mark(searchTxt, {
                 separateWordSearch: true,
                 className: "bg-yellow-300",
+                exclude: [".no-search-highlight"],//skip no-search-highlight class
                 done: () => { // after marking is done
                     //  focus first match
                     const firstMark = context.querySelector("mark"); // get first mark
