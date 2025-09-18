@@ -158,6 +158,9 @@ const InChatSearchDropdown = ({
                             <button disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
                             <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
                             </button>
+                            <button onClick={() => { instance.unmark(); onClose(); }} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  ">
+                                <FontAwesomeIcon icon={faX} />
+                            </button>
                         </div>
                     </div>
 
