@@ -1,4 +1,4 @@
-import { faArrowDown, faArrowUp, faX } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDown, faArrowUp, faCaretDown, faCaretUp, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _, { set } from "lodash";
 import Mark from "mark.js";
@@ -48,6 +48,12 @@ const InChatSearchDropdown = ({
 
     const handleSearch = _.debounce(() => {
         const searchTxt = inputRef.current.value;
+        if(searchTxt.trim() === "") {
+            setTotalMatches(0);
+            setCurrentMatchIndex(0);
+            instance.unmark();
+            return;
+        }
         // const context = chatRef.current;
         // if (!context) return;
 
@@ -74,6 +80,7 @@ const InChatSearchDropdown = ({
         
         if (!context) return;
         const marks = context.querySelectorAll("mark");
+        
         setTotalMatches(marks.length);
 
     }
@@ -126,8 +133,8 @@ const InChatSearchDropdown = ({
                             <span className="partition-x-5 border-l border-gray-400 h-5 mx-2">
                                 
                             </span>
-                        <FontAwesomeIcon icon={faArrowDown} onClick={() => prevNextSearch("next")} className="text-gray-400 cursor-pointer" />
-                        <FontAwesomeIcon icon={faArrowUp} onClick={() => prevNextSearch("prev")} className="text-gray-400 cursor-pointer" />
+                        <FontAwesomeIcon icon={faCaretUp} onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer" />
+                        <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")}  className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2   cursor-pointer" />
                        
                         </div>
                     </div>
