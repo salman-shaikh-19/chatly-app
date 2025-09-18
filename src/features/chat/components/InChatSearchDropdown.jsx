@@ -16,6 +16,7 @@ const InChatSearchDropdown = ({
     const context = chatRef.current;
 
     useEffect(() => {
+          inputRef.current?.focus();
         const handleEnter = (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
