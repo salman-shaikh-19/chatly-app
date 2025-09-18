@@ -46,7 +46,7 @@ const GroupChatHeader = ({
     <div className="flex items-center px-3 py-2 text-sm border-b border-gray-300 bg-teal-950">
 
       <div className="relative w-12 h-12 mr-3">
-        <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12" />
+        <CommonAvatar avatar={avatar} avatarClassName="h-12 w-12 " />
 
         {disappearingMessagesChats?.[selectedChatUser?.id] && (
           <span
@@ -56,7 +56,7 @@ const GroupChatHeader = ({
             <img
               src={disappearingMsgs}
               alt="Disappearing"
-              className="w-full h-full object-cover bg-white z-10"
+              className="w-full h-full object-cover bg-white z-10 select-none pointer-events-none"
             />
           </span>
         )}
