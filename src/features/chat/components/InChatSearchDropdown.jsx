@@ -151,14 +151,20 @@ const InChatSearchDropdown = ({
                             <span className="partition-x-5 border-l border-gray-400 h-5 mx-2">
 
                             </span>
-                            <button disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
+                            <button
+                            title="Previous"
+                            disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
 
                             <FontAwesomeIcon icon={faCaretUp}  onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 " />
                             </button >
-                            <button disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
+                            <button
+                            title="Next"
+                            disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
                             <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
                             </button>
-                            <button onClick={() => { instance.unmark(); onClose(); }} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  ">
+                            <button
+                            title="Close"
+                            onClick={() => { instance.unmark(); onClose(); }} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer ">
                                 <FontAwesomeIcon icon={faX} />
                             </button>
                         </div>
