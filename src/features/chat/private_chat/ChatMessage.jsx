@@ -1,14 +1,15 @@
 import { faBan, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import React, { useState } from "react";
 import ChatActionDropdown from "../components/ChatActionDropdown";
 import { useLongPress } from "use-long-press";
+import ChatMessageContent from "../components/ChatMessageContent";
 // import { useSelector } from "react-redux";
 // import resolveName from '../../../common/utils/resolveName'
 const ChatMessage = ({ msg, isEditableAndDeletable,isSelected, toggleSelect,
    loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
-  const msgDate = dayjs(msg.timestamp);
+  // const msgDate = dayjs(msg.timestamp);
   const isOwnMessage = msg.senderId === loggedInUserId;
 // const {users}=useSelector(state=>state.user);
 const longPressForSelect = useLongPress(toggleSelect, {
@@ -56,7 +57,7 @@ const longPressForSelect = useLongPress(toggleSelect, {
 
 
 
-        <div className={`text-left `}
+        {/* <div className={`text-left `}
       >
 
           {msg.isDeleted ? (
@@ -67,10 +68,11 @@ const longPressForSelect = useLongPress(toggleSelect, {
           }
         </div>
 
-        <div className="text-xs text-right text-gray-400 mt-1">
+        <div className="no-search-highlight text-xs text-right text-gray-400 mt-1">
           {msgDate.format("hh:mm A")}
           {msg?.updatedAt && !msg.isDeleted && " (Edited) "}
-        </div>
+        </div> */}
+        <ChatMessageContent msg={msg} />
       </div>
     </div>
   );
