@@ -140,7 +140,7 @@ const InChatSearchDropdown = ({
                 >
                     <div className="flex items-center bg-white gap-2 relative">
                         <input ref={inputRef} type="text" onChange={handleSearch} placeholder="Search in chat..."
-                            className="w-full bg-white p-2 focus:outline-none focus:ring-1 focus:ring-gray-100 " />
+                            className="w-full  p-2 focus:outline-none focus:ring-1 focus:ring-gray-100 " />
                         <div className="flex items-center  gap-1 ">
 
                             {
