@@ -1,4 +1,4 @@
-import { faArrowDown, faArrowUp, faCaretDown, faCaretUp, faX } from "@fortawesome/free-solid-svg-icons";
+import {  faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _, { set } from "lodash";
 import Mark from "mark.js";
@@ -155,12 +155,12 @@ const InChatSearchDropdown = ({
                             title="Previous"
                             disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
 
-                            <FontAwesomeIcon icon={faCaretUp}  onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 " />
+                            <FontAwesomeIcon icon={faChevronUp}  onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 " />
                             </button >
                             <button
                             title="Next"
                             disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
-                            <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
+                            <FontAwesomeIcon icon={faChevronDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
                             </button>
                             <button
                             title="Close"
