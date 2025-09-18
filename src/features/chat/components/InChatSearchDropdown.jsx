@@ -119,7 +119,14 @@ const InChatSearchDropdown = ({
 
 
 
-            <div className="fixed top-20  left-1/2 z-50 flex items-center justify-center ">
+            {/* <div className="fixed top-20  left-1/2 z-50 flex items-center justify-center "> */}
+            <div
+                className="fixed top-20 left-1/2 -translate-x-1/2 
+             z-50 flex items-center justify-center"
+            >
+
+
+
                 <div
                     ref={modalRef}
                     className="  rounded-lg   w-full max-w-md relative"
