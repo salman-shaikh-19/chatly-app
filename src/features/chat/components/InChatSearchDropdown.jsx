@@ -16,11 +16,16 @@ const InChatSearchDropdown = ({
     const context = chatRef.current;
 
     useEffect(() => {
-          inputRef.current?.focus();
+        inputRef.current?.focus();
         const handleEnter = (e) => {
             if (e.key === "Enter") {
+                if(totalMatches===0) return;
+                // console.log('clicked',totalMatches);
+
                 e.preventDefault();
+
                 prevNextSearch("next");
+
             }
         };
         const handleEscape = (e) => {
@@ -48,7 +53,7 @@ const InChatSearchDropdown = ({
             window.removeEventListener("keydown", handleEnter);
             window.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [onClose]);
+    }, [onClose,totalMatches]);
 
 
     const handleSearch = _.debounce(() => {
@@ -139,15 +144,19 @@ const InChatSearchDropdown = ({
 
                             {
                                 <span className="text-sm text-gray-600">
-                                    {totalMatches > 0 ? currentMatchIndex + 1 + "/" + totalMatches : "0/0"}
+                                    {totalMatches > 0 ? currentMatchIndex + 1  + "/" + totalMatches  : "0/0"}
                                 </span>
                             }
                             <span className="partition-x-5 border-l border-gray-400 h-5 mx-2">
 
                             </span>
-                            <FontAwesomeIcon icon={faCaretUp} onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer" />
-                            <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2   cursor-pointer" />
+                            <button disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
 
+                            <FontAwesomeIcon icon={faCaretUp}  onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 " />
+                            </button >
+                            <button disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
+                            <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
+                            </button>
                         </div>
                     </div>
 
