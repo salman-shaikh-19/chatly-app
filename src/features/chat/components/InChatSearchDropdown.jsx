@@ -16,39 +16,43 @@ const InChatSearchDropdown = ({
     const context = chatRef.current;
 
     useEffect(() => {
-    const handleEnter = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            prevNextSearch("next");
-        }
-    };
-    const handleEscape = (e) => {
-        if (e.key === "Escape") onClose();
-    };
-    
-    const handleClickOutside = (e) => {
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
-            instance.unmark();
-            onClose();
-        }
-    };
-    
-    window.addEventListener("keydown", handleEscape);
-    window.addEventListener("keydown", handleEnter);
-  
-    window.addEventListener("mousedown", handleClickOutside);
+        const handleEnter = (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                prevNextSearch("next");
+            }
+        };
+        const handleEscape = (e) => {
+            if (e.key === "Escape") {
+                instance.unmark();
 
-    return () => {
-        window.removeEventListener("keydown", handleEscape);
-          window.removeEventListener("keydown", handleEnter);
-        window.removeEventListener("mousedown", handleClickOutside);
-    };
+                onClose();
+            }
+        };
+
+        const handleClickOutside = (e) => {
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                instance.unmark();
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEscape);
+        window.addEventListener("keydown", handleEnter);
+
+        window.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            window.removeEventListener("keydown", handleEscape);
+            window.removeEventListener("keydown", handleEnter);
+            window.removeEventListener("mousedown", handleClickOutside);
+        };
     }, [onClose]);
 
 
     const handleSearch = _.debounce(() => {
         const searchTxt = inputRef.current.value;
-        if(searchTxt.trim() === "") {
+        if (searchTxt.trim() === "") {
             setTotalMatches(0);
             setCurrentMatchIndex(0);
             instance.unmark();
@@ -77,15 +81,15 @@ const InChatSearchDropdown = ({
         }
     }, 300);
     const runSetTotalMatches = () => {
-        
+
         if (!context) return;
         const marks = context.querySelectorAll("mark");
-        
+
         setTotalMatches(marks.length);
 
     }
     const prevNextSearch = (direction) => {
-       
+
         if (!context) return;
         // const instance = new Mark(context);
         const marks = context.querySelectorAll("mark");
@@ -120,25 +124,25 @@ const InChatSearchDropdown = ({
                     ref={modalRef}
                     className="  rounded-lg   w-full max-w-md relative"
                 >
-                    <div className="flex items-center bg-white gap-2 relative"> 
+                    <div className="flex items-center bg-white gap-2 relative">
                         <input ref={inputRef} type="text" onChange={handleSearch} placeholder="Search in chat..."
                             className="w-full bg-white p-2 focus:outline-none focus:ring-1 focus:ring-gray-100 " />
                         <div className="flex items-center  gap-1 ">
 
-                        {
-                            <span className="text-sm text-gray-600">
-                                {totalMatches > 0 ? currentMatchIndex + 1 + "/" + totalMatches : "0/0"}
-                            </span>
-                        }
+                            {
+                                <span className="text-sm text-gray-600">
+                                    {totalMatches > 0 ? currentMatchIndex + 1 + "/" + totalMatches : "0/0"}
+                                </span>
+                            }
                             <span className="partition-x-5 border-l border-gray-400 h-5 mx-2">
-                                
+
                             </span>
-                        <FontAwesomeIcon icon={faCaretUp} onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer" />
-                        <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")}  className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2   cursor-pointer" />
-                       
+                            <FontAwesomeIcon icon={faCaretUp} onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer" />
+                            <FontAwesomeIcon icon={faCaretDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2   cursor-pointer" />
+
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
