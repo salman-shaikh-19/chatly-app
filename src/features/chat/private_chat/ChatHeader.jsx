@@ -75,7 +75,7 @@ const ChatHeader = ({ selectedChatUser, onlineUsers, handleDeleteAll, selectedMs
                     </span>
                     <div className=" flex items-center ">
                          <ChatHeaderAction
-                        className="textlg"
+                        className="text-lg mr-1"
                         onClick={openInChatSearch}
                         title="Search in chat"
                         icon={faSearch}
