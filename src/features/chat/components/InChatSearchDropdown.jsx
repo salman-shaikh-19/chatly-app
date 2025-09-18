@@ -144,7 +144,7 @@ const InChatSearchDropdown = ({
                         <div className="flex items-center  gap-1 ">
 
                             {
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-gray-600 select-none">
                                     {totalMatches > 0 ? currentMatchIndex + 1  + "/" + totalMatches  : "0/0"}
                                 </span>
                             }
