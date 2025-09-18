@@ -17,7 +17,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const dispatch = useDispatch();
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
-
+const chatRef = useRef();
   const [editMsg, setEditMsg] = useState(null);
   const { selectedChatUser } = useSelector(state => state.common);
   const { onlineUsers } = useSelector(state => state.user);
@@ -157,7 +157,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   // console.log('called');
 
   return (
-    <div className="flex flex-col h-full border rounded w-full">
+    <div className="flex flex-col h-full border rounded w-full" >
       
       <ChatHeader
         goBack={goBack}
@@ -169,6 +169,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         handleSelectedDelete={handleSelectedDelete}
         selectedMsgs={selectedMsgs}
         loggedInUserId={loggedInUserId}
+        chatRef={chatRef}
       />
       
       <ChatMessages
@@ -180,6 +181,8 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
         handleEditMsg={handleEditMessage}
         selectedMsgs={selectedMsgs}
         setSelectedMsgs={setSelectedMsgs}
+        chatRef={chatRef}
+        
 
       />
       <ChatInputBar
