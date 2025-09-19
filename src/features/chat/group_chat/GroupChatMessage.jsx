@@ -58,19 +58,20 @@ const GroupChatMessage = ({
       <div
         className={`relative p-2 pr-8 rounded-lg max-w-xs break-words shadow-sm
       ${isOwnMessage
-            ? "bg-[#DCF8C6] text-black ml-auto"
+            ? theme=='dark'? "bg-green-800 text-white" : "bg-[#DCF8C6] text-black ml-auto"
             : theme=='dark'? 'bg-gray-900  text-white mr-auto':"bg-white text-black mr-auto" }`}
       >
         {isOwnMessage ? (
-          <div className="no-search-highlight  text-xs  font-semibold text-gray-700 mb-1">
-            You
-            {currentGroup?.createdBy === loggedInUserId && (
-              <span className="no-search-highlight text-xs  text-white bg-teal-950 px-1 rounded ml-1">
-                Admin
-              </span>
+          // <div className="no-search-highlight  text-xs  font-semibold text-gray-700 mb-1">
+          //   You
+          //   {currentGroup?.createdBy === loggedInUserId && (
+          //     <span className="no-search-highlight text-xs  text-white bg-teal-950 px-1 rounded ml-1">
+          //       Admin
+          //     </span>
             
-            )}
-          </div>
+          //   )}
+          // </div>
+          <></>
         ) : (
           <div className={`no-search-highlight text-xs font-semibold mb-1 ${getUserColor(msg.senderId)}`}>
             {resolveName(msg.senderId, users)}    
