@@ -48,6 +48,7 @@ const GroupChatMessage = ({
   };
   // console.log(currentGroup);
 
+// console.log(theme);
 
   return (
     <div
@@ -95,17 +96,18 @@ const GroupChatMessage = ({
 
         {isOwnMessage && !msg.isDeleted && isEditableAndDeletable && (
           <div className="absolute top-1 right-1">
-            <ChatActionDropdown>
+            <ChatActionDropdown theme={theme}>
               <button
-                className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-gray-100"
+                className={`block w-full text-left px-3 py-1 text-sm ${theme=='dark'?'text-white bg-black':'text-black hover:bg-gray-100'}`}
                 onClick={handleDelete}
               >
                 <FontAwesomeIcon icon={faTrashAlt} className="mr-2 " />
 
               </button>
               <button
-                className="block w-full text-left px-3 py-1 text-sm text-black hover:bg-gray-100"
-                onClick={handleEdit}
+                className={`block w-full text-left px-3 py-1 text-sm ${theme=='dark'?'text-white bg-black':'text-black hover:bg-gray-100'}`}
+               
+               onClick={handleEdit}
               >
                 <FontAwesomeIcon icon={faEdit} className="mr-2 " />
 
