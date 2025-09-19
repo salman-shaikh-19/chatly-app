@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
-const ChatActionDropdown = ({ children }) => {
+const ChatActionDropdown = ({ children,theme }) => {
   const [openAction, setOpenAction] = useState(false);
   const actionDropdownRef = useRef(null);
 
@@ -38,7 +38,7 @@ const ChatActionDropdown = ({ children }) => {
         aria-expanded={openAction}
         className="flex items-center select-none justify-center p-1  focus:outline-none hover:cursor-pointer"
       >
-        <FontAwesomeIcon icon={faEllipsisV} className="text-gray-700  text-lg" />
+        <FontAwesomeIcon icon={faEllipsisV} className={`${theme=='dark'?'text-white': "text-gray-700 "} text-lg`} />
       </button>
 
       {openAction && (
