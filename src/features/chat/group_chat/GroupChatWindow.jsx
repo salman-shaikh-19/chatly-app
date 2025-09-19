@@ -24,7 +24,7 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
   const [selectedMsgs, setSelectedMsgs] = useState([]);
   const [groupTyping, setGroupTyping] = useState({});
 
-  const { selectedChatUser } = useSelector(state => state.common);
+  const { selectedChatUser,theme } = useSelector(state => state.common);
   const { onlineUsers, users } = useSelector(state => state.user);
   const groups = useSelector(state => state.chat.groups || {});
   const groupMessages = useSelector(state => state.chat.groupMessages[selectedGroupId] || []);
@@ -120,7 +120,8 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete for me!'
+        confirmButtonText: 'Yes, delete for me!',
+        theme:theme
       }).then((result) => {
         if (result.isConfirmed) {
           dispatch(softDeleteGroupMessage({ 
@@ -147,7 +148,9 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+        theme:theme
+
     }).then((result) => {
       if (result.isConfirmed) {
         setEditMsg(null);
@@ -175,7 +178,9 @@ const GroupChatWindow = ({ loggedInUserId, selectedGroupId, socket, goBack }) =>
     showCancelButton: true,
     confirmButtonColor: '#d33',
     cancelButtonColor: '#3085d6',
-    confirmButtonText: `Yes, delete!`
+    confirmButtonText: `Yes, delete!`,
+        theme:theme
+
   }).then((result) => {
     if (result.isConfirmed) {
       // Hard delete selected messages from Redux store
@@ -209,7 +214,9 @@ const handleGroupDelete = () => {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete for me!'
+      confirmButtonText: 'Yes, delete for me!',
+        theme:theme
+
     }).then((result) => {
       if (result.isConfirmed) {
         // Only delete locally for the user, don't emit to server 
@@ -229,7 +236,9 @@ const handleGroupDelete = () => {
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete for me!'
+      confirmButtonText: 'Yes, delete for me!',
+        theme:theme
+
     }).then((result) => {
       if (result.isConfirmed) {
         // Only delete locally for the user, don't emit to server for group chats
