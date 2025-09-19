@@ -74,7 +74,7 @@ const InChatSearchDropdown = ({
 
         if (searchTxt.trim() !== "") {
             instance.mark(searchTxt, {
-                separateWordSearch: true,
+                separateWordSearch: false,
                 className: "bg-yellow-300",
                 exclude: [".no-search-highlight"],//skip no-search-highlight class
                 done: () => { // after marking is done
