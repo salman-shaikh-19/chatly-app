@@ -12,6 +12,7 @@ import ChatMessages from "./ChatMessages";
 import { v4 as uuidv4 } from "uuid";
 import isEditOrDeletable from "../../../common/utils/isEditOrDeletable";
 const MySwal = withReactContent(Swal);
+// import MySwal from "../../../common/components/ThemeSwalProvider";
 
 const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const ChatWindow = ({ loggedInUserId, selectedUserId, socket, goBack }) => {
   const typingTimeoutRef = useRef(null);
 const chatRef = useRef();
   const [editMsg, setEditMsg] = useState(null);
-  const { selectedChatUser } = useSelector(state => state.common);
+  const { selectedChatUser,theme } = useSelector(state => state.common);
   const { onlineUsers } = useSelector(state => state.user);
   const chatId = getChatId(loggedInUserId, selectedUserId);
   const messages = useSelector(state => state.chat.messages[chatId] || []);
@@ -94,7 +95,8 @@ const chatRef = useRef();
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, delete it!',
+      theme:theme
     }).then((result) => {
       if (result.isConfirmed) {
         setEditMsg(null);
@@ -125,7 +127,8 @@ const chatRef = useRef();
     showCancelButton: true,
     confirmButtonColor: '#d33',
     cancelButtonColor: '#3085d6',
-    confirmButtonText: `Yes, delete ${selectedMsgs.length > 1 ? 'them' : 'it'}!`
+    confirmButtonText: `Yes, delete ${selectedMsgs.length > 1 ? 'them' : 'it'}!`,
+    theme:theme
   }).then((result) => {
     if (result.isConfirmed) {
       dispatch(deleteSelectedMessages({ chatId, messageIds: selectedMsgs }));
@@ -145,7 +148,8 @@ const chatRef = useRef();
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete All!'
+      confirmButtonText: 'Yes, delete All!',
+      theme:theme
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(deleteAllMessages({ chatId }));
@@ -182,8 +186,6 @@ const chatRef = useRef();
         selectedMsgs={selectedMsgs}
         setSelectedMsgs={setSelectedMsgs}
         chatRef={chatRef}
-        
-
       />
       <ChatInputBar
         loggedInUserId={loggedInUserId}
