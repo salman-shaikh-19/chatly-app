@@ -15,7 +15,7 @@ const GroupDetailDropdown = ({ groupUsers, allUsers, selectedChatUser, onlineUse
     const [isProcessing, setIsProcessing] = useState(false);
     const [selectedNewUser, setSelectedNewUser] = useState(null);
     const groupDetailDropdownRef = useRef(null);
-    const { loggedInUserData } = useSelector(state => state.common);
+    const { loggedInUserData,theme } = useSelector(state => state.common);
     const dispatch = useDispatch();
     // const navigate = useNavigate();
 
@@ -215,7 +215,7 @@ const handleAddGroupMember = useCallback(async () => {
 
             {openGroupDetail && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                    <div ref={groupDetailDropdownRef} className="bg-white border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md">
+                    <div ref={groupDetailDropdownRef} className={`${theme=='dark' ? 'bg-gray-900 text-white':'bg-gray-100'} border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md`}>
 
                         {/* Header */}
                         <div className="flex items-center bg-teal-950 text-white rounded p-2">
@@ -236,7 +236,7 @@ const handleAddGroupMember = useCallback(async () => {
                         </div>
 
                      
-                        <div className="overflow-y-auto max-h-72 p-2 pt-0 space-y-1">
+                        <div className="overflow-y-auto max-h-72 p-2 pt-0 space-y-1 hide-scrollbar">
                             {groupUserDetails.map((groupUser, index) => {
                                 const isOnline = onlineUsers.includes(groupUser.id);
                                 return (
@@ -274,17 +274,19 @@ const handleAddGroupMember = useCallback(async () => {
                          {
                             loggedInGroupUser?.groupRole === "admin" && (
                                 <>
-                                    <div className="bg-gray-200/50 border-t border-gray-400 ">
+                                    <div className=" ">
                                         {/* <hr className="border border-gray-300" /> */}
                        
 
-                                        <span className="text-gray-800 select-none font-semibold mx-1">Add Memeber:</span>
+                                        <span className="select-none font-semibold mx-1">Add Memeber:</span>
                                         <div className="flex justify-between p-1 gap-2">
                                             <select
                                                 value={selectedNewUser || ""}
                                                 onChange={(e) => setSelectedNewUser(Number(e.target.value))}
-                                                className="border border-gray-500 w-100 focus:border-gray-600 ring:border-gray-600 rounded-sm p-2"
-                                            >
+                                                className={`border hide-scrollbar
+                                                ${theme === 'dark' ? 'text-white bg-gray-900 border-gray-700' : 'text-gray-800 bg-white border-gray-300'} 
+                                                focus:border-gray-600 focus:ring-gray-600 w-full rounded-sm p-2`}
+                                                 >
                                                 <option value="">Select user to add</option>
                                                 {allUsers
                                                     .filter((user) => !groupUsers.some((gu) => Number(gu.userId) === Number(user.id)))
@@ -298,7 +300,7 @@ const handleAddGroupMember = useCallback(async () => {
                                             <span
                                                 title="Add new member"
                                                 onClick={handleAddGroupMember}
-                                                className="flex items-center p-1 border rounded select-none cursor-pointer text-blue-800 hover:bg-blue-950 hover:text-white"
+                                                className="flex items-center p-1 border rounded select-none cursor-pointer bg-teal-800 text-white hover:bg-teal-950 hover:text-white"
                                             >
                                                 Add
                                             </span>
