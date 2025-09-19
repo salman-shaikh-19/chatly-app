@@ -36,7 +36,7 @@ const longPressForSelect = useLongPress(toggleSelect, {
       <div
         className={`relative p-2 pr-6 rounded max-w-xs
            break-words
-            ${isOwnMessage ? "bg-[#DCF8C6] text-black p-2 rounded-lg max-w-xs break-words ml-auto" :
+            ${isOwnMessage ? theme=='dark'? "bg-green-800 text-white" : "bg-[#DCF8C6] text-black p-2 rounded-lg max-w-xs break-words ml-auto" :
               theme=='dark'? 'bg-gray-900  text-white mr-auto':"bg-white text-black mr-auto" }
 `}>
               {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
