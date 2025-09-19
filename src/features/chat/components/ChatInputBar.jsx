@@ -2,13 +2,16 @@ import React, { useRef, useState, useEffect } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile, faClose, faPaperPlane, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [messageText, setMessageText] = useState("");
   const inputRef = useRef(null);
   const pickerRef = useRef(null);
-
+const theme=useSelector(state=>state.common.theme);
+    // setMessageText('');
+  
   useEffect(() => {
     if (editMsg) {
       setMessageText(editMsg.message);
@@ -16,10 +19,15 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
     }
   }, [editMsg]);
 
- 
- 
+  // //focus input on chat open
 
-  
+
+  //     inputRef.current?.focus();
+
+
+
+
+
   // close picker on outside click
   useEffect(() => {
     const handleClick = (e) => {
@@ -46,14 +54,14 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   };
 
   return (
-    <div className="p-2 border-t border-teal-950 bg-white/70 flex items-center gap-2">
+    <div className={`p-2 border-t border-teal-950 ${theme=='dark' ? 'bg-black/70 text-white ':'bg-white/70 '} flex items-center gap-2`}>
       <div className="relative">
         <button
           type="button"
           onClick={() => setShowPicker(prev => !prev)}
           className="p-2 text-xl"
         >
-          <FontAwesomeIcon icon={faSmile} className="text-teal-950" />
+          <FontAwesomeIcon icon={faSmile} className={`${theme=='dark'?'text-amber-400':"text-teal-950"}`} />
         </button>
         {showPicker && (
           <div className="absolute bottom-20 left-0 z-50 bg-white border rounded shadow-lg">
@@ -113,4 +121,14 @@ const ChatInputBar = ({  onSend, handleTyping, editMsg, onClearEdit }) => {
   );
 };
 
-export default React.memo(ChatInputBar);
+export default React.memo(ChatInputBar,(prev, next) => {
+  return (
+    prev.handleTyping == next.handleTyping &&
+    prev.editMsg === next.editMsg &&
+    prev.onClearEdit === next.onClearEdit 
+    
+    //  && // message changed only if id changes
+    // prev.lastMsgTime === next.lastMsgTime
+  );
+});
+
