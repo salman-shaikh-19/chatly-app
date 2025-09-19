@@ -42,7 +42,7 @@ const ChatActionDropdown = ({ children,theme }) => {
       </button>
 
       {openAction && (
-        <div className="absolute right-6 bottom-3  flex flex-col-reverse bg-white border rounded-lg shadow-lg">
+        <div className={`absolute right-6 bottom-3  flex flex-col-reverse   rounded-md shadow-lg ${theme=='dark' ?'bg-gray-700':'bg-white'}`}>
           {children}
         </div>
       )}
