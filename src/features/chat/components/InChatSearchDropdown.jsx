@@ -1,13 +1,15 @@
-import {  faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _, { set } from "lodash";
 import Mark from "mark.js";
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
 const InChatSearchDropdown = ({
     onClose, chatRef
 
 }) => {
+    const theme=useSelector(state=>state.common.theme);
     const modalRef = useRef();
     const inputRef = useRef();
     const [totalMatches, setTotalMatches] = useState(0);
@@ -19,7 +21,7 @@ const InChatSearchDropdown = ({
         inputRef.current?.focus();
         const handleEnter = (e) => {
             if (e.key === "Enter") {
-                if(totalMatches===0) return;
+                if (totalMatches === 0) return;
                 // console.log('clicked',totalMatches);
 
                 e.preventDefault();
@@ -53,7 +55,7 @@ const InChatSearchDropdown = ({
             window.removeEventListener("keydown", handleEnter);
             window.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [onClose,totalMatches]);
+    }, [onClose, totalMatches]);
 
 
     const handleSearch = _.debounce(() => {
@@ -138,33 +140,33 @@ const InChatSearchDropdown = ({
                     ref={modalRef}
                     className="  rounded-lg   w-full max-w-md relative"
                 >
-                    <div className="flex items-center bg-white gap-2 relative">
+                    <div className={`flex items-center  gap-2 relativen ${theme=='dark' ? 'bg-gray-900 text-gray-300':'bg-white'}`}>
                         <input ref={inputRef} type="text" onChange={handleSearch} placeholder="Search in chat..."
-                            className="w-full  p-2 focus:outline-none focus:ring-1 focus:ring-gray-100 " />
+                            className="w-full  p-2 focus:outline-none focus:ring-0  " />
                         <div className="flex items-center  gap-1 ">
 
                             {
-                                <span className="text-sm text-gray-600 select-none">
-                                    {totalMatches > 0 ? currentMatchIndex + 1  + "/" + totalMatches  : "0/0"}
+                                <span className={`text-sm ${theme=='dark'?'text-gray-100':'text-gray-500'} select-none`}>
+                                    {totalMatches > 0 ? currentMatchIndex + 1 + "/" + totalMatches : "0/0"}
                                 </span>
                             }
-                            <span className="partition-x-5 border-l border-gray-400 h-5 mx-2">
+                            <span className={`partition-x-5 border-l ${theme=='dark'? 'border-gray-100':'border-gray-400'} h-5 mx-2`}>
 
                             </span>
                             <button
-                            title="Previous"
-                            disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
+                                title="Previous"
+                                disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed " : "cursor-pointer"}>
 
-                            <FontAwesomeIcon icon={faChevronUp}  onClick={() => prevNextSearch("prev")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 " />
+                                <FontAwesomeIcon icon={faChevronUp} onClick={() => prevNextSearch("prev")} className={`${theme=='dark'?'text-gray-100 hover:bg-gray-700':'text-gray-400 hover:bg-gray-200'} p-2 hover:rounded-full  hover:p-2 `} />
                             </button >
                             <button
-                            title="Next"
-                            disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
-                            <FontAwesomeIcon icon={faChevronDown} onClick={() => prevNextSearch("next")} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2  " />
+                                title="Next"
+                                disabled={totalMatches === 0} className={totalMatches == 0 ? "cursor-not-allowed" : "cursor-pointer"}>
+                                <FontAwesomeIcon icon={faChevronDown} onClick={() => prevNextSearch("next")} className={`${theme=='dark'?'text-gray-100 hover:bg-gray-700':'text-gray-400 hover:bg-gray-200'} p-2 hover:rounded-full  hover:p-2 `} />
                             </button>
                             <button
-                            title="Close"
-                            onClick={() => { instance.unmark(); onClose(); }} className="text-gray-400 p-2 hover:rounded-full hover:bg-gray-200 hover:p-2 cursor-pointer ">
+                                title="Close"
+                                onClick={() => { instance.unmark(); onClose(); }} className={`${theme=='dark'?'text-gray-100 hover:bg-gray-700':'text-gray-400 hover:bg-gray-200'} p-2 hover:rounded-full  hover:p-2 `}>
                                 <FontAwesomeIcon icon={faX} />
                             </button>
                         </div>
