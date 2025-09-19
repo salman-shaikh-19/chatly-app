@@ -166,7 +166,7 @@ const InChatSearchDropdown = ({
                             </button>
                             <button
                                 title="Close"
-                                onClick={() => { instance.unmark(); onClose(); }} className={`${theme=='dark'?'text-gray-100 hover:bg-gray-700':'text-gray-400 hover:bg-gray-200'} p-2 hover:rounded-full  hover:p-2 `}>
+                                onClick={() => { instance.unmark(); onClose(); }} className={`${theme=='dark'?'text-gray-100 hover:bg-gray-700':'text-gray-400 hover:bg-gray-200'} p-2 hover:rounded-full  hover:p-2 cursor-pointer`}>
                                 <FontAwesomeIcon icon={faX} />
                             </button>
                         </div>
