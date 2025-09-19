@@ -9,13 +9,14 @@ const CustomInputWithError = ({
   isLabelEnabled=false,
   inputClassName = "",
   errorComponent = "div",
-  errorClassName = "text-red-500"
+  errorClassName = "text-red-500",
+  labelClassName="text-slate-900"
 }) => {
   return (
     <div className="mb-3">
       {
         isLabelEnabled && (
-          <label htmlFor={inputId ?? inputName} className="text-slate-900 text-sm font-medium mb-2 block">{inputLabelText}</label>
+          <label htmlFor={inputId ?? inputName} className={` text-sm font-medium mb-2 block ${labelClassName}`}>{inputLabelText}</label>
         )
       }
       <Field
