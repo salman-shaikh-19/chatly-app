@@ -59,7 +59,7 @@ const GroupChatMessage = ({
         className={`relative p-2 pr-8 rounded-lg max-w-xs break-words shadow-sm
       ${isOwnMessage
             ? "bg-[#DCF8C6] text-black ml-auto"
-            : "bg-gray-900  text-white mr-auto"}`}
+            : theme=='dark'? 'bg-gray-900  text-white mr-auto':"bg-white text-black mr-auto" }`}
       >
         {isOwnMessage ? (
           <div className="no-search-highlight  text-xs  font-semibold text-gray-700 mb-1">
