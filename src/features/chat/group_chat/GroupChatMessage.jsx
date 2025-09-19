@@ -23,7 +23,7 @@ const GroupChatMessage = ({
   
 }) => {
   const { users } = useSelector(state => state.user);
-
+  const theme=useSelector(state=>state.common.theme)
   // const msgDate = dayjs(msg.timestamp);
   const longPressForSelect = useLongPress(toggleSelect, {
     threshold: isSelected ? 0 : 500,
@@ -59,7 +59,7 @@ const GroupChatMessage = ({
         className={`relative p-2 pr-8 rounded-lg max-w-xs break-words shadow-sm
       ${isOwnMessage
             ? "bg-[#DCF8C6] text-black ml-auto"
-            : "bg-white text-black mr-auto"}`}
+            : "bg-gray-900  text-white mr-auto"}`}
       >
         {isOwnMessage ? (
           <div className="no-search-highlight  text-xs  font-semibold text-gray-700 mb-1">
