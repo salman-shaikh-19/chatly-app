@@ -114,7 +114,7 @@ const GroupChatHeader = ({
                 :
                 (
                   <ChatHeaderAction
-                    className="text-lg"
+                    className="text-sm"
                     onClick={handleGroupDelete}
                     icon={faTrashAlt}
                     title="Delete group from me"
