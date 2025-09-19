@@ -193,7 +193,7 @@ const Sidebar = ({
 
 
   return (
-    <div className="w-full md:w-72 lg:w-80 h-screen hide-scrollbar bg-gray-100 text-white overflow-auto" id="user-scroll">
+    <div className={`w-full md:w-72 lg:w-80 h-screen hide-scrollbar ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-white"}  overflow-auto`} id="user-scroll">
       <div className="bg-teal-950 p-5 text-sm md:text-base lg:text-lg flex justify-between">
         <h2 className="text-white cursor-default select-none ">
           <FontAwesomeIcon icon={faComments} size="2x" /> Chatly
