@@ -262,9 +262,9 @@ const ChatCard = ({
 
             }}
             title={`${disappearingMessagesChats?.[chatKey] ? `Disappearing messages active` : 'Set disappearing messages'}`}
-            className={`absolute bottom-0 -right-1 flex items-center justify-center
+            className={`absolute bottom-0.5 right-0.5 flex items-center justify-center
              
-    ${!isGroup ? "w-6 h-6" : "w-6 h-6"} 
+    ${!isGroup ? "w-4.5 h-4.5" : "w-6 h-6"} 
     rounded-full border-2 border-white shadow-sm overflow-hidden cursor-pointer`}
           >
             {!isGroup ? (
