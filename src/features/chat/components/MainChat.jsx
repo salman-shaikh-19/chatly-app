@@ -28,6 +28,7 @@ import _ from "lodash";
 import ChatWindow from "../private_chat/ChatWindow"
 import GroupChatWindow from "../group_chat/GroupChatWindow";
 import chatBgImg from '../../../assets/images/chat/chatBgImg.png';
+import chatBgImgDark from '../../../assets/images/chat/chatBgImgDark.png';
 import { showBrowserNotification } from '../../../common/utils/showBrowserNotification';
 import { useTabVisibility } from '../../../common/hooks/useTabVisibility';
 import { getChatId } from "../../../common/utils/getChatId";
@@ -36,7 +37,7 @@ const MainChat = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { users, userListLoading, onlineUsers } = useSelector((state) => state.user);
-  const { loggedInUserData, selectedChatUser, messageCounts } = useSelector((state) => state.common);
+  const { loggedInUserData, selectedChatUser, messageCounts,theme } = useSelector((state) => state.common);
   const { messages, groups } = useSelector(state => state.chat);
 
   const loggedInUserId = loggedInUserData?.id;
@@ -83,6 +84,7 @@ const MainChat = () => {
     }
   }, []);
 
+// console.log("ref",socketRef.current);
 
   useEffect(() => {
     if (!loggedInUserId) return;
@@ -405,8 +407,8 @@ socket.on('disappearingMessageChat', ({ chatId, expiryTime, isGroup }) => {
   }, []);
 
   return (
-    <div className="h-screen flex">
-      <div className={`${isChatOpen ? "hidden sm:flex" : "flex"} flex flex-col bg-white border-r w-full sm:w-72 lg:w-80`}>
+    <div className={`h-screen flex  `}>
+      <div className={`${isChatOpen ? "hidden sm:flex" : "flex"}  flex flex-col bg-white border-r w-full sm:w-72 lg:w-80`}>
         <Sidebar
           users={users}
           userListLoading={userListLoading}
@@ -416,12 +418,13 @@ socket.on('disappearingMessageChat', ({ chatId, expiryTime, isGroup }) => {
           lastMessages={lastMessages}
           onlineUsers={onlineUsers}
           socketRef={socketRef}
+          
         />
       </div>
       <div
         className={`flex-1 flex flex-col ${isChatOpen ? "flex w-full" : "hidden sm:flex"} m-1  object-contain`}
         style={{
-          backgroundImage: `url(${chatBgImg})`,
+          backgroundImage: `url(${theme=='dark' ? chatBgImgDark :chatBgImg})`,
           // backgroundSize: "cover",
           backgroundPosition: "center"
         }}
@@ -433,6 +436,7 @@ socket.on('disappearingMessageChat', ({ chatId, expiryTime, isGroup }) => {
               loggedInUserId={loggedInUserId}
               selectedGroupId={selectedUserId}
               socket={socketRef.current}
+              
               goBack={goBackToSidebar}
             />
           ) : (
