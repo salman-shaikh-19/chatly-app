@@ -5,11 +5,13 @@ import React, { useEffect, useState } from "react";
 import { CustomButton } from "../../../common/components/CustomButton";
 import * as Yup from 'yup';
 import CustomInputWithError from "../../../common/components/CustomInputWithError";
+import { useSelector } from "react-redux";
 
 const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, handleCreateGroup }) => {
   // Store selected users with roles
   const [selectedGroupUsers, setSelectedGroupUsers] = useState({});
   const [groupType, setGroupType] = useState("public"); // default to public
+  const theme=useSelector(state=>state.common.theme)
 
   // Close modal on outside click
   useEffect(() => {
@@ -45,23 +47,23 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md" ref={createGroupRef}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className={` ${theme=='dark'?'bg-gray-900 text-white':'bg-gray-100 '} border rounded-lg shadow-lg m-2 p-1 w-86 relative max-w-md`} ref={createGroupRef}>
         <button
           onClick={onClose}
           title="Close"
-          className="absolute top-2 right-2 p-2 text-white hover:text-gray-400 hover:cursor-pointer"
+          className="absolute top-2 right-2 p-2  hover:text-gray-400 hover:cursor-pointer"
         >
           <FontAwesomeIcon icon={faX} />
         </button>
 
-        <h3 className="text-lg text-white bg-teal-950 p-2 font-bold mb-3 rounded-t-lg">Create Group</h3>
+        <h3 className="text-lg  bg-teal-950 p-2 font-bold mb-3 rounded-t-lg">Create Group</h3>
 
-        <div className="overflow-y-auto max-h-72 p-2 pt-0 space-y-1">
+        <div className="overflow-y-auto max-h-72 p-2 pt-0 space-y-1 hide-scrollbar">
           {users
             .filter((item) => item.id !== loggedInUserId)
             .map((user) => (
-              <div key={user.id} className="flex items-center justify-between gap-2 p-1 border-b border-gray-200 rounded">
+              <div key={user.id} className={`flex items-center justify-between gap-2 p-1 border-b border-gray-200 rounded ${theme=='dark'?'text-white  ':'text-black '}`}>
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -70,7 +72,7 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
                     className="w-4 h-4 accent-teal-950 cursor-pointer"
                     id={`user-${user.id}`}
                   />
-                  <label htmlFor={`user-${user.id}`} className="text-gray-800 font-medium cursor-pointer select-none">
+                  <label htmlFor={`user-${user.id}`} className=" font-medium cursor-pointer select-none">
                     {user?.name}
                   </label>
                 </div>
@@ -79,7 +81,7 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
                   <select
                     value={selectedGroupUsers[user.id].role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                    className="border rounded text-black px-2 py-1 text-sm cursor-pointer"
+                    className={`border rounded  px-2 py-1 text-sm cursor-pointer  ${theme=='dark' ? 'text-white bg-gray-900':'text-black'}`}
                   >
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
@@ -89,7 +91,7 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
             ))}
         </div>
 
-        <div className="bg-gray-100 p-3 flex flex-col gap-2">
+        <div className={`${theme=='dark' ? 'bg-gray-900':'bg-gray-100'} p-3 flex flex-col gap-2`}>
           <Formik
             initialValues={{ groupName: "" }}
             validationSchema={Yup.object({
@@ -120,25 +122,25 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
               <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full">
                 {/* Radio buttons for group type */}
                 <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-1 text-black cursor-pointer">
+                  <label className={`${theme=='dark'?'text-white':'text-black'} flex items-center gap-1 cursor-pointer`}>
                     <input
                       type="radio"
                       name="groupType"
                       value="public"
                       checked={groupType === "public"}
                       onChange={() => setGroupType("public")}
-                      className="accent-teal-950"
+                      className=""
                     />
                     Public
                   </label>
-                  <label className="flex items-center text-black gap-1 cursor-pointer">
+                  <label className={`flex items-center gap-1 cursor-pointer  ${theme=='dark'?'text-white':'text-black'}`}>
                     <input
                       type="radio"
                       name="groupType"
                       value="private"
                       checked={groupType === "private"}
                       onChange={() => setGroupType("private")}
-                      className="accent-teal-950"
+                      className=""
                     />
                     Private
                   </label>
@@ -150,7 +152,8 @@ const CreateGroupModal = ({ users, loggedInUserId, onClose, createGroupRef, hand
                       inputId="groupName"
                       inputName="groupName"
                       inputLabelText="Group Name:"
-                      inputClassName="m-0 p-0 text-black"
+                      inputClassName={`m-0 p-0 ${theme=='dark' ? 'text-white':'text-black'}`}
+                      labelClassName={` ${theme=='dark' ? 'text-white':'text-black'}`}
                       inputPlaceHolder="Enter group name"
                       inputType="text"
                       isLabelEnabled={true}
