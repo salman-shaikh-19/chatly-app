@@ -102,7 +102,6 @@
 //     prev.lastMsgTime === next.lastMsgTime
 //   );
 // });
-
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import CommonAvatar from "../../user/components/CommonAvatar";
@@ -135,7 +134,7 @@ const ChatCard = ({
   groupUsers = [],
 }) => {
   const { users } = useSelector((state) => state.user);
-  const { messageCounts, selectedChatUser } = useSelector((state) => state.common);
+  const { messageCounts, selectedChatUser,theme } = useSelector((state) => state.common);
   const { disappearingMessagesChats } = useSelector((state) => state.chat);
 
   const [showTimerModal, setShowTimerModal] = useState(false);
@@ -239,7 +238,7 @@ const ChatCard = ({
   return (
     <>
       <div
-        className={`flex items-center select-none px-3  py-3 border-b cursor-pointer hover:bg-gray-200 ${selectedChatUser?.id === id ? 'bg-gray-300' : ''}`}
+        className={` ${theme == "light" ? "bg-gray-100 border-b-gray-200 hover:bg-gray-200  " : "bg-gray-900"} ${selectedChatUser?.id === id && theme=='light' ? 'bg-gray-300' : ''}   flex items-center select-none px-3  py-3 border-b cursor-pointer `}
         // onClick={() => selectChat({ id, name, avatar, isGroup })}
         onClick={() => {
           selectChat({ id, name, avatar, isGroup });
@@ -309,15 +308,15 @@ const ChatCard = ({
         </div>
 
 
-        <div className="w-full ml-2 overflow-hidden">
+        <div className={`w-full ml-2 overflow-hidden `}>
           <div className="flex justify-between">
-            <span className="font-semibold truncate max-w-[140px] text-gray-600">{name}</span>
-            <span className="text-sm text-gray-500">
+            <span className={`font-semibold truncate max-w-[140px] text-gray-600 ${theme === "light" ? "text-gray-600" : "text-white"}`}>{name}</span>
+            <span className={`text-sm text-gray-500 ${theme === "light" ?  "text-gray-600" : "text-white"}`}>
               {lastMsgTime ? getLastMsgTime(lastMsgTime) : ""}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="block text-sm text-gray-600 truncate max-w-[220px]">
+            <span className={`block text-sm text-gray-600 truncate max-w-[220px] ${theme === "light" ?  "text-gray-600" : "text-white"}`}>
               {lastMessageText}
             </span>
 
