@@ -5,12 +5,14 @@ import React, { useState } from "react";
 import ChatActionDropdown from "../components/ChatActionDropdown";
 import { useLongPress } from "use-long-press";
 import ChatMessageContent from "../components/ChatMessageContent";
+import { useSelector } from "react-redux";
 // import { useSelector } from "react-redux";
 // import resolveName from '../../../common/utils/resolveName'
 const ChatMessage = ({ msg, isEditableAndDeletable,isSelected, toggleSelect,
    loggedInUserId, handleEditMsg, handleDeleteMessage }) => {
   // const msgDate = dayjs(msg.timestamp);
   const isOwnMessage = msg.senderId === loggedInUserId;
+  const theme=useSelector(state=>state.common.theme);
 // const {users}=useSelector(state=>state.user);
 const longPressForSelect = useLongPress(toggleSelect, {
     threshold: isSelected ? 0 : 500,
@@ -23,7 +25,7 @@ const longPressForSelect = useLongPress(toggleSelect, {
 
 
   //  console.log( "isSelected:", isSelected);
-  
+ 
   return (
     <div
       className={`flex mb-2 ${isOwnMessage ? "justify-end" : "justify-start"} p-1 rounded ${isSelected ? "bg-[#DCF8C6]/50" : ""
@@ -35,7 +37,8 @@ const longPressForSelect = useLongPress(toggleSelect, {
         className={`relative p-2 pr-6 rounded max-w-xs
            break-words
             ${isOwnMessage ? "bg-[#DCF8C6] text-black p-2 rounded-lg max-w-xs break-words ml-auto" :
-            "bg-white text-black p-2 rounded-lg max-w-xs break-words mr-auto"}`}>
+              theme=='dark'? 'bg-gray-900  text-white mr-auto':"bg-white text-black mr-auto" }
+`}>
               {!msg.isDeleted && isOwnMessage && isEditableAndDeletable && (
                 <div className="absolute top-1  right-1">
                   <ChatActionDropdown>
