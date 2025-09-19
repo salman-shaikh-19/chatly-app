@@ -8,6 +8,8 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import ToastWrapper from './common/components/ToastWrapper.jsx';
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,14 +17,7 @@ createRoot(document.getElementById('root')).render(
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <App />
-           <ToastContainer
-            newestOnTop={true}
-            closeOnClick={true}  
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
+          <ToastWrapper />
         </BrowserRouter>
       </PersistGate>
     </Provider>
