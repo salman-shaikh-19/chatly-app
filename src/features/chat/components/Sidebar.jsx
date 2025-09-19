@@ -393,7 +393,8 @@ const Sidebar = ({
   onlineUsers,
   loggedInUserId,
   lastMessages,
-  socketRef
+  socketRef,
+ 
 }) => {
   const pageSize = 11;
   const dispatch = useDispatch();
@@ -404,6 +405,7 @@ const Sidebar = ({
   const createGroupRef = useRef();
 
   const isTyping = useSelector((state) => state.common.isTyping || {});
+  const theme = useSelector((state) => state.common.theme || "light");
   const groups = useSelector((state) => state.chat.groups || {});
   const groupMessages = useSelector((state) => state.chat.groupMessages || {});
   const [groupTypingUsers, setGroupTypingUsers] = useState({});
@@ -569,7 +571,7 @@ const Sidebar = ({
           logoutFunction={logoutFunction}
         />
       </div>
-      <div className="flex flex-col">
+      <div className={`flex flex-col h-[calc(100vh-64px)] ${theme === "dark" ? "bg-gray-900" : "bg-gray-100"}  p-1`}>
         <div className="flex">
           <div className="relative m-2 w-full">
             <span className="absolute inset-y-0 cursor-text left-2 flex items-center text-gray-500">
@@ -578,9 +580,9 @@ const Sidebar = ({
             <input
               type="search"
               placeholder="Search..."
-              className="pl-8 pr-2 py-1 w-full text-gray-900 
-                    placeholder:text-gray-500 bg-gray-300 border 
-                    border-gray-300 outline-none transition duration-150 rounded-full"
+              className={`pl-8 pr-2 py-1 w-full  outline-none transition duration-150 rounded-full
+                    ${theme === "dark" ? "bg-gray-700 text-gray-200 placeholder:text-gray-400 border-gray-600 " : "bg-gray-300 text-gray-900 placeholder:text-gray-500 border-gray-300 "}
+                    `}
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
@@ -600,7 +602,7 @@ const Sidebar = ({
         length={sortedUsers.length}
         />
         {userListLoading ? (
-          <div className="flex justify-center text-gray-600 items-center h-full">
+          <div className={` flex justify-center  items-center h-full ${theme === "dark" ? "text-gray-100" : "text-gray-600"}`}>
             <FontAwesomeIcon icon={faSpinner} spin size="2x" />
           </div>
         ) : (
@@ -615,7 +617,7 @@ const Sidebar = ({
             {(items) => (
 
               items.length === 0 && filteredGroupList.length === 0 ? (
-                <div className="text-center text-gray-500">No chats or groups found</div>
+                <div className={`text-center ${theme=='dark'?'text-gray-300':'text-gray-600'}`}>No chats or groups found</div>
                 // <></>
               ) : (
                 <>
